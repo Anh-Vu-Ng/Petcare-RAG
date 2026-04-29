@@ -1,0 +1,30 @@
+[project]
+name = "final-project-rag"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "faiss-cpu>=1.13.2",
+    "ipykernel>=7.2.0",
+    "langchain>=1.2.15",
+    "langchain-community>=0.4.1",
+    "langchain-core>=1.3.0",
+    "langchain-huggingface>=1.2.2",
+    "langchain-openai>=1.1.14",
+    "langchain-openrouter>=0.2.1",
+    "langgraph>=1.1.8",
+    "lxml>=6.1.0",
+    "openai>=2.32.0",
+    "pydantic>=2.13.2",
+    "pymupdf>=1.27.2.2",
+    "python-dotenv>=1.2.2",
+    "rank-bm25>=0.2.2",
+    "regex>=2026.4.4",
+    "requests>=2.33.1",
+    "sentence-transformers>=5.4.1",
+    "streamlit>=1.56.0",
+    "torch>=2.11.0",
+    "wikipedia>=1.4.0",
+]
