@@ -1,18 +1,28 @@
 from typing import List
 from importlib.metadata import metadata
+import re
 import fitz #pymupdf
 from bs4 import BeautifulSoup
 import requests
 from langchain_core.documents import Document
 from src.config import PDF_FILE, URL_FILE
 
+def clean_text(text: str) -> str:
+    # Thay thế nhiều khoảng trắng liên tiếp (spaces, tabs) thành 1 space
+    text = re.sub(r'[^\S\n]+', ' ', text)
+    # Loại bỏ khoảng trắng đầu/cuối mỗi dòng
+    lines = [line.strip() for line in text.splitlines()]
+    # Loại bỏ các dòng trống, nối lại bằng 1 dấu xuống dòng
+    text = '\n'.join(line for line in lines if line)
+    return text.strip()
+
 def load_pdf(pdf_path: str) -> List[Document]:
     """Load pdf with pymupdf"""
     doc = fitz.open(pdf_path)
     documents = []
     for page_num, page in enumerate(doc):
-        text = page.get_text()
-        if text.strip():
+        text = clean_text(page.get_text())
+        if text:
             documents.append(Document(
                 page_content=text,
                 metadata = {
@@ -25,7 +35,7 @@ def load_urls(url_file: str) -> List[Document]:
     """Load url from urls.txt"""
     documents =[]
     try: 
-        with open(url_file, "r", encoding = "utf-8 ") as f:
+        with open(url_file, "r", encoding = "utf-8") as f:
             urls = [line.strip() for line in f if line.strip()]
 
         for url in urls:
@@ -34,16 +44,20 @@ def load_urls(url_file: str) -> List[Document]:
                 response.raise_for_status()
                 soup = BeautifulSoup(response.text, 'html.parser')
                 article = soup.find('article')
-                if article:
-                    for unwanted in article.find_all('div', class_='post-social-tags'):
-                        unwanted.decompose()
-                    for meta in article.find_all('div', class_='header_meta'):
-                        meta.decompose()
+                if article: 
+                    content_tags = article.find_all(['h1','h2', 'p', 'li'])
+                    raw_text_chunks =[]
 
-                text = article.get_text(separator='\n', strip = True)
-                if text:
+                    for tag in content_tags:
+                        text = tag.get_text(separator="", strip = True)
+                        if text: 
+                            raw_text_chunks.append(text)
+                        final_text = "\n".join(raw_text_chunks)
+                        final_text = re.sub(r' +', ' ', final_text)
+
+                if final_text:
                     documents.append(Document(
-                        page_content=text,
+                        page_content=final_text,
                         metadata={
                             "source": url
                         }
