@@ -25,9 +25,9 @@ class JinaEmbeddings(Embeddings):
 
     def __init__(self, model: str = EMBEDDING_MODEL):
         self.model = model
-        self.api_key = os.getenv("JINA_RERANKER_API_KEY")  # Dùng chung API key Jina
+        self.api_key = os.getenv("JINA_API_KEY")  # Dùng chung API key Jina
         if not self.api_key:
-            raise ValueError("Chưa thiết lập JINA_RERANKER_API_KEY. Kiểm tra lại file .env đi.")
+            raise ValueError("Chưa thiết lập JINA_API_KEY. Kiểm tra lại file .env đi.")
         self.api_url = "https://api.jina.ai/v1/embeddings"
 
     def _call_api(self, texts: List[str], task: str = "retrieval.passage") -> List[List[float]]:

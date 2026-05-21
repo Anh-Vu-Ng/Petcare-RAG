@@ -16,9 +16,9 @@ class JinaReranker:
     def __init__(self, model: str = RERANKER_MODEL, top_k: int = TOP_K_RERANK):
         self.model = model
         self.top_k = top_k
-        self.api_key = os.getenv("JINA_RERANKER_API_KEY")
+        self.api_key = os.getenv("JINA_API_KEY")
         if not self.api_key:
-            raise ValueError("Chưa thiết lập JINA_RERANKER_API_KEY")
+            raise ValueError("Chưa thiết lập JINA_API_KEY")
         self.api_url = "https://api.jina.ai/v1/rerank"
 
     def rerank(self, query: str, documents: List[Document]) -> List[Document]:
