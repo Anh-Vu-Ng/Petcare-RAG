@@ -33,6 +33,10 @@ class HybridRetriever(BaseRetriever):
     def _get_relevant_documents(
         self, query: str, *, run_manager: CallbackManagerForRetrieverRun
     ) -> List[Document]:
-        dense_docs = self.dense_retriever.invoke(query)
-        sparse_docs = self.sparse_retriever.invoke(query)
+        import concurrent.futures
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            future_dense = executor.submit(self.dense_retriever.invoke, query)
+            future_sparse = executor.submit(self.sparse_retriever.invoke, query)
+            dense_docs = future_dense.result()
+            sparse_docs = future_sparse.result()
         return reciprocal_rank_fusion(dense_docs, sparse_docs)
