@@ -59,7 +59,17 @@ def load_single_url(url: str) -> Optional[Document]:
                     continue
                 text = tag.get_text(separator=" ", strip=True)
                 if text:
-                    raw_text_chunks.append(text)
+                    # Chuyển đổi các thẻ heading sang định dạng Markdown
+                    if tag.name == 'h1':
+                        raw_text_chunks.append(f"# {text}")
+                    elif tag.name == 'h2':
+                        raw_text_chunks.append(f"## {text}")
+                    elif tag.name == 'h3':
+                        raw_text_chunks.append(f"### {text}")
+                    elif tag.name == 'h4':
+                        raw_text_chunks.append(f"#### {text}")
+                    else:
+                        raw_text_chunks.append(text)
                     
             if raw_text_chunks:
                 # Gộp chuỗi ngoài vòng lặp để tối ưu hóa hiệu năng O(N)
