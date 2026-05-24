@@ -115,9 +115,11 @@ def save_chat_message(db: Session, session_id: str, role: str, content: str) -> 
     return msg
 
 def get_chat_history(db: Session, session_id: str, limit: int = 50) -> List[models.ChatHistoryModel]:
-    return db.query(models.ChatHistoryModel).filter(
+    results = db.query(models.ChatHistoryModel).filter(
         models.ChatHistoryModel.session_id == session_id
-    ).order_by(models.ChatHistoryModel.created_at.asc()).limit(limit).all()
+    ).order_by(models.ChatHistoryModel.created_at.desc()).limit(limit).all()
+    return results[::-1]
+
 
 def clear_chat_history(db: Session, session_id: str):
     db.query(models.ChatHistoryModel).filter(
