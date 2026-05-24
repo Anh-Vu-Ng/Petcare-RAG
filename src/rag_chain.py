@@ -4,13 +4,16 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI 
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 
-from src.config import LLM_MODEL, REWRITER_MODEL
-from src.prompts import contextualize_q_prompt, qa_prompt
+from src.config import LLM_MODEL, ROUTER_MODEL, CSV_PRICING_PATH
+from src.prompts import contextualize_q_prompt, qa_prompt, tool_qa_prompt
 from src.bm25_retriever import get_bm25_retriever
 from src.hybrid_retriever import HybridRetriever
 from src.vector_store import get_faiss_retriever, get_embeddings
 from src.semantic_cache import SemanticCache
 from src.jina_reranker import JinaReranker
+from src.intent_router import IntentRouter
+from src.service_db import ServiceDB
+from src.tools import lookup_service_price, calculate_final_price, format_final_price_for_llm, _resolve_service_type, _resolve_all_service_types
 
 load_dotenv()
 
@@ -22,51 +25,80 @@ def get_llm():
         
     return ChatOpenAI(
         model=LLM_MODEL,
-        openai_api_key=api_key,
-        openai_api_base="https://openrouter.ai/api/v1",
+        api_key=api_key,
+        base_url="https://openrouter.ai/api/v1",
         temperature=0.3, 
-        max_tokens=512,
-        streaming=True
+        top_p= 0.9,
+        presence_penalty=0.0,
+        frequency_penalty= 0.0,
+        max_tokens=768,
+        streaming=True,
+        timeout=15,
+        model_kwargs={
+            "extra_body": {
+                "provider": {
+                    "only": ["novita"] 
+                }
+            }
+        }
     )
 
 
-def get_rewriter_llm():
-    """Khởi tạo LLM riêng cho Query Rewriter qua Groq (llama-3.1-8b-instant)."""
-    api_key = os.getenv("GROQ_API_KEY")
+def get_router_llm():
+    api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
-        raise ValueError("Chưa thiết lập GROQ_API_KEY. Kiểm tra lại file .env đi.")
+        raise ValueError("Chưa thiết lập OPENROUTER_API_KEY. Kiểm tra lại file .env đi.")
 
     return ChatOpenAI(
-        model=REWRITER_MODEL,
-        openai_api_key=api_key,
-        openai_api_base="https://api.groq.com/openai/v1",
-        temperature=0.1,
-        max_tokens=128,
+        model=ROUTER_MODEL,
+        api_key=api_key,
+        base_url="https://openrouter.ai/api/v1",
+        temperature=0,
+        max_tokens=64,
+        timeout=15
     )
 
 
-class CachedRAGPipeline:
+class AgenticRAGPipeline:
     """
-    Pipeline RAG với Semantic Cache + Jina Reranker.
+    Pipeline Agentic RAG với Selective Caching + Intent Router.
     
     Luồng xử lý:
-    1. Query Rewriter (Groq llama-3.1-8b-instant): Viết lại câu hỏi thành standalone query
-    2. Semantic Cache Lookup: Kiểm tra cache với standalone query
-    3. (Cache Miss) Hybrid Retrieval: FAISS + BM25 + RRF
-    4. (Cache Miss) Jina Reranker: Re-rank documents theo relevance score
-    5. (Cache Miss) QA Generation (OpenRouter): LLM sinh câu trả lời
-    6. (Cache Miss) Cache Store: Lưu kết quả vào cache
+    1. Query Rewriter: Viết lại câu hỏi thành standalone query
+    2. Intent Router: Phân loại KNOWLEDGE hoặc TOOL
+    3a. KNOWLEDGE path:
+        - Semantic Cache Lookup
+        - (Cache Miss) Hybrid Retrieval: FAISS + BM25 + RRF
+        - (Cache Miss) Jina Reranker
+        - (Cache Miss) QA Generation
+        - (Cache Miss) Cache Store
+    3b. TOOL path (bypass cache):
+        - lookup_service_price → Supabase
+        - calculate_final_price (nếu lưu trú)
+        - LLM format câu trả lời
     """
 
-    def __init__(self, llm, rewriter_llm, hybrid_retriever, reranker, semantic_cache, qa_chain):
+    def __init__(
+        self,
+        llm,
+        hybrid_retriever,
+        reranker,
+        semantic_cache,
+        qa_chain,
+        router,
+        service_db,
+    ):
         self.llm = llm
-        self.rewriter_llm = rewriter_llm
         self.hybrid_retriever = hybrid_retriever
         self.reranker = reranker
         self.semantic_cache = semantic_cache
         self.qa_chain = qa_chain
-        # Chain để rewrite query: contextualize prompt -> Groq LLM -> string
-        self.rewrite_chain = contextualize_q_prompt | self.rewriter_llm
+        self.router = router
+        self.service_db = service_db
+        # Chain để rewrite query (dùng chung llm của RAG)
+        self.rewrite_chain = contextualize_q_prompt | self.llm
+        # Chain để trả lời dựa trên price data
+        self.tool_qa_chain = tool_qa_prompt | self.llm
 
     def _rewrite_query(self, query: str, chat_history: list) -> str:
         """
@@ -76,39 +108,24 @@ class CachedRAGPipeline:
         if not chat_history:
             return query
         
-        response = self.rewrite_chain.invoke({
-            "chat_history": chat_history,
-            "input": query,
-        })
-        return response.content
+        try:
+            response = self.rewrite_chain.invoke({
+                "chat_history": chat_history,
+                "input": query,
+            })
+            rewritten = response.content.strip()
+            if rewritten:
+                return rewritten
+            return query
+        except Exception as e:
+            print(f"[Query Rewriter] Lỗi rewrite query, fallback query gốc: {e}")
+            return query
 
-    def invoke(self, inputs: dict) -> dict:
+    def _handle_knowledge(self, standalone_query: str, chat_history: list, timing: dict) -> dict:
         """
-        Chạy pipeline RAG với semantic cache.
-
-        Args:
-            inputs: {"input": str, "chat_history": list}
-
-        Returns:
-            {
-                "answer": str,
-                "context": List[Document],
-                "from_cache": bool,
-                "standalone_query": str,
-                "similarity": float (nếu from_cache=True),
-                "timing": dict  (thời gian từng bước, đơn vị giây)
-            }
+        Xử lý nhánh KNOWLEDGE: Semantic Cache → Hybrid RAG.
         """
-        query = inputs.get("input", "")
-        chat_history = inputs.get("chat_history", [])
-        timing = {}
-
-        # --- Step 1: Rewrite query ---
-        t0 = time.time()
-        standalone_query = self._rewrite_query(query, chat_history)
-        timing["rewrite_query"] = time.time() - t0
-
-        # --- Step 2: Check semantic cache ---
+        # --- Semantic Cache lookup ---
         t0 = time.time()
         cached = self.semantic_cache.lookup(standalone_query)
         timing["cache_lookup"] = time.time() - t0
@@ -120,20 +137,21 @@ class CachedRAGPipeline:
                 "from_cache": True,
                 "standalone_query": standalone_query,
                 "similarity": cached["similarity"],
+                "intent": "KNOWLEDGE",
                 "timing": timing,
             }
 
-        # --- Step 3: Hybrid Retrieval (cache miss) ---
+        # --- Hybrid Retrieval (cache miss) ---
         t0 = time.time()
         docs = self.hybrid_retriever.invoke(standalone_query)
         timing["hybrid_retrieval"] = time.time() - t0
 
-        # --- Step 4: Jina Reranker ---
+        # --- Jina Reranker ---
         t0 = time.time()
         docs = self.reranker.rerank(standalone_query, docs)
         timing["jina_reranker"] = time.time() - t0
 
-        # --- Step 5: QA Generation ---
+        # --- QA Generation ---
         t0 = time.time()
         answer = self.qa_chain.invoke({
             "context": docs,
@@ -142,7 +160,7 @@ class CachedRAGPipeline:
         })
         timing["qa_generation"] = time.time() - t0
 
-        # --- Step 6: Store vào cache ---
+        # --- Store vào cache ---
         t0 = time.time()
         self.semantic_cache.store(standalone_query, answer, docs)
         timing["cache_store"] = time.time() - t0
@@ -152,14 +170,168 @@ class CachedRAGPipeline:
             "context": docs,
             "from_cache": False,
             "standalone_query": standalone_query,
+            "intent": "KNOWLEDGE",
             "timing": timing,
         }
 
+    def _handle_tool(self, standalone_query: str, chat_history: list, timing: dict) -> dict:
+        """
+        Xử lý nhánh TOOL: Bypass cache → Supabase lookup → calculate_final_price → LLM.
+        """
+        t0 = time.time()
+
+        # --- Trích xuất thông tin từ query ---
+        resolved_types = _resolve_all_service_types(standalone_query)
+        weights = self._extract_all_numbers(standalone_query, ["kg", "kí", "ký", "cân", "ki", "can"])
+        days_list = self._extract_all_numbers(standalone_query, ["ngày", "ngay", "hôm", "đêm", "hom", "dem"])
+
+        # --- Bước 1: Tra giá gốc từ Supabase ---
+        all_price_data = []
+
+        if not resolved_types:
+            # Fallback nếu không tìm thấy dịch vụ nào cụ thể
+            price_data = lookup_service_price(
+                db=self.service_db,
+                query=standalone_query,
+            )
+            all_price_data.append(price_data)
+        else:
+            for i, stype in enumerate(resolved_types):
+                weight = None
+                if len(weights) == 1:
+                    weight = weights[0]
+                elif i < len(weights):
+                    weight = weights[i]
+
+                res = lookup_service_price(
+                    db=self.service_db,
+                    query=standalone_query,
+                    service_type=stype,
+                    weight_kg=weight,
+                )
+
+                # --- Bước 2: Nếu là lưu trú, thử tính giá cuối cùng ---
+                if stype == "luu_tru_24h" and weight:
+                    num_days = days_list[0] if days_list else None
+                    base_info = self.service_db.lookup_price("luu_tru_24h", weight)
+                    
+                    if base_info and num_days:
+                        final_price_result = calculate_final_price(
+                            base_price_per_day=base_info["price"],
+                            num_days=num_days,
+                            service_type="luu_tru_24h",
+                            weight_kg=weight,
+                            db=self.service_db,
+                        )
+                        final_price_info = format_final_price_for_llm(final_price_result)
+                        res = res + "\n\n" + final_price_info
+                
+                all_price_data.append(res)
+        
+        price_data = "\n\n---\n\n".join(all_price_data)
+
+        timing["tool_lookup"] = time.time() - t0
+
+        # --- Bước 3: LLM format câu trả lời ---
+        t0 = time.time()
+        response = self.tool_qa_chain.invoke({
+            "price_data": price_data,
+            "chat_history": chat_history,
+            "input": standalone_query,
+        })
+        answer = response.content
+        timing["qa_generation"] = time.time() - t0
+
+        return {
+            "answer": answer,
+            "context": [],  # Không có retrieved docs cho nhánh TOOL
+            "from_cache": False,
+            "standalone_query": standalone_query,
+            "intent": "TOOL",
+            "price_data": price_data,
+            "timing": timing,
+        }
+
+    def _extract_number(self, text: str, keywords: list) -> int:
+        """
+        Trích xuất số từ text gần các keyword.
+        VD: "chó 10kg lưu trú 7 ngày" → keywords=["ngày"] → 7
+        """
+        import re
+        text_lower = text.lower()
+        
+        for kw in keywords:
+            # Tìm pattern: số + keyword (VD: "10kg", "7 ngày")
+            pattern = rf'(\d+)\s*{kw}'
+            match = re.search(pattern, text_lower)
+            if match:
+                return int(match.group(1))
+        
+        return None
+
+    def _extract_all_numbers(self, text: str, keywords: list) -> list:
+        """
+        Trích xuất tất cả các số từ text gần các keyword.
+        VD: "chó 10kg mèo 5kg" → keywords=["kg"] → [10, 5]
+        """
+        import re
+        text_lower = text.lower()
+        numbers = []
+        
+        kw_pattern = "|".join(keywords)
+        pattern = rf'(\d+)\s*(?:{kw_pattern})'
+        
+        matches = re.finditer(pattern, text_lower)
+        for match in matches:
+            numbers.append(int(match.group(1)))
+            
+        return numbers
+
+    def invoke(self, inputs: dict) -> dict:
+        """
+        Chạy pipeline Agentic RAG với Selective Caching.
+
+        Args:
+            inputs: {"input": str, "chat_history": list}
+
+        Returns:
+            {
+                "answer": str,
+                "context": List[Document],
+                "from_cache": bool,
+                "standalone_query": str,
+                "intent": str ("KNOWLEDGE" | "TOOL"),
+                "timing": dict,
+                "similarity": float (nếu from_cache=True),
+                "price_data": str (nếu intent="TOOL"),
+            }
+        """
+        query = inputs.get("input", "")
+        chat_history = inputs.get("chat_history", [])
+        timing = {}
+
+        # --- Step 1: Rewrite query ---
+        t0 = time.time()
+        standalone_query = self._rewrite_query(query, chat_history)
+        timing["rewrite_query"] = time.time() - t0
+
+        # --- Step 2: Intent Router ---
+        t0 = time.time()
+        intent = self.router.classify(standalone_query)
+        timing["intent_router"] = time.time() - t0
+        print(f"🧭 Intent Router: {standalone_query} → {intent}")
+
+        # --- Step 3: Route theo intent ---
+        if intent == "TOOL":
+            return self._handle_tool(standalone_query, chat_history, timing)
+        else:
+            return self._handle_knowledge(standalone_query, chat_history, timing)
+
 
 def build_conversational_rag_chain():
-    """Khởi tạo toàn bộ pipeline cho Conversational RAG với Semantic Cache + Jina Reranker."""
+    """Khởi tạo toàn bộ pipeline cho Agentic RAG với Selective Caching."""
     llm = get_llm()
-    rewriter_llm = get_rewriter_llm()
+    router_llm = get_router_llm()
     
     # 1. Khởi tạo các retrievers
     dense_retriever = get_faiss_retriever()
@@ -176,7 +348,22 @@ def build_conversational_rag_chain():
     # 4. Khởi tạo QA chain (stuff documents -> LLM)
     qa_chain = create_stuff_documents_chain(llm, qa_prompt)
     
-    # 5. Kết hợp tất cả vào CachedRAGPipeline
-    pipeline = CachedRAGPipeline(llm, rewriter_llm, hybrid_retriever, reranker, semantic_cache, qa_chain)
+    # 5. Khởi tạo Intent Router (dùng router LLM — nhẹ, nhanh)
+    router = IntentRouter(router_llm)
+    
+    # 6. Khởi tạo Service DB + import CSV
+    service_db = ServiceDB()
+    service_db.import_from_csv(CSV_PRICING_PATH)
+    
+    # 7. Kết hợp tất cả vào AgenticRAGPipeline
+    pipeline = AgenticRAGPipeline(
+        llm=llm,
+        hybrid_retriever=hybrid_retriever,
+        reranker=reranker,
+        semantic_cache=semantic_cache,
+        qa_chain=qa_chain,
+        router=router,
+        service_db=service_db,
+    )
     
     return pipeline
