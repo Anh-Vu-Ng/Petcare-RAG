@@ -1,7 +1,7 @@
 from src.rag_chain import build_conversational_rag_chain
 
 def main():
-    print("Đang khởi động hệ thống RAG Hybrid + Semantic Cache. Vui lòng đợi...")
+    print("Đang khởi động hệ thống Agentic RAG. Vui lòng đợi...")
     try:
         pipeline = build_conversational_rag_chain()
     except Exception as e:
@@ -40,24 +40,30 @@ def main():
             answer = response["answer"]
             from_cache = response.get("from_cache", False)
             standalone_query = response.get("standalone_query", "")
+            intent = response.get("intent", "KNOWLEDGE")
+            
+            # Hiển thị intent
+            print(f"  🧭 Intent: {intent}")
             
             # Hiển thị badge cache
             if from_cache:
                 sim = response.get("similarity", 0)
                 print(f"  ⚡ Cache HIT (similarity: {sim:.3f})")
-            else:
+            elif intent == "KNOWLEDGE":
                 print(f"  🔄 Cache MISS — đã lưu vào cache")
+            else:
+                print(f"  🔧 TOOL — bypass cache (dữ liệu từ Supabase)")
             
             if standalone_query and standalone_query != query:
                 print(f"  🔍 Standalone query: {standalone_query}")
             
             print(f"\n🤖 AI: {answer}")
             
-            # Cập nhật lịch sử (Dùng tuple theo chuẩn của LangChain)
+            # Cập nhật lịch sử
             chat_history.append(("human", query))
             chat_history.append(("ai", answer))
             
-            # Giữ lại K=5 cặp hội thoại gần nhất (10 phần tử)
+            # Giữ lại K=5 cặp hội thoại gần nhất
             if len(chat_history) > 10:
                 chat_history = chat_history[-10:]
                 
