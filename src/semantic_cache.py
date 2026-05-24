@@ -14,7 +14,7 @@ from typing import Optional, Dict, List, Any
 
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
-
+from langchain_core.embeddings import Embeddings
 from src.config import CACHE_SIMILARITY_THRESHOLD, CACHE_INDEX_PATH, CACHE_MAX_SIZE
 
 
@@ -32,7 +32,23 @@ class SemanticCache:
         index_path: str = CACHE_INDEX_PATH,
         max_size: int = CACHE_MAX_SIZE,
     ):
-        self.embeddings = embeddings
+        # Đồng nhất task embedding cho cache để tránh lệch phân phối giữa query và passage
+        class CacheEmbeddings(Embeddings):
+            def __init__(self, base_embeddings):
+                self.base_embeddings = base_embeddings
+                
+            def embed_documents(self, texts: List[str]) -> List[List[float]]:
+                if hasattr(self.base_embeddings, "_call_api"):
+                    return self.base_embeddings._call_api(texts, task="text-matching")
+                return self.base_embeddings.embed_documents(texts)
+                
+            def embed_query(self, text: str) -> List[float]:
+                if hasattr(self.base_embeddings, "_call_api"):
+                    result = self.base_embeddings._call_api([text], task="text-matching")
+                    return result[0]
+                return self.base_embeddings.embed_query(text)
+
+        self.embeddings = CacheEmbeddings(embeddings)
         self.threshold = threshold
         self.index_path = index_path
         self.max_size = max_size
