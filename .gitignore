@@ -8,5 +8,8 @@ wheels/
 .env
 *.pkl
 *.faiss
+*.csv
+*.db
+
 # Virtual environments
 .venv

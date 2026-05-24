@@ -3,10 +3,7 @@ langchain-community
 langchain-openai
 langchain-core
 langchain-openrouter
-langchain-huggingface
-sentence-transformers
 PyMuPDF
-langgraph
 openai
 faiss-cpu
 pydantic
@@ -15,5 +12,4 @@ beautifulsoup4
 requests
 streamlit
 rank-bm25
-lxml
-torch
+torchvision
