@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: petcare-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      # Ánh xạ thư mục data ở host vào container để lưu trữ lâu dài FAISS index và cache
+      - ./data:/app/data
+    env_file:
+      - .env
+    environment:
+      - PYTHONIOENCODING=utf-8
+    restart: always

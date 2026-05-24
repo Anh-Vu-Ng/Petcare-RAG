@@ -156,97 +156,61 @@ def format_final_price_for_llm(price_result: Dict[str, Any]) -> str:
 
     return "\n".join(lines)
 
+keyword_map = {
+    "luu_tru_24h": [
+        "lưu trú", "gửi", "ở lại", "nội trú", "boarding", "lưu trú 24h", "hotel",
+        "lưu trữ", "khách sạn", "pet hotel", "gửi chó", "gửi mèo", "ở nhờ", "ở tạm",
+        "đi vắng", "vắng nhà", "chủ đi vắng", "chủ vắng nhà", "đi chơi", "đi du lịch", "công tác",
+        "luu tru", "gui", "o lai", "noi tru", "luu tru 24h", "khach san", "di vang", "vang nha", "chu di vang", "chu vang nha", "o tam",
+    ],
+    "tam": [
+        "tắm", "tắm rửa", "bath", "spa",
+        "tam",
+    ],
+    "cao_long": [
+        "cạo lông", "cạo", "cắt lông", "grooming", "trim",
+        "cao long", "cat long",
+    ],
+    "cat_mai_mong": [
+        "cắt móng", "mài móng", "móng", "nail",
+        "cat mong", "mai mong", "mong",
+    ],
+    "ve_sinh_tai": [
+        "vệ sinh tai", "tai", "ear",
+        "ve sinh tai",
+    ],
+    "nan_tuyen_hoi": [
+        "nặn tuyến hôi", "tuyến hôi", "tuyến", "gland",
+        "nan tuyen hoi", "tuyen hoi", "tuyen",
+    ],
+}
 
 def _resolve_service_type(query: str) -> Optional[str]:
     """
     Map query text sang service_type dựa trên keywords.
-
     Args:
         query: Query text từ user.
-
     Returns:
         service_type string hoặc None.
     """
     query_lower = query.lower()
-
-    keyword_map = {
-        "luu_tru_24h": [
-            "lưu trú", "gửi", "ở lại", "nội trú", "boarding", "lưu trú 24h", "hotel",
-            "lưu trữ", "khách sạn", "pet hotel", "gửi chó", "gửi mèo", "ở nhờ", "ở tạm", # synonyms & LLM rewrites
-            "đi vắng", "vắng nhà", "chủ đi vắng", "chủ vắng nhà", "đi chơi", "đi du lịch", "công tác",
-            "luu tru", "gui", "o lai", "noi tru", "luu tru 24h", "khach san", "di vang", "vang nha", "chu di vang", "chu vang nha", "o tam", # không dấu
-        ],
-        "tam": [
-            "tắm", "tắm rửa", "bath", "spa",
-            "tam",  # không dấu
-        ],
-        "cao_long": [
-            "cạo lông", "cạo", "cắt lông", "grooming", "trim",
-            "cao long", "cat long",  # không dấu
-        ],
-        "cat_mai_mong": [
-            "cắt móng", "mài móng", "móng", "nail",
-            "cat mong", "mai mong", "mong",  # không dấu
-        ],
-        "ve_sinh_tai": [
-            "vệ sinh tai", "tai", "ear",
-            "ve sinh tai",  # không dấu
-        ],
-        "nan_tuyen_hoi": [
-            "nặn tuyến hôi", "tuyến hôi", "tuyến", "gland",
-            "nan tuyen hoi", "tuyen hoi", "tuyen",  # không dấu
-        ],
-    }
-
     for stype, keywords in keyword_map.items():
         for kw in keywords:
             if kw in query_lower:
                 return stype
-
     return None
 
 
 def _resolve_all_service_types(query: str) -> List[str]:
     """
     Tìm tất cả các loại dịch vụ có trong query.
-
     Args:
         query: Query text từ user.
-
     Returns:
         List chứa các service_type string.
     """
     query_lower = query.lower()
     found_types = []
-
-    keyword_map = {
-        "luu_tru_24h": [
-            "lưu trú", "gửi", "ở lại", "nội trú", "boarding", "lưu trú 24h", "hotel",
-            "lưu trữ", "khách sạn", "pet hotel", "gửi chó", "gửi mèo", "ở nhờ", "ở tạm",
-            "đi vắng", "vắng nhà", "chủ đi vắng", "chủ vắng nhà", "đi chơi", "đi du lịch", "công tác",
-            "luu tru", "gui", "o lai", "noi tru", "luu tru 24h", "khach san", "di vang", "vang nha", "chu di vang", "chu vang nha", "o tam",
-        ],
-        "tam": [
-            "tắm", "tắm rửa", "bath", "spa",
-            "tam",
-        ],
-        "cao_long": [
-            "cạo lông", "cạo", "cắt lông", "grooming", "trim",
-            "cao long", "cat long",
-        ],
-        "cat_mai_mong": [
-            "cắt móng", "mài móng", "móng", "nail",
-            "cat mong", "mai mong", "mong",
-        ],
-        "ve_sinh_tai": [
-            "vệ sinh tai", "tai", "ear",
-            "ve sinh tai",
-        ],
-        "nan_tuyen_hoi": [
-            "nặn tuyến hôi", "tuyến hôi", "tuyến", "gland",
-            "nan tuyen hoi", "tuyen hoi", "tuyen",
-        ],
-    }
 
     for stype, keywords in keyword_map.items():
         for kw in keywords:
