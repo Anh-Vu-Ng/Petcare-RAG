@@ -1,9 +1,8 @@
-from src.config import BM25_INDEX_PATH
-from src.config import TOP_K_SPARSE
+from src.config import BM25_INDEX_PATH, TOP_K_SPARSE, CHILD_DOCS_PATH, PARENT_DOCS_PATH
 import os
 import pickle
 from langchain_community.retrievers import BM25Retriever
-from src.text_processor import splits_documents
+from src.text_processor import split_parent_child
 from src.data_loader import load_all_docs
 
 def create_and_save_bm25(documents, save_path): 
@@ -27,11 +26,27 @@ def get_bm25_retriever():
         return load_bm25(BM25_INDEX_PATH)
     
     print("Can't find BM25 file... Creating new BM25 index")
-    docs = load_all_docs()
-
-    if not docs:
-        raise ValueError("No docs found")
     
-    chunks = splits_documents(docs)
+    # Sử dụng chung các child chunks từ FAISS để đảm bảo đồng bộ parent_id
+    if os.path.exists(CHILD_DOCS_PATH):
+        print(f"Loading child documents from {CHILD_DOCS_PATH}...")
+        with open(CHILD_DOCS_PATH, "rb") as f:
+            chunks = pickle.load(f)
+    else:
+        print("Child docs pickle not found. Re-splitting all docs...")
+        docs = load_all_docs()
+
+        if not docs:
+            raise ValueError("No docs found")
+        
+        parent_docs, chunks = split_parent_child(docs)
+        
+        # Lưu lại cả hai để FAISS có thể dùng chung
+        os.makedirs(os.path.dirname(PARENT_DOCS_PATH), exist_ok=True)
+        with open(PARENT_DOCS_PATH, "wb") as f:
+            pickle.dump(parent_docs, f)
+        with open(CHILD_DOCS_PATH, "wb") as f:
+            pickle.dump(chunks, f)
+            
     return create_and_save_bm25(chunks, BM25_INDEX_PATH)
 

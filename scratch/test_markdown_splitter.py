@@ -11,7 +11,7 @@ if hasattr(sys.stderr, 'reconfigure'):
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from langchain_core.documents import Document
-from src.text_processor import splits_documents
+from src.text_processor import split_parent_child
 
 # Mock URL Document formatted as Markdown
 mock_url_doc = Document(
@@ -42,19 +42,26 @@ mock_pdf_doc = Document(
 )
 
 def main():
-    print("--- Running splits_documents test ---")
+    print("--- Running split_parent_child test ---")
     documents = [mock_url_doc, mock_pdf_doc]
-    chunks = splits_documents(documents)
+    parents, children = split_parent_child(documents)
     
-    print(f"\nSuccessfully split into {len(chunks)} chunks:")
-    for i, chunk in enumerate(chunks):
-        print(f"\n[Chunk {i+1}] Source: {chunk.metadata.get('source')}")
-        # Filter and print headers in metadata
-        headers = {k: v for k, v in chunk.metadata.items() if k.startswith("Header")}
-        if headers:
-            print(f"Headers: {headers}")
-        print("Content:")
-        print(chunk.page_content)
+    print(f"\nSuccessfully split into {len(parents)} parents and {len(children)} children.")
+    
+    print("\n--- SAMPLE PARENTS ---")
+    for parent_id, parent in list(parents.items())[:2]:
+        print(f"Parent ID: {parent_id}")
+        print(f"Source: {parent.metadata.get('source')}")
+        print(f"Content length: {len(parent.page_content)} characters")
+        print(f"Content:\n{parent.page_content}")
+        print("-" * 50)
+        
+    print("\n--- SAMPLE CHILDREN ---")
+    for i, child in enumerate(children[:3]):
+        print(f"Child {i+1} (Parent ID: {child.metadata.get('parent_id')})")
+        print(f"Source: {child.metadata.get('source')}")
+        print(f"Content length: {len(child.page_content)} characters")
+        print(f"Content:\n{child.page_content}")
         print("-" * 50)
 
 if __name__ == "__main__":

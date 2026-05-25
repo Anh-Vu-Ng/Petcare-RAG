@@ -100,6 +100,57 @@ class AgenticRAGPipeline:
         # Chain để trả lời dựa trên price data
         self.tool_qa_chain = tool_qa_prompt | self.llm
 
+        # Load parent documents mapping
+        from src.config import PARENT_DOCS_PATH
+        import pickle
+        if os.path.exists(PARENT_DOCS_PATH):
+            print(f"Loading parent documents mapping from {PARENT_DOCS_PATH}...")
+            with open(PARENT_DOCS_PATH, "rb") as f:
+                self.parent_docs = pickle.load(f)
+        else:
+            print("Warning: parent_docs.pkl not found. Parent expansion will not work.")
+            self.parent_docs = {}
+
+    def _expand_to_parent(self, child_docs: list) -> list:
+        """
+        Map child documents to their parent documents using parent_id.
+        Deduplicates parent documents if multiple children point to the same parent.
+        """
+        if not self.parent_docs:
+            print("Warning: self.parent_docs is empty. Returning original child documents.")
+            return child_docs
+            
+        parent_docs_list = []
+        seen_parent_ids = set()
+        
+        for doc in child_docs:
+            parent_id = doc.metadata.get("parent_id")
+            if parent_id and parent_id in self.parent_docs:
+                if parent_id not in seen_parent_ids:
+                    seen_parent_ids.add(parent_id)
+                    
+                    # Tạo bản sao của parent document để tránh chỉnh sửa tham chiếu gốc,
+                    # đồng thời copy lại các metadata động từ child document (như điểm số rerank, rrf)
+                    from langchain_core.documents import Document
+                    orig_parent = self.parent_docs[parent_id]
+                    parent_meta = orig_parent.metadata.copy()
+                    
+                    if "rerank_score" in doc.metadata:
+                        parent_meta["rerank_score"] = doc.metadata["rerank_score"]
+                    if "rrf_score" in doc.metadata:
+                        parent_meta["rrf_score"] = doc.metadata["rrf_score"]
+                        
+                    parent_doc = Document(
+                        page_content=orig_parent.page_content,
+                        metadata=parent_meta
+                    )
+                    parent_docs_list.append(parent_doc)
+            else:
+                # Nếu không tìm thấy parent_id, giữ lại child doc làm phương án dự phòng
+                parent_docs_list.append(doc)
+                
+        return parent_docs_list
+
     def _rewrite_query(self, query: str, chat_history: list) -> str:
         """
         Viết lại câu hỏi thành standalone query dựa trên lịch sử hội thoại.
@@ -150,6 +201,9 @@ class AgenticRAGPipeline:
         t0 = time.time()
         docs = self.reranker.rerank(standalone_query, docs)
         timing["jina_reranker"] = time.time() - t0
+
+        # --- Parent Document Expansion ---
+        docs = self._expand_to_parent(docs)
 
         # --- QA Generation ---
         t0 = time.time()
