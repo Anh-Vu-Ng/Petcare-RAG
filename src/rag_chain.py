@@ -27,13 +27,13 @@ def get_llm():
         model=LLM_MODEL,
         api_key=api_key,
         base_url="https://openrouter.ai/api/v1",
-        temperature=0.3, 
-        top_p= 0.9,
+        temperature=0, 
+        top_p= 0.7,
         presence_penalty=0.0,
         frequency_penalty= 0.0,
         max_tokens=768,
         streaming=True,
-        timeout=15,
+        timeout=30,
         model_kwargs={
             "extra_body": {
                 "provider": {
@@ -306,7 +306,7 @@ class AgenticRAGPipeline:
             "timing": timing,
         }
 
-    def _extract_number(self, text: str, keywords: list) -> int:
+    def _extract_number(self, text: str, keywords: list) -> float | None:
         """
         Trích xuất số từ text gần các keyword.
         VD: "chó 10kg lưu trú 7 ngày" → keywords=["ngày"] → 7
@@ -316,10 +316,16 @@ class AgenticRAGPipeline:
         
         for kw in keywords:
             # Tìm pattern: số + keyword (VD: "10kg", "7 ngày")
-            pattern = rf'(\d+)\s*{kw}'
+            pattern = rf'(\d+(?:[.,]\d+)?)\s*{kw}'
             match = re.search(pattern, text_lower)
             if match:
-                return int(match.group(1))
+                num_str = match.group(1).replace(",", ".")
+                try:
+                    if "." in num_str:
+                        return float(num_str)
+                    return int(num_str)
+                except ValueError:
+                    pass
         
         return None
 
@@ -333,11 +339,18 @@ class AgenticRAGPipeline:
         numbers = []
         
         kw_pattern = "|".join(keywords)
-        pattern = rf'(\d+)\s*(?:{kw_pattern})'
+        pattern = rf'(\d+(?:[.,]\d+)?)\s*(?:{kw_pattern})'
         
         matches = re.finditer(pattern, text_lower)
         for match in matches:
-            numbers.append(int(match.group(1)))
+            num_str = match.group(1).replace(",", ".")
+            try:
+                if "." in num_str:
+                    numbers.append(float(num_str))
+                else:
+                    numbers.append(int(num_str))
+            except ValueError:
+                pass
             
         return numbers
 

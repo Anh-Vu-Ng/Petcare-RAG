@@ -2,6 +2,68 @@ from typing import Dict, Any, Optional, List
 from src.service_db import ServiceDB, SERVICE_NAME_MAP
 
 
+def _lookup_service_price_with_range(
+    db: ServiceDB,
+    service_type: str,
+    weight_kg: float,
+) -> Optional[str]:
+    """
+    Tra cứu bảng giá dịch vụ Petcare theo cân nặng với logic trả về khoảng giá
+    nếu cân nặng rơi vào giữa 2 khoảng trong DB.
+    """
+    prices = db.get_price_table_for_service(service_type)
+    if not prices:
+        return None
+        
+    # Tìm exact match
+    exact_match = None
+    for p in prices:
+        if abs(p['weight_kg'] - weight_kg) < 1e-5:
+            exact_match = p
+            break
+            
+    if exact_match:
+        return db.format_for_llm([exact_match])
+        
+    # Tìm lower và upper bound
+    lower_bound = None
+    upper_bound = None
+    for p in prices:
+        w = p['weight_kg']
+        if w < weight_kg:
+            if lower_bound is None or w > lower_bound['weight_kg']:
+                lower_bound = p
+        elif w > weight_kg:
+            if upper_bound is None or w < upper_bound['weight_kg']:
+                upper_bound = p
+                
+    # Nếu cả 2 đều tồn tại -> trả về khoảng giá
+    if lower_bound and upper_bound:
+        service_name = SERVICE_NAME_MAP.get(service_type, service_type)
+        price_lower = f"{lower_bound['price']:,}đ".replace(",", ".")
+        price_upper = f"{upper_bound['price']:,}đ".replace(",", ".")
+        
+        lines = [
+            "📋 BẢNG GIÁ DỊCH VỤ PETCARE:",
+            "",
+            f"🔹 {service_name}:",
+            f"   • {lower_bound['weight_kg']}kg - {upper_bound['weight_kg']}kg: {price_lower} - {price_upper}",
+            "",
+            "📌 Lưu ý: Giá lưu trú đã bao gồm dịch vụ ăn uống."
+        ]
+        return "\n".join(lines)
+        
+    # Nếu chỉ có upper_bound (ví dụ: nhỏ hơn mức tối thiểu)
+    elif upper_bound:
+        return db.format_for_llm([upper_bound])
+        
+    # Nếu chỉ có lower_bound (ví dụ: lớn hơn mức tối đa)
+    elif lower_bound:
+        return db.format_for_llm([lower_bound])
+        
+    return None
+
+
 def lookup_service_price(
     db: ServiceDB,
     query: str,
@@ -20,11 +82,11 @@ def lookup_service_price(
     Returns:
         Bảng giá format text cho LLM.
     """
-    # Nếu có service_type + weight_kg cụ thể → lookup chính xác
-    if service_type and weight_kg:
-        result = db.lookup_price(service_type, weight_kg)
-        if result:
-            return db.format_for_llm([result])
+    # Nếu có service_type + weight_kg cụ thể → lookup
+    if service_type and weight_kg is not None:
+        res = _lookup_service_price_with_range(db, service_type, weight_kg)
+        if res:
+            return res
     
     # Nếu có service_type nhưng không có weight → lấy toàn bộ bảng giá dịch vụ đó
     if service_type:
@@ -37,10 +99,10 @@ def lookup_service_price(
         # Thử map query text sang service_type
         resolved_type = _resolve_service_type(query)
         if resolved_type:
-            if weight_kg:
-                result = db.lookup_price(resolved_type, weight_kg)
-                if result:
-                    return db.format_for_llm([result])
+            if weight_kg is not None:
+                res = _lookup_service_price_with_range(db, resolved_type, weight_kg)
+                if res:
+                    return res
             else:
                 results = db.get_price_table_for_service(resolved_type)
                 if results:
