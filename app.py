@@ -249,7 +249,13 @@ if prompt := st.chat_input("Trò chuyện với Petcare ở đây nhen!"):
                     context_docs.append(doc_data)
 
                 # Intent + Cache badge
-                intent_badge = "🧭 **KNOWLEDGE**" if intent == "KNOWLEDGE" else "🔧 **TOOL**"
+                if intent == "KNOWLEDGE":
+                    intent_badge = "🧭 **KNOWLEDGE**"
+                elif intent == "GREETING":
+                    intent_badge = "👋 **GREETING**"
+                else:
+                    intent_badge = "🔧 **TOOL**"
+                    
                 cache_badge = " · ⚡ **Cache Hit**" if from_cache else ""
                 similarity_info = ""
                 if from_cache and "similarity" in response:
