@@ -145,7 +145,12 @@ for msg in st.session_state.messages:
         if msg["role"] == "assistant" and "metadata" in msg:
             meta = msg["metadata"]
             # Intent + Cache badge
-            intent_badge = "🧭 **KNOWLEDGE**" if meta.get("intent") == "KNOWLEDGE" else "🔧 **TOOL**"
+            if meta.get("intent") == "KNOWLEDGE":
+                intent_badge = "🧭 **KNOWLEDGE**"
+            elif meta.get("intent") == "GREETING":
+                intent_badge = "👋 **GREETING**"
+            else:
+                intent_badge = "🔧 **TOOL**"
             cache_badge = "⚡ **Cache Hit**" if meta.get("from_cache") else ""
             
             st.caption(

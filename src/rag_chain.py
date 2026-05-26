@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI 
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 
-from src.config import LLM_MODEL, ROUTER_MODEL, CSV_PRICING_PATH
-from src.prompts import contextualize_q_prompt, qa_prompt, tool_qa_prompt
+from src.config import LLM_MODEL, ROUTER_MODEL, GREETINGS_MODEL, CSV_PRICING_PATH
+from src.prompts import contextualize_q_prompt, qa_prompt, tool_qa_prompt, greetings_prompt
 from src.bm25_retriever import get_bm25_retriever
 from src.hybrid_retriever import HybridRetriever
 from src.vector_store import get_faiss_retriever, get_embeddings
@@ -54,9 +54,54 @@ def get_router_llm():
         api_key=api_key,
         base_url="https://openrouter.ai/api/v1",
         temperature=0,
+        top_p = 0.8,
         max_tokens=64,
         timeout=15
     )
+
+
+def get_greetings_llm():
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    if not api_key:
+        raise ValueError("Chưa thiết lập OPENROUTER_API_KEY. Kiểm tra lại file .env đi.")
+        
+    return ChatOpenAI(
+        model=GREETINGS_MODEL,
+        api_key=api_key,
+        base_url="https://openrouter.ai/api/v1",
+        temperature=0.3, 
+        top_p = 0.7,
+        max_tokens=256,
+        timeout=15
+    )
+
+
+import re
+
+def _is_greeting_fast(query: str) -> bool:
+    """
+    Kiểm tra nhanh xem câu truy vấn có phải là lời chào xã giao bằng regex hay không.
+    """
+    cleaned = query.strip().lower()
+    cleaned = re.sub(r'^[^\w\s]+|[^\w\s]+$', '', cleaned).strip()
+    
+    greeting_pattern = (
+        r"^(xin\s+)?chào(\s+(bạn|shop|ad|admin|assistant|ad_min|mọi\s+người|cả\s+nhà))?$|"
+        r"^(hi|hello|helo|halo|hế\s+lô|hey|alo|ê|lô)(\s+(bạn|shop|ad|admin|assistant))?$"
+    )
+    return bool(re.match(greeting_pattern, cleaned))
+
+
+GREETING_RESPONSE = (
+    "Petcare Assistant chào bạn! 😊 Chúng mình có các dịch vụ Grooming và Boarding đã được niêm yết giá cụ thể:\n"
+    "+ Cạo lông\n"
+    "+ Cắt mài móng\n"
+    "+ Lưu trú 24h(gửi thú cưng)\n"
+    "+ Nặn tuyến hôi\n"
+    "+ Tắm\n"
+    "+ Vệ sinh tai\n"
+    "\nBạn muốn biết giá của dịch vụ nào không? Hãy cho mình biết nhé! 🌟"
+)
 
 
 class AgenticRAGPipeline:
@@ -87,6 +132,7 @@ class AgenticRAGPipeline:
         qa_chain,
         router,
         service_db,
+        greetings_llm,
     ):
         self.llm = llm
         self.hybrid_retriever = hybrid_retriever
@@ -99,6 +145,8 @@ class AgenticRAGPipeline:
         self.rewrite_chain = contextualize_q_prompt | self.llm
         # Chain để trả lời dựa trên price data
         self.tool_qa_chain = tool_qa_prompt | self.llm
+        # Chain để trả lời greetings (dùng gemma-3-4b-it)
+        self.greetings_chain = greetings_prompt | greetings_llm
 
         # Load parent documents mapping
         from src.config import PARENT_DOCS_PATH
@@ -354,6 +402,27 @@ class AgenticRAGPipeline:
             
         return numbers
 
+    def _handle_greeting(self, standalone_query: str, chat_history: list, timing: dict) -> dict:
+        """
+        Xử lý nhánh GREETING (LLM fallback): dùng greetings model để sinh câu trả lời.
+        """
+        t0 = time.time()
+        response = self.greetings_chain.invoke({
+            "chat_history": chat_history,
+            "input": standalone_query
+        })
+        answer = response.content
+        timing["greetings_generation"] = time.time() - t0
+
+        return {
+            "answer": answer,
+            "context": [],
+            "from_cache": False,
+            "standalone_query": standalone_query,
+            "intent": "GREETING",
+            "timing": timing
+        }
+
     def invoke(self, inputs: dict) -> dict:
         """
         Chạy pipeline Agentic RAG với Selective Caching.
@@ -367,7 +436,7 @@ class AgenticRAGPipeline:
                 "context": List[Document],
                 "from_cache": bool,
                 "standalone_query": str,
-                "intent": str ("KNOWLEDGE" | "TOOL"),
+                "intent": str ("KNOWLEDGE" | "TOOL" | "GREETING"),
                 "timing": dict,
                 "similarity": float (nếu from_cache=True),
                 "price_data": str (nếu intent="TOOL"),
@@ -376,6 +445,17 @@ class AgenticRAGPipeline:
         query = inputs.get("input", "")
         chat_history = inputs.get("chat_history", [])
         timing = {}
+
+        # --- Fast-path Regex Check ---
+        if _is_greeting_fast(query):
+            return {
+                "answer": GREETING_RESPONSE,
+                "context": [],
+                "from_cache": False,
+                "standalone_query": query,
+                "intent": "GREETING",
+                "timing": {"fast_regex_match": 0.0}
+            }
 
         # --- Step 1: Rewrite query ---
         t0 = time.time()
@@ -389,7 +469,9 @@ class AgenticRAGPipeline:
         print(f"🧭 Intent Router: {standalone_query} → {intent}")
 
         # --- Step 3: Route theo intent ---
-        if intent == "TOOL":
+        if intent == "GREETING":
+            return self._handle_greeting(standalone_query, chat_history, timing)
+        elif intent == "TOOL":
             return self._handle_tool(standalone_query, chat_history, timing)
         else:
             return self._handle_knowledge(standalone_query, chat_history, timing)
@@ -399,6 +481,7 @@ def build_conversational_rag_chain():
     """Khởi tạo toàn bộ pipeline cho Agentic RAG với Selective Caching."""
     llm = get_llm()
     router_llm = get_router_llm()
+    greetings_llm = get_greetings_llm()
     
     # 1. Khởi tạo các retrievers
     dense_retriever = get_faiss_retriever()
@@ -431,6 +514,7 @@ def build_conversational_rag_chain():
         qa_chain=qa_chain,
         router=router,
         service_db=service_db,
+        greetings_llm=greetings_llm,
     )
     
     return pipeline
