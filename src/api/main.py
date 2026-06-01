@@ -3,6 +3,7 @@ import sys
 import time
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, status
+from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Optional
@@ -76,6 +77,11 @@ class ChatResponse(BaseModel):
     timing: Optional[Dict[str, Any]] = Field(None, description="Chi tiết thời gian chạy của từng thành phần pipeline")
 
 # --- Endpoints ---
+@app.get("/", include_in_schema=False)
+def index():
+    """Redirect root path to API documentation."""
+    return RedirectResponse(url="/docs")
+
 @app.get("/api/health", status_code=status.HTTP_200_OK)
 def health_check():
     """Kiểm tra tình trạng hoạt động của API và kết nối Database."""
