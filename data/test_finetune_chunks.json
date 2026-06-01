@@ -1,0 +1,302 @@
+[
+    {
+        "question": "Ôi, chó của tôi tự dưng rụng lông nhiều quá! Tôi không biết phải làm sao nữa. Có phải là do tắm sai cách không? Lông nó có bị ảnh hưởng gì không?",
+        "ground_truth": "Chó bị rụng lông có thể do tắm sai cách hoặc sử dụng hóa chất mạnh. Bạn nên theo dõi kỹ mức độ rụng lông, hành vi của chó và bề mặt da. Nếu tình trạng kéo dài hoặc kèm theo ngứa, đỏ da, cần can thiệp sớm. Việc chăm sóc đúng cách sẽ giúp lông mọc lại nhanh hơn.",
+        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+    },
+    {
+        "question": "Chó tôi bắt đầu ngứa ngáy và có mùi hôi, mà lông thì rụng liên tục. Tôi rất lo lắng, không biết có cách nào để cải thiện tình hình không?",
+        "ground_truth": "Bạn nên kiểm tra vùng da bị rụng mỗi ngày để xem có dấu hiệu bất thường như ửng đỏ hay vết xước. Điều chỉnh chế độ dinh dưỡng cho chó bằng cách bổ sung thực phẩm giàu omega-3, omega-6 và vitamin theo tư vấn thú y để giúp da khỏe và lông chắc.",
+        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+    },
+    {
+        "question": "Chó của tôi có lông dài và tôi đang lo lắng vì nó khá bẩn, tôi có thể cho nó đi tắm và chải lông không?",
+        "ground_truth": "Có, bạn có thể đưa chó của mình đi chăm sóc tắm chải lông dài. Dịch vụ này sẽ giúp làm sạch và chải lông cho thú cưng của bạn một cách hiệu quả.",
+        "source": "data/rag_docs.pdf"
+    },
+    {
+        "question": "Tôi muốn cắt móng và lông cho mèo nhưng không biết có dịch vụ nào không, bạn có thể giúp tôi không?",
+        "ground_truth": "Có, chúng tôi cung cấp dịch vụ chăm sóc cắt móng và cắt lông theo yêu cầu. Bạn có thể đưa mèo của mình đến để được chăm sóc một cách tốt nhất.",
+        "source": "data/rag_docs.pdf"
+    },
+    {
+        "question": "Tôi thấy chú chó nhà tôi ăn uống không ngon, nó cứ ói ra hết thức ăn, mà tôi không biết làm sao để giúp nó. Có phải nó bị bệnh gì không?",
+        "ground_truth": "Chó có thể đang gặp vấn đề về tiêu hóa, có thể do dị ứng thực phẩm, chế độ ăn uống không phù hợp hoặc yếu tố stress. Quan trọng là đưa chó đến bác sĩ thú y để được chẩn đoán chính xác và điều trị thích hợp.",
+        "source": "https://petcare.vn/benh-viem-ruot-o-cho/"
+    },
+    {
+        "question": "Chó nhà tôi bỗng dưng không chịu ăn, thỉnh thoảng nó còn ói ra nữa, tôi thấy lo lắng quá! Có phải tôi đã cho nó ăn thứ gì không đúng không?",
+        "ground_truth": "Có thể chó đang gặp phải rối loạn tiêu hóa do chế độ ăn uống không phù hợp như ăn thức ăn ôi thiu hoặc thay đổi khẩu phần đột ngột. Tôi khuyên bạn nên đưa chó đến bác sĩ thú y để kiểm tra và điều trị kịp thời.",
+        "source": "https://petcare.vn/benh-viem-ruot-o-cho/"
+    },
+    {
+        "question": "Chó nhà tôi đang đi ngoài rất nhiều, phân lỏng và có vẻ mệt mỏi lắm. Tôi không biết có phải nó bị bệnh không và cần phải làm gì đây?",
+        "ground_truth": "Chó có dấu hiệu tiêu chảy nhiều và suy nhược có thể bị viêm đại tràng. Bạn nên bổ sung nước và điện giải cho chó, có thể cần truyền dịch để cân bằng điện giải. Hãy đưa chó đi khám để được chẩn đoán và điều trị kịp thời.",
+        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+    },
+    {
+        "question": "Chó tôi không ăn uống gì cả, chỉ muốn nằm một chỗ. Tôi lo lắng quá, không biết có phải nó bị đau bụng hay làm sao?",
+        "ground_truth": "Chó không muốn ăn và có biểu hiện mệt mỏi có thể là triệu chứng của viêm đại tràng. Bạn nên điều chỉnh chế độ ăn uống cho chó bằng cách cho nó ăn thức ăn dễ tiêu như cháo loãng hoặc thức ăn ướt, và tránh đồ ăn nhiều dầu mỡ hay đồ sống trong thời gian điều trị.",
+        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+    },
+    {
+        "question": "Trời ơi, chú cún của tôi dạo này cứ đi vệ sinh liên tục, xong còn thấy nó có vẻ yếu đi, ăn uống cũng không được như trước nữa. Có phải nó bị làm sao không?",
+        "ground_truth": "Chó có thể đang gặp vấn đề viêm đại tràng, một tình trạng có thể gây tiêu chảy liên tục, mất nước và suy nhược. Nguy cơ nặng hơn là có thể dẫn đến xuất huyết hoặc nhiễm trùng nếu không được điều trị kịp thời.",
+        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+    },
+    {
+        "question": "Mình thấy chú chó nhà mình bị sụt cân nhanh chóng và có vẻ yếu ớt lắm, không biết đó có phải là dấu hiệu gì nghiêm trọng không?",
+        "ground_truth": "Sụt cân nhanh chóng và yếu ớt có thể là triệu chứng của viêm đại tràng mãn tính. Tình trạng này có thể ảnh hưởng nghiêm trọng đến sức khỏe tổng thể và hệ miễn dịch của chó. Nên đưa chó đi khám càng sớm càng tốt.",
+        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+    },
+    {
+        "question": "Ôi, tôi đang rất lo lắng! Chó con của tôi mới 6-7 tuần tuổi và tôi không biết khi nào thì nên tiêm vắc xin cho nó. Liệu tôi có cần phải làm gì trước khi đưa nó đi tiêm không?",
+        "ground_truth": "Chó con đạt 6–7 tuần tuổi là thời điểm thích hợp để tiêm mũi vắc xin đầu tiên. Trước khi tiêm, cần đảm bảo chó con khỏe mạnh, không bị bệnh và đã được tẩy giun.",
+        "source": "https://petcare.vn/cho-con-bao-nhieu-ngay-chich-ngua/"
+    },
+    {
+        "question": "Tôi nghe nói chó con cần tiêm vắc xin nhiều lần, nhưng tôi không rõ mũi tiếp theo nên tiêm lúc nào. Tôi đã tiêm mũi đầu tiên rồi, vậy giờ tôi phải chờ bao lâu để tiêm mũi thứ hai?",
+        "ground_truth": "Sau mũi đầu tiên khoảng 3–4 tuần, chó con cần tiêm mũi vắc xin thứ 2 để củng cố kháng thể. Thời gian tiêm cần tuân thủ nghiêm ngặt, cách mũi 1 từ 21–28 ngày.",
+        "source": "https://petcare.vn/cho-con-bao-nhieu-ngay-chich-ngua/"
+    },
+    {
+        "question": "Tôi thấy chó của mình có mùi lạ từ da lông, và da có vẻ bị rụng nữa. Liệu có phải nó bị bệnh gì không?",
+        "ground_truth": "Có thể chó của bạn đang gặp vấn đề về da do vi khuẩn hoặc bã nhờn tích tụ lâu ngày. Nếu tình trạng này kéo dài, lông chó sẽ trở nên thưa mỏng, da yếu và dễ nhiễm trùng. Bạn nên theo dõi và tìm hiểu nguyên nhân cụ thể để chăm sóc đúng cách.",
+        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+    },
+    {
+        "question": "Chó của tôi tự dưng rụng lông nhiều, mà tôi không biết là có phải do thời tiết hay là nó bị dị ứng gì không. Tôi phải làm sao bây giờ?",
+        "ground_truth": "Rụng lông ở chó có thể do nhiều nguyên nhân khác nhau, bao gồm thay lông theo mùa hoặc dị ứng với môi trường hay thức ăn. Nếu chó rụng lông kèm theo mẩn ngứa hoặc dấu hiệu khác, bạn nên đưa chó đến bác sĩ thú y để được kiểm tra và chẩn đoán chính xác.",
+        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+    },
+    {
+        "question": "Ôi trời ơi, mèo của tôi tự dưng bụng to lên như trái bóng, tôi không biết phải làm sao nữa. Liệu có chuyện gì nghiêm trọng không?",
+        "ground_truth": "Khi mèo bị phình bụng, điều quan trọng là phải đưa mèo đến bác sĩ thú y ngay lập tức. Bác sĩ sẽ thực hiện các xét nghiệm như siêu âm hoặc X-quang để xác định nguyên nhân và đưa ra phương pháp điều trị hiệu quả.",
+        "source": "https://petcare.vn/meo-bi-phinh-bung/"
+    },
+    {
+        "question": "Tôi thấy mèo của mình không chỉ bụng to mà còn có thể nôn mửa hay mệt mỏi, tôi lo quá! Phải làm gì ngay bây giờ?",
+        "ground_truth": "Bạn nên theo dõi các triệu chứng kèm theo như nôn mửa, tiêu chảy hay mệt mỏi và cung cấp thông tin này cho bác sĩ. Những triệu chứng này có thể giúp xác định nguyên nhân gây phình bụng và mức độ nghiêm trọng của tình trạng.",
+        "source": "https://petcare.vn/meo-bi-phinh-bung/"
+    },
+    {
+        "question": "Chó của tôi gần đây hay nôn mửa, tôi cảm thấy rất lo lắng. Không biết có phải là dấu hiệu của bệnh gì nghiêm trọng không?",
+        "ground_truth": "Tình trạng chó bị nôn mửa có thể là dấu hiệu của nhiều vấn đề sức khỏe khác nhau, từ nhẹ đến nghiêm trọng. Bạn cần quan sát kỹ và đưa thú cưng đến cơ sở thú y uy tín để được thăm khám và chẩn đoán kịp thời.",
+        "source": "https://petcare.vn/cho-bi-non-mua/"
+    },
+    {
+        "question": "Tôi có nên đưa chó đi kiểm tra sức khỏe định kỳ không? Nó có giúp phòng ngừa bệnh không?",
+        "ground_truth": "Đưa chó đến bác sĩ thú y để được thăm khám, tiêm phòng và tư vấn dinh dưỡng phù hợp là rất quan trọng, giúp phòng ngừa các bệnh gây nôn mửa hiệu quả.",
+        "source": "https://petcare.vn/cho-bi-non-mua/"
+    },
+    {
+        "question": "Chả nhẽ mèo mình bị tiêu chảy thì không có gì nghiêm trọng sao? Mình thấy nó cứ đi ngoài nhiều ngày rồi, mà có khi còn nôn nữa. Mình rất lo!",
+        "ground_truth": "Tiêu chảy không phải lúc nào cũng nguy hiểm, nhưng cũng không nên xem nhẹ. Nếu tiêu chảy kéo dài, phân có máu, mèo bỏ ăn, nôn mửa hoặc lừ đừ thì rất có thể đây là dấu hiệu của bệnh lý nghiêm trọng. Cần đưa mèo đến bác sĩ thú y càng sớm càng tốt.",
+        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/"
+    },
+    {
+        "question": "Mèo mình bị tiêu chảy, mà mình không biết có phải là do thức ăn hay không, nó cứ lừ đừ và không ăn gì cả. Liệu có nghiêm trọng không bác sĩ?",
+        "ground_truth": "Nếu mèo bị tiêu chảy kéo dài, lừ đừ và bỏ ăn thì đây có thể là dấu hiệu của bệnh lý nghiêm trọng. Tiêu chảy kéo dài có thể khiến mèo mất nước, rối loạn điện giải, đe dọa tính mạng, đặc biệt ở mèo con.",
+        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/"
+    },
+    {
+        "question": "Ôi, tôi đang rất hoảng loạn vì thú cưng của tôi cần đi nước ngoài mà tôi không biết phải làm gì. Tôi nghe nói phải gắn cái gì đó vào người nó và tiêm phòng, nhưng không biết rõ là như thế nào và có cần làm trước bao lâu?",
+        "ground_truth": "Để chuẩn bị cho chuyến đi, thú cưng cần được gắn microchip, chích ngừa đầy đủ và làm các xét nghiệm cần thiết, như chứng nhận kháng thể dại. Bạn nên chuẩn bị cho thú cưng càng sớm càng tốt, ít nhất 6 tháng trước khi khởi hành.",
+        "source": "data/rag_docs.pdf"
+    },
+    {
+        "question": "Tôi đang rất lo lắng vì không biết có cần kiểm tra gì về sức khỏe của thú cưng trước khi bay không, và liệu tôi có thể đặt dịch vụ với hãng bay ngay trước chuyến đi không?",
+        "ground_truth": "Bạn nên liên hệ với các hãng bay để kiểm tra quy định về sức khỏe của động vật cảnh và đặt trước dịch vụ với hãng bay ít nhất 24 tiếng trước giờ khởi hành của chuyến bay.",
+        "source": "data/rag_docs.pdf"
+    },
+    {
+        "question": "Ôi, mình đang rất lo lắng vì cún cưng của mình sắp phải đi nước ngoài. Mình không biết phải làm gì để chuẩn bị cho nó xuất cảnh. Có cần giấy tờ gì đặc biệt không?",
+        "ground_truth": "Để chuẩn bị cho cún cưng xuất cảnh, bạn cần thực hiện các thủ tục xuất cảnh như tư vấn thủ tục, cấp giấy chứng nhận sức khỏe và hỗ trợ cấp giấy phép xuất cảnh.",
+        "source": "data/rag_docs.pdf"
+    },
+    {
+        "question": "Mình nghe nói phải có giấy chứng nhận sức khỏe cho thú cưng khi đi du lịch nước ngoài. Không biết giấy này có khó xin không và mình có thể làm ở đâu?",
+        "ground_truth": "Giấy chứng nhận sức khỏe cho thú cưng là một trong những thủ tục cần thiết khi xuất cảnh. Bạn có thể xin giấy này thông qua dịch vụ của PetCare.",
+        "source": "data/rag_docs.pdf"
+    },
+    {
+        "question": "Tôi thấy chó của mình rụng lông nhiều quá, mà còn ngứa nữa, có sao không? Nó có bị bệnh gì không?",
+        "ground_truth": "Việc chó bị rụng lông nhiều có thể ảnh hưởng đến sức khỏe tổng thể của thú cưng. Ngoài việc rụng lông, nếu chó còn xuất hiện tình trạng ngứa, khó chịu, và thường xuyên gãi hoặc liếm lên vùng bị rụng lông, thì cần được quan tâm và chăm sóc đúng cách.",
+        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+    },
+    {
+        "question": "Chó của tôi tự dưng rụng lông, rồi da còn có vẻ khô và có vảy nữa, liệu có nghiêm trọng không?",
+        "ground_truth": "Hiện tượng chó bị rụng lông có thể để lộ cả vùng da trống, và nếu da trở nên khô, bong vảy hoặc đổi màu thì đây là dấu hiệu cần được kiểm tra và chăm sóc. Cần theo dõi kỹ tình trạng này để có biện pháp xử lý kịp thời.",
+        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+    },
+    {
+        "question": "Chó của tôi dạo này cứ gãi liên tục, lông rụng nhiều lắm, tôi không biết có phải nó bị bệnh gì không? Tôi rất lo lắng!",
+        "ground_truth": "Chó có thể gặp vấn đề về da và lông do ký sinh trùng hoặc các nguyên nhân khác. Bạn nên theo dõi sức khỏe của chó thường xuyên, và có thể cần tẩy giun định kỳ cũng như chăm sóc da lông hợp lý để ngăn ngừa các vấn đề này.",
+        "source": "https://petcare.vn/ky-sinh-trung-o-cho/"
+    },
+    {
+        "question": "Mình nghe nói ký sinh trùng ở chó rất nguy hiểm, nhưng mình không biết làm thế nào để phòng ngừa cho chó yêu của mình? Tôi rất hoang mang!",
+        "ground_truth": "Để phòng ngừa ký sinh trùng cho chó, bạn nên thực hiện tẩy giun định kỳ, phòng ve rận và giữ cho môi trường sống của chó luôn sạch sẽ. Việc chăm sóc sức khỏe cho thú cưng thường xuyên cũng rất quan trọng để phát hiện sớm các vấn đề.",
+        "source": "https://petcare.vn/ky-sinh-trung-o-cho/"
+    },
+    {
+        "question": "Chó của tôi tự dưng không muốn ăn gì cả, cứ rên rỉ và có vẻ đau bụng, tôi phải làm gì bây giờ?",
+        "ground_truth": "Chó có thể đang gặp vấn đề về tiêu hóa, dẫn đến chán ăn và cảm giác đau bụng. Bạn nên theo dõi tình trạng của chó, nếu triệu chứng kéo dài hoặc kèm theo nôn ói, hãy đưa chó đến bác sĩ thú y để được kiểm tra và chẩn đoán chính xác.",
+        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+    },
+    {
+        "question": "Tôi thấy chó nhà tôi có bụng sôi và thường cong lưng khi tôi chạm vào, có phải chó đang bị bệnh không?",
+        "ground_truth": "Có thể chó đang gặp vấn đề về tiêu hóa, như đầy bụng hoặc viêm đại tràng. Hành động cong lưng và tránh chạm vào bụng là dấu hiệu của sự khó chịu. Bạn nên đưa chó đến bác sĩ thú y để được thăm khám và xác định nguyên nhân cụ thể.",
+        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+    },
+    {
+        "question": "Mèo nhà mình dạo này cứ nằm nhiều, lười biếng không muốn chơi, mà khi di chuyển thì dễ bị mệt mỏi, mình đang rất lo lắng không biết có phải mèo bị bệnh gì không?",
+        "ground_truth": "Biểu hiện mà bạn mô tả có thể liên quan đến nhiều vấn đề sức khỏe, bao gồm bệnh về đường hô hấp hoặc bệnh tim mạch. Việc mèo lười vận động và dễ mệt có thể là dấu hiệu của khó thở hoặc các vấn đề nghiêm trọng khác. Bạn nên đưa mèo đi khám để xác định nguyên nhân và có phương pháp điều trị phù hợp.",
+        "source": "https://petcare.vn/meo-bi-kho-tho/"
+    },
+    {
+        "question": "Mèo mình thỉnh thoảng có biểu hiện rất lo lắng, không thoải mái, có khi còn trốn tránh khi thở không đều, mình không biết có phải mèo đang gặp vấn đề gì không?",
+        "ground_truth": "Những triệu chứng như lo lắng và khó thở có thể do nhiều nguyên nhân khác nhau như bệnh về đường hô hấp, bệnh tim mạch hoặc dị ứng. Mèo có thể phản ứng với các yếu tố môi trường hoặc có thể có vật cản trong đường thở. Để chắc chắn, bạn nên đưa mèo đến bác sĩ thú y để kiểm tra.",
+        "source": "https://petcare.vn/meo-bi-kho-tho/"
+    },
+    {
+        "question": "Ôi, mình thấy chú chó nhà mình tự dưng rụng lông từng mảng tròn, mà còn gãi ngứa liên tục nữa, mình hoang mang quá! Liệu có phải nó bị nấm da không nhỉ?",
+        "ground_truth": "Có thể chú chó của bạn đang bị nấm da, vì dấu hiệu rụng lông hình tròn và gãi nhiều là những triệu chứng điển hình. Bạn nên đưa nó đến bác sĩ thú y để được kiểm tra chính xác.",
+        "source": "https://petcare.vn/petcare-benh-nam-da-o-thu-cung/"
+    },
+    {
+        "question": "Mình cũng bị những vết đỏ hình tròn giống như chó, có khi nào mình bị lây từ nó không?",
+        "ground_truth": "Có khả năng bạn đã bị lây nhiễm từ chú chó của mình. Nấm da có thể lây từ thú cưng sang người, và bạn nên đến bác sĩ để được thăm khám và điều trị kịp thời.",
+        "source": "https://petcare.vn/petcare-benh-nam-da-o-thu-cung/"
+    },
+    {
+        "question": "Tôi thấy chó của mình cứ cọ mông xuống sàn nhà, chắc nó bị gì nghiêm trọng lắm đúng không?",
+        "ground_truth": "Chó có thể đang bị ngứa do giun kim hoặc các loại giun sống gần trực tràng, gây khó chịu cho nó.",
+        "source": "https://petcare.vn/ky-sinh-trung-o-cho/"
+    },
+    {
+        "question": "Mới đây, tôi phát hiện trong phân của chó có thứ gì đó giống như hạt gạo, có phải nó đang bị bệnh gì không?",
+        "ground_truth": "Dấu hiệu này có thể cho thấy chó đang nhiễm sán dây hoặc các loại giun trưởng thành sống trong đường ruột.",
+        "source": "https://petcare.vn/ky-sinh-trung-o-cho/"
+    },
+    {
+        "question": "Ôi, mèo của mình tự dưng đi vệ sinh nhiều quá, phân thì lỏng và có mùi hôi ghê, mình lo quá! Mèo có bị sao không vậy?",
+        "ground_truth": "Tiêu chảy ở mèo có thể là một vấn đề nghiêm trọng nếu kéo dài quá hai ngày. Mèo bị tiêu chảy có thể bị mệt mỏi, chán ăn, và có nguy cơ mất nước, sút cân. Bạn nên đưa mèo đến bác sĩ thú y để được kiểm tra và xác định nguyên nhân.",
+        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/"
+    },
+    {
+        "question": "Mình thấy mèo cứ nôn mửa và không chịu ăn gì cả, có khi nào mèo bị bệnh gì nặng không?",
+        "ground_truth": "Nôn mửa kèm theo tiêu chảy có thể là dấu hiệu cho thấy mèo đang gặp vấn đề tiêu hóa nghiêm trọng. Những triệu chứng như không ăn uống và mệt mỏi cần được chú ý. Nếu tình trạng kéo dài, bạn nên đưa mèo đến bác sĩ thú y để được thăm khám và điều trị kịp thời.",
+        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/"
+    },
+    {
+        "question": "Chó của tôi dạo này cứ đi ngoài nhiều lần trong ngày, mà phân thì có cả máu và cũng có triệu chứng như mót rặn nữa. Tôi cảm thấy lo lắng quá, không biết có phải là bệnh gì nghiêm trọng không?",
+        "ground_truth": "Chó có triệu chứng đi ngoài nhiều lần trong ngày, phân nhầy máu và mót rặn có thể đang mắc viêm đại tràng. Đây là tình trạng lớp niêm mạc đại tràng bị viêm, nếu không điều trị kịp thời có thể dẫn đến biến chứng nguy hiểm và khiến chó mệt mỏi, sút cân.",
+        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+    },
+    {
+        "question": "Gần đây, tôi thấy chó nhà mình có vẻ mệt mỏi và không muốn ăn, có khi nào là do thức ăn không hợp hoặc có vấn đề gì không?",
+        "ground_truth": "Chó có thể bị viêm đại tràng do nhiều nguyên nhân, bao gồm dị ứng thức ăn hoặc căng thẳng kéo dài. Nếu chó mệt mỏi và không muốn ăn, đây có thể là dấu hiệu cho thấy cần đưa chó đi khám để xác định nguyên nhân và điều trị kịp thời.",
+        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+    },
+    {
+        "question": "Tôi thấy mèo nhà mình dạo này hay đi ngoài, không biết có vấn đề gì không? Nó có thể bị bệnh không?",
+        "ground_truth": "Mèo có thể gặp tình trạng tiêu chảy do nhiều nguyên nhân khác nhau. Để phòng ngừa, hãy đảm bảo chế độ ăn uống đúng cách, không thay đổi thức ăn đột ngột và giữ vệ sinh sạch sẽ cho khu vực sinh hoạt của mèo. Nếu tình trạng kéo dài, bạn nên đưa mèo đến bác sĩ thú y để kiểm tra.",
+        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/"
+    },
+    {
+        "question": "Mèo của tôi có vẻ mệt mỏi và ăn uống không được ngon miệng, liệu có cách nào giúp nó không?",
+        "ground_truth": "Để giúp mèo khỏe mạnh và tránh tình trạng tiêu chảy, hãy giữ vệ sinh sạch sẽ, cung cấp thức ăn chất lượng và tẩy giun định kỳ. Nếu tình trạng không cải thiện, bạn nên tham khảo ý kiến bác sĩ thú y để có chẩn đoán chính xác.",
+        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/"
+    },
+    {
+        "question": "Chó của tôi bị nôn mửa và tiêu chảy suốt, tôi lo lắng quá! Tôi không biết có phải nó bị bệnh gì không, làm sao tôi có thể giúp nó?",
+        "ground_truth": "Để giúp chó của bạn, bạn cần bù nước và điện giải cho nó. Nếu triệu chứng nôn mửa và tiêu chảy kéo dài, hãy cho chó uống dung dịch điện giải hoặc đưa nó đến bác sĩ thú y để được truyền dịch nếu cần thiết.",
+        "source": "https://petcare.vn/benh-viem-ruot-o-cho/"
+    },
+    {
+        "question": "Mình thấy chó ăn uống kém, phân thì lỏng lẻo, mình sợ nó bị bệnh nặng lắm. Mình nên làm gì bây giờ?",
+        "ground_truth": "Bạn nên điều chỉnh chế độ ăn cho chó bằng cách cho nó ăn thức ăn dễ tiêu, ít chất béo và tránh thức ăn sống hoặc có chất kích thích. Nếu cần, hãy tìm thức ăn chuyên biệt cho chó bị rối loạn tiêu hóa và theo dõi tình trạng sức khỏe của nó.",
+        "source": "https://petcare.vn/benh-viem-ruot-o-cho/"
+    },
+    {
+        "question": "Mình thấy thú cưng của mình có vẻ không khỏe, nó cứ nằm một chỗ và không ăn uống gì cả. Mình lo quá, không biết có phải nó bị bệnh gì không?",
+        "ground_truth": "Có thể thú cưng của bạn đang gặp vấn đề về sức khỏe và cần được thăm khám. Bác sĩ có thể thực hiện các phương pháp chẩn đoán như siêu âm hoặc chụp X-quang để đánh giá tình trạng sức khỏe và tìm ra nguyên nhân gây ra triệu chứng này.",
+        "source": "data/rag_docs.pdf"
+    },
+    {
+        "question": "Chó của mình gần đây hay nôn mửa và đi ngoài không bình thường, mình thật sự không biết phải làm sao, có phải nó ăn phải cái gì không tốt không?",
+        "ground_truth": "Triệu chứng nôn mửa và tiêu chảy có thể do nhiều nguyên nhân khác nhau, bao gồm cả việc ăn phải thực phẩm không an toàn. Bạn nên đưa thú cưng đến khám bác sĩ thú y để thực hiện các xét nghiệm như xét nghiệm phân hoặc xét nghiệm máu nhằm tìm ra nguyên nhân và có biện pháp điều trị phù hợp.",
+        "source": "data/rag_docs.pdf"
+    },
+    {
+        "question": "Mình thấy chó của mình mấy hôm nay không đi vệ sinh được, nó cứ khó chịu lắm, bụng thì có vẻ hơi to và không muốn ăn gì cả. Có sao không bác sĩ?",
+        "ground_truth": "Chó bị táo bón nếu chỉ xảy ra trong thời gian ngắn thường không quá nguy hiểm, nhưng vẫn gây khó chịu và đau đớn cho chúng. Khi phân tích tụ lâu trong ruột, chó có thể bị chướng bụng, mất cảm giác thèm ăn và mệt mỏi. Nếu không được xử lý kịp thời, phân cứng có thể gây tổn thương niêm mạc ruột và hậu môn. Tình trạng kéo dài còn dễ dẫn đến tắc ruột, nhiễm độc và phải can thiệp thú y. Vì vậy, táo bón ở chó không nên chủ quan và cần theo dõi sát để tránh biến chứng nghiêm trọng.",
+        "source": "https://petcare.vn/cho-bi-tao-bon/"
+    },
+    {
+        "question": "Chó mình dạo này không đi ị, mình lo lắm, có phải nó bị bệnh gì nghiêm trọng không?",
+        "ground_truth": "Khi chó bị táo bón, có thể bắt nguồn từ nhiều vấn đề khác nhau liên quan đến chế độ ăn uống, thói quen sinh hoạt hoặc sức khỏe bên trong. Nếu không xác định đúng nguyên nhân, việc điều trị có thể không hiệu quả và tình trạng táo bón dễ tái phát. Vì vậy, việc hiểu rõ những yếu tố gây ảnh hưởng đến hệ tiêu hóa của chó là rất quan trọng.",
+        "source": "https://petcare.vn/cho-bi-tao-bon/"
+    },
+    {
+        "question": "Ôi không, chó của tôi bị chảy máu ở chân, tôi không biết phải làm sao, có phải nó bị thương nặng không?",
+        "ground_truth": "Chảy máu ở chân có thể do vết rách sâu hoặc tai nạn làm tổn thương mạch máu lớn. Bạn cần phải sơ cứu kịp thời để cầm máu trước khi đưa chó đến bác sĩ thú y.",
+        "source": "https://petcare.vn/cach-cam-mau-nhanh-nhat-cho-cho/"
+    },
+    {
+        "question": "Chó của tôi bị chảy máu ở tai, mà tôi thấy máu chảy mạnh lắm, tôi lo quá! Làm thế nào để xử lý đây?",
+        "ground_truth": "Chảy máu ở tai có thể do bị rách khi đánh nhau hoặc mắc vật sắc. Mạch máu ở tai rất nhiều và sát bề mặt, nên máu chảy mạnh và khó cầm. Bạn nên sơ cứu ngay lập tức và đưa chó đến bác sĩ thú y.",
+        "source": "https://petcare.vn/cach-cam-mau-nhanh-nhat-cho-cho/"
+    },
+    {
+        "question": "Chó của tôi dạo này không chịu ăn uống gì cả, cũng không thích ra ngoài, mà cứ nằm im một chỗ. Có phải nó đang bị làm sao không?",
+        "ground_truth": "Chó có thể đang trải qua triệu chứng chán ăn, sợ ánh sáng và mệt mỏi, có thể do đau nhức và khó chịu. Bạn nên theo dõi xem chó có các biểu hiện khác hay không và đưa nó đến bác sĩ thú y để kiểm tra.",
+        "source": "https://petcare.vn/chan-thuong-nhan-cau-o-cho/"
+    },
+    {
+        "question": "Tôi thấy chó nhà mình sợ ánh sáng, không muốn đi ra ngoài, mà chỉ nằm một chỗ. Có phải là có điều gì nghiêm trọng không?",
+        "ground_truth": "Điều này có thể là dấu hiệu của việc chó đang gặp phải vấn đề đau nhức hoặc khó chịu. Bạn nên đưa chó đi khám để xác định nguyên nhân chính xác và có biện pháp xử lý kịp thời.",
+        "source": "https://petcare.vn/chan-thuong-nhan-cau-o-cho/"
+    },
+    {
+        "question": "Trời ơi, sao mũi của chó nhà mình lại chảy máu vậy? Mình hoảng quá, không biết có phải do thời tiết khô quá hay là nó bị bệnh gì không nữa? Mình phải làm sao bây giờ?",
+        "ground_truth": "Chảy máu mũi ở chó có thể do không khí quá khô hoặc bệnh lý tiềm ẩn liên quan đến máu. Bạn nên giữ cho chó nằm yên, hạn chế vận động để tránh làm máu chảy nhiều hơn. Hãy dùng khăn lạnh hoặc bọc đá chườm nhẹ nhàng lên sống mũi để giúp mạch máu co lại. Tuyệt đối không để chó hắt hơi mạnh hoặc cúi đầu thấp. Sau đó, hãy đưa chó đến cơ sở thú y ngay để được kiểm tra và cấp cứu kịp thời.",
+        "source": "https://petcare.vn/cach-cam-mau-nhanh-nhat-cho-cho/"
+    },
+    {
+        "question": "Mình thấy chó hay bị chảy máu ở mũi, mình không biết có phải do nó chạy nhảy nhiều không? Mình lo quá, mà không biết xử lý như thế nào cho đúng nữa.",
+        "ground_truth": "Nếu chó bị chảy máu ở mũi, bạn cần giữ áp lực ổn định bằng cách dùng gạc hoặc khăn sạch ép chặt để cầm máu tạm thời. Nguyên tắc là không thay băng khi máu còn chảy. Sau khi đã xử lý tạm thời, nhanh chóng đưa chó đến bác sĩ thú y để được điều trị chuyên sâu.",
+        "source": "https://petcare.vn/cach-cam-mau-nhanh-nhat-cho-cho/"
+    },
+    {
+        "question": "Chó của tôi đang nôn liên tục, mà tôi thấy nó còn bỏ ăn và có vẻ mệt mỏi lắm, tôi không biết phải làm sao nữa. Có phải đưa nó đi bác sĩ ngay không?",
+        "ground_truth": "Có, nếu chó nôn liên tục, kèm theo tiêu chảy, bỏ ăn và mệt mỏi, bạn cần đưa chó đến bác sĩ thú y ngay lập tức để xác định nguyên nhân và điều trị kịp thời.",
+        "source": "https://petcare.vn/cho-bi-non-mua/"
+    },
+    {
+        "question": "Tôi thấy chó nôn ra chất nôn có màu đỏ, mà cũng không thấy nó ăn gì cả, tôi rất lo lắng không biết có vấn đề gì không?",
+        "ground_truth": "Nếu chất nôn có máu và chó không ăn, đây là dấu hiệu nghiêm trọng. Bạn nên đưa chó đến bác sĩ thú y để được thăm khám và điều trị kịp thời.",
+        "source": "https://petcare.vn/cho-bi-non-mua/"
+    },
+    {
+        "question": "Ôi không, mình thấy chó nhà mình rụng lông nhiều lắm, mà da thì ngứa ngáy cứ gãi suốt, không biết phải làm sao giờ?",
+        "ground_truth": "Có thể chó nhà bạn bị ký sinh trùng ngoài da như ve, rận, bọ chét hoặc ghẻ. Bạn nên đưa chó đến bác sĩ thú y để kiểm tra và nhận điều trị phù hợp nhằm giảm ngứa và ngăn ngừa nhiễm trùng.",
+        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+    },
+    {
+        "question": "Chó mình bị rụng lông mà da thì bong tróc, có mùi khó chịu nữa, mình hoang mang quá, có phải nó bị bệnh gì không?",
+        "ground_truth": "Triệu chứng của bạn có thể do nhiễm nấm hoặc vi khuẩn trên da. Bạn nên đưa chó đi khám bác sĩ thú y để có chẩn đoán chính xác và điều trị kịp thời.",
+        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+    },
+    {
+        "question": "Ủa, sao mà thấy cái miệng của chó nhà mình có vẻ không ổn nữa? Mình thấy nó có dấu hiệu răng lỏng lắm, mà cũng không biết có phải do tuổi tác không nữa. Có khi nào răng nó bị rụng không?",
+        "ground_truth": "Có, khi chó già đi, sức khỏe răng miệng của chúng có thể suy giảm, bao gồm việc răng bị lỏng hoặc rụng. Điều này thường đi kèm với các vấn đề như viêm nướu, mảng bám và các bệnh lý về răng miệng.",
+        "source": "https://petcare.vn/cho-bi-rung-rang-co-sao-khong/"
+    },
+    {
+        "question": "Mình lo quá, bây giờ chó cưng ăn uống không thấy ngon miệng như trước. Có khi nào do nó thiếu vitamin hay gì đó không? Mình nghe nói thiếu dinh dưỡng có thể làm răng bị rụng.",
+        "ground_truth": "Đúng vậy, chế độ ăn thiếu vitamin và khoáng chất cần thiết cho sự phát triển và duy trì sức khỏe răng miệng có thể dẫn đến tình trạng rụng răng ở chó. Một số chất dinh dưỡng quan trọng đối với sức khỏe răng miệng là canxi, vitamin C và vitamin D.",
+        "source": "https://petcare.vn/cho-bi-rung-rang-co-sao-khong/"
+    }
+]

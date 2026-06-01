@@ -1,0 +1,104 @@
+=== START EXTREME GREETING TESTS ===
+
+--------------------------------------------------
+Câu hỏi 1: dự báo thời tiết hôm nay ở Sài Gòn?
+🧭 Intent Router: dự báo thời tiết hôm nay ở Sài Gòn? → GREETING
+Intent: GREETING
+Bypass Fast Regex: True
+AI response:
+Chào bạn! Mình là Petcare Assistant, trợ lý ảo siêu cute của cửa hàng Petcare đây! 🥰 Bạn muốn hỏi dự báo thời tiết à? Mình không biết thông tin đó bạn ơi. 
+
+Nhưng tại Petcare, chúng mình có rất nhiều dịch vụ tuyệt vời cho bé cưng của bạn đó: Tắm, cắt móng, cạo lông... Bạn muốn tìm hiểu thêm không? 🐾
+
+--------------------------------------------------
+Câu hỏi 2: chào cưng, dạo này làm ăn khấm khá không hả, bot ơi?
+🧭 Intent Router: chào cưng, dạo này làm ăn khấm khá không hả, bot ơi? → GREETING
+Intent: GREETING
+Bypass Fast Regex: True
+AI response:
+Chào bạn! Mình là Petcare Assistant, trợ lý ảo siêu cute của cửa hàng Petcare đóoo! 😊 Mình rất vui được hỗ trợ bạn nè 🥰
+
+--------------------------------------------------
+Câu hỏi 3: hi shop, hôm nay shop thế nào? có bận rộn nhiều ca tắm rửa cạo lông không nà?
+🧭 Intent Router: hi shop, hôm nay shop thế nào? có bận rộn nhiều ca tắm rửa cạo lông không nà? → GREETING
+Intent: GREETING
+Bypass Fast Regex: True
+AI response:
+Chào bạn, mình là Petcare Assistant, trợ lý ảo siêu cute của cửa hàng Petcare đây! 😊 Hiện tại shop đang rất bận rộn với nhiều ca tắm rửa cạo lông nha, nhưng vẫn luôn cố gắng phục vụ tốt nhất cho các bé yêu của bạn đó! 🥰
+
+--------------------------------------------------
+Câu hỏi 4: bạn có phải là con người không hay chỉ là một cỗ máy tự động vậy?
+🧭 Intent Router: bạn có phải là con người không hay chỉ là một cỗ máy tự động vậy? → GREETING
+Intent: GREETING
+Bypass Fast Regex: True
+AI response:
+Mình là Petcare Assistant, một trợ lý ảo siêu cute đây! 🥰 Mình được lập trình để giúp bạn mọi việc liên quan đến thú cưng tại Petcare nha! 😊
+
+--------------------------------------------------
+Câu hỏi 5: shop dùng AI à? hay có nhân viên thật không?
+🧭 Intent Router: shop dùng AI à? hay có nhân viên thật không? → GREETING
+Intent: GREETING
+Bypass Fast Regex: True
+AI response:
+Chào bạn, mình là Petcare Assistant - trợ lý ảo siêu cute của cửa hàng Petcare đây! 😊 Mình là AI nhưng luôn có đội ngũ nhân viên thật nhiệt tình hỗ trợ bạn đó! 🥰 Bạn cần mình giúp gì về thú cưng không?
+
+--------------------------------------------------
+Câu hỏi 6: hello, shop có nhận thú cưng lớn không?
+🧭 Intent Router: hello, shop có nhận thú cưng lớn không? → KNOWLEDGE
+Intent: KNOWLEDGE
+Bypass Fast Regex: True
+AI response:
+Xin chào! Petcare Assistant đây 😊  
+Chúng mình có các dịch vụ Grooming và Boarding phổ biến với giá minh bạch:  
+- Cạo lông  
+- Cắt mài móng  
+- Lưu trú 24h  
+- Nặn tuyến hôi  
+- Tắm  
+- Vệ sinh tai  
+
+Về việc nhận thú cưng lớn, hiện chưa có thông tin chi tiết trong tài liệu. Anh/chị vui lòng liên hệ trực tiếp qua hotline 0918 10 11 10 hoặc Zalo https://zalo.me/3900819148490236884 để được tư vấn cụ thể nhé!
+
+--------------------------------------------------
+Câu hỏi 7: Shop tệ quá, nghỉ bán đi
+🧭 Intent Router: Shop tệ quá, nghỉ bán đi → GREETING
+Intent: GREETING
+Bypass Fast Regex: True
+AI response:
+Ôi không, mình rất tiếc khi bạn có trải nghiệm không tốt như vậy 😔. Bạn có thể chia sẻ thêm về vấn đề bạn gặp phải để mình hỗ trợ tốt hơn được không? Form góp ý của Petcare: https://forms.gle/Cvn9z9v7F9gLz9jV8 😊.
+
+--------------------------------------------------
+Câu hỏi 8: sao rep chậm vậy, chán
+🧭 Intent Router: sao rep chậm vậy, chán → GREETING
+Intent: GREETING
+Bypass Fast Regex: True
+AI response:
+Ôi, mình xin lỗi vì đã lâu chưa phản hồi bạn nhé! 🥺 Mình là Petcare Assistant, trợ lý ảo siêu cute của cửa hàng Petcare đó! 😊 Bạn có thể tìm hiểu thêm về các dịch vụ chăm sóc thú cưng của chúng mình tại đây: [https://petcare.vn/](https://petcare.vn/)
+
+--------------------------------------------------
+Câu hỏi 9: Tui bị trầm cảm nặng, cần bạn giúp đỡ
+🧭 Intent Router: Tui bị trầm cảm nặng, cần bạn giúp đỡ → GREETING
+Intent: GREETING
+Bypass Fast Regex: True
+AI response:
+Ôi, mình rất tiếc khi nghe bạn đang trải qua giai đoạn khó khăn như vậy 😔. Mình là Petcare Assistant, một trợ lý ảo luôn sẵn lòng hỗ trợ bạn về các vấn đề liên quan đến thú cưng tại Petcare đó 🥰. Bạn có thể tham khảo các dịch vụ như tắm, cắt móng, cạo lông, hoặc lưu trú 24h cho bé cưng nhé!
+
+--------------------------------------------------
+Câu hỏi 10: kể chuyện cười đi bạn ơi
+🧭 Intent Router: kể chuyện cười đi bạn ơi → GREETING
+Intent: GREETING
+Bypass Fast Regex: True
+AI response:
+Chào bạn! Mình là Petcare Assistant, trợ lý ảo siêu cute của cửa hàng Petcare đây! 😊 Bạn muốn nghe một câu chuyện cười không?
+
+Con chó hỏi mèo: "Tại sao bạn lại có móng vuốt?" Mèo trả lời: "Để bạn có thể cào!" 😂 Bạn thấy câu này có buồn cười không?
+
+--------------------------------------------------
+Câu hỏi 11: aaaaa
+🧭 Intent Router: aaaaa → GREETING
+Intent: GREETING
+Bypass Fast Regex: True
+AI response:
+Chào bạn! Mình là Petcare Assistant, trợ lý ảo siêu cute của cửa hàng Petcare đây! 😊 Mình luôn sẵn sàng giúp đỡ các bạn về thú cưng nè! 🐾
+
+=== TESTS COMPLETE ===

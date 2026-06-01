@@ -13,3 +13,4 @@ requests
 streamlit
 rank-bm25
 torchvision
+deepeval

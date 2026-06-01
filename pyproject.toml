@@ -33,4 +33,7 @@ dependencies = [
     "uvicorn>=0.47.0",
     "wikipedia>=1.4.0",
     "ragas>=0.2.0",
+    "deepeval>=4.0.0",
+    "litellm",
+    "instructor",
 ]
