@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI 
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 
-from src.config import LLM_MODEL, ROUTER_MODEL, GREETINGS_MODEL, CSV_PRICING_PATH
+from src.config import LLM_MODEL, ROUTER_MODEL, GREETINGS_MODEL, CSV_PRICING_PATH, REWRITE_MODEL
 from src.prompts import contextualize_q_prompt, qa_prompt, tool_qa_prompt, greetings_prompt
 from src.bm25_retriever import get_bm25_retriever
 from src.hybrid_retriever import HybridRetriever
@@ -34,11 +34,9 @@ def get_llm():
         max_tokens=768,
         streaming=True,
         timeout=30,
-        model_kwargs={
-            "extra_body": {
-                "provider": {
-                    "only": ["novita"] 
-                }
+        extra_body={
+            "provider": {
+                "only": ["novita"] 
             }
         }
     )
@@ -54,9 +52,15 @@ def get_router_llm():
         api_key=api_key,
         base_url="https://openrouter.ai/api/v1",
         temperature=0,
-        top_p = 0.8,
-        max_tokens=64,
-        timeout=15
+        top_p = 0.1,
+        presence_penalty=0.0,
+        frequency_penalty= 0.0,
+        max_tokens=10,
+        timeout=20,
+        extra_body={
+            "reasoning": {"enabled": False}
+        }
+
     )
 
 
@@ -69,10 +73,32 @@ def get_greetings_llm():
         model=GREETINGS_MODEL,
         api_key=api_key,
         base_url="https://openrouter.ai/api/v1",
-        temperature=0.3, 
+        temperature=0.2, 
         top_p = 0.7,
         max_tokens=256,
         timeout=15
+    )
+
+
+def get_rewrite_llm():
+    """Khởi tạo LLM cho Query Rewriter qua OpenRouter."""
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    if not api_key:
+        raise ValueError("Chưa thiết lập OPENROUTER_API_KEY. Kiểm tra lại file .env đi.")
+        
+    return ChatOpenAI(
+        model=REWRITE_MODEL,
+        api_key=api_key,
+        base_url="https://openrouter.ai/api/v1",
+        temperature=0, 
+        top_p=0.7,
+        max_tokens=256,
+        timeout=20,
+        extra_body={
+            "provider": {
+                "only": ["phala"] 
+            }
+        }
     )
 
 
@@ -87,7 +113,7 @@ def _is_greeting_fast(query: str) -> bool:
     
     greeting_pattern = (
         r"^(xin\s+)?chào(\s+(bạn|shop|ad|admin|assistant|ad_min|mọi\s+người|cả\s+nhà))?$|"
-        r"^(hi|hello|helo|halo|hế\s+lô|hey|alo|ê|lô)(\s+(bạn|shop|ad|admin|assistant))?$"
+        r"^(hi|hello|helo|halo|hế|bạn\s+lô|hey|alo|ê|lô|ơi)(\s+(bạn|shop|ad|admin|assistant))?$"
     )
     return bool(re.match(greeting_pattern, cleaned))
 
@@ -133,6 +159,7 @@ class AgenticRAGPipeline:
         router,
         service_db,
         greetings_llm,
+        rewrite_llm,
     ):
         self.llm = llm
         self.hybrid_retriever = hybrid_retriever
@@ -141,8 +168,8 @@ class AgenticRAGPipeline:
         self.qa_chain = qa_chain
         self.router = router
         self.service_db = service_db
-        # Chain để rewrite query (dùng chung llm của RAG)
-        self.rewrite_chain = contextualize_q_prompt | self.llm
+        # Chain để rewrite query (dùng rewrite_llm)
+        self.rewrite_chain = contextualize_q_prompt | rewrite_llm
         # Chain để trả lời dựa trên price data
         self.tool_qa_chain = tool_qa_prompt | self.llm
         # Chain để trả lời greetings (dùng gemma-3-4b-it)
@@ -482,6 +509,7 @@ def build_conversational_rag_chain():
     llm = get_llm()
     router_llm = get_router_llm()
     greetings_llm = get_greetings_llm()
+    rewrite_llm = get_rewrite_llm()
     
     # 1. Khởi tạo các retrievers
     dense_retriever = get_faiss_retriever()
@@ -515,6 +543,7 @@ def build_conversational_rag_chain():
         router=router,
         service_db=service_db,
         greetings_llm=greetings_llm,
+        rewrite_llm=rewrite_llm,
     )
     
     return pipeline
