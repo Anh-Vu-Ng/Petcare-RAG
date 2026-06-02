@@ -75,6 +75,7 @@ class ChatResponse(BaseModel):
     context_docs: List[Dict[str, Any]] = Field(..., description="Danh sách chi tiết tài liệu tham chiếu")
     price_data: Optional[str] = Field(None, description="Bảng giá dịch vụ thô trả về từ tool (nếu có)")
     timing: Optional[Dict[str, Any]] = Field(None, description="Chi tiết thời gian chạy của từng thành phần pipeline")
+    standalone_query: Optional[str] = Field(None, description="Câu hỏi độc lập được rút gọn từ lịch sử chat")
 
 # --- Endpoints ---
 @app.get("/", include_in_schema=False)
@@ -167,6 +168,7 @@ def send_chat(payload: ChatRequest):
         context = response.get("context", [])
         price_data = response.get("price_data", "")
         timing = response.get("timing", {})
+        standalone_query = response.get("standalone_query", "")
         
         # 3. Lưu tin nhắn mới của user và bot vào Database
         service_db.save_chat_message(session_id, "human", message)
@@ -194,7 +196,8 @@ def send_chat(payload: ChatRequest):
             num_docs=len(context),
             context_docs=context_docs,
             price_data=price_data,
-            timing=timing
+            timing=timing,
+            standalone_query=standalone_query
         )
         
     except Exception as e:
