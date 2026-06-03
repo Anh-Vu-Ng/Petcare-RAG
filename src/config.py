@@ -8,8 +8,8 @@ EMBEDDING_DIM = 1024
 
 LLM_MODEL = "openai/gpt-oss-120b"
 ROUTER_MODEL = "qwen/qwen3-8b"
-GREETINGS_MODEL = "google/gemma-3-4b-it"
-REWRITE_MODEL = "qwen/qwen-2.5-7b-instruct"
+GREETINGS_MODEL = "meta-llama/llama-3.1-8b-instruct"
+REWRITE_MODEL = "openai/gpt-oss-20b:nitro"
 PARENT_CHUNK_SIZE = 1400
 PARENT_CHUNK_OVERLAP = 200
 CHILD_CHUNK_SIZE = 350
@@ -27,7 +27,7 @@ BM25_INDEX_PATH = "data/faiss_index/bm25_index.pkl"
 PARENT_DOCS_PATH = "data/faiss_index/parent_docs.pkl"
 CHILD_DOCS_PATH = "data/faiss_index/child_docs.pkl"
 
-CHAT_HISTORY_WINDOW = 5
+CHAT_HISTORY_WINDOW = 4
 
 # Semantic Cache
 CACHE_SIMILARITY_THRESHOLD = 0.9
