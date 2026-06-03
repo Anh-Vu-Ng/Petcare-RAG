@@ -14,6 +14,7 @@ from src.jina_reranker import JinaReranker
 from src.intent_router import IntentRouter
 from src.service_db import ServiceDB
 from src.tools import lookup_service_price, calculate_final_price, format_final_price_for_llm, _resolve_service_type, _resolve_all_service_types
+import re
 
 load_dotenv()
 
@@ -76,7 +77,12 @@ def get_greetings_llm():
         temperature=0.2, 
         top_p = 0.7,
         max_tokens=256,
-        timeout=15
+        timeout=15,
+        extra_body={
+            "provider":{
+                "only": ["groq"]
+            }
+        }
     )
 
 
@@ -96,13 +102,11 @@ def get_rewrite_llm():
         timeout=20,
         extra_body={
             "provider": {
-                "only": ["phala"] 
+                "only": ["wandb"]
             }
         }
     )
 
-
-import re
 
 def _is_greeting_fast(query: str) -> bool:
     """
@@ -128,6 +132,43 @@ GREETING_RESPONSE = (
     "+ Vệ sinh tai\n"
     "\nBạn muốn biết giá của dịch vụ nào không? Hãy cho mình biết nhé! 🌟"
 )
+
+
+def _is_working_hours_fast(query: str) -> bool:
+    """
+    Kiểm tra nhanh xem câu truy vấn có hỏi về giờ làm việc bằng regex hay không.
+    """
+    cleaned = query.strip().lower()
+    cleaned = re.sub(r'^[^\w\s]+|[^\w\s]+$', '', cleaned).strip()
+    
+    pattern = (
+        r"gi[oờ]\s+l[aà]m\s+vi[eêệ]c|"
+        r"th[oờ]i\s+gian\s+l[aà]m\s+vi[eêệ]c|"
+        r"l[iị]ch\s+l[aà]m\s+vi[eêệ]c|"
+        r"gi[oờ]\s+m[oở]\s+c[uử]a|"
+        r"gi[oờ]\s+đ[oó]ng\s+c[uử]a|"
+        r"th[oờ]i\s+gian\s+m[oở]\s+c[uử]a|"
+        r"l[iị]ch\s+m[oở]\s+c[uử]a|"
+        r"m[oở]\s+c[uử]a\s+(?:l[uú]c\s+|đ[eế]n\s+|t[ừư]\s+)?m[aấ]y\s+gi[oờ]|"
+        r"m[aấ]y\s+gi[oờ]\s+m[oở]\s+c[uử]a|"
+        r"m[aấ]y\s+gi[oờ]\s+đ[oó]ng\s+c[uử]a|"
+        r"l[aà]m\s+vi[eêệ]c\s+(?:l[uú]c\s+|đ[eế]n\s+|t[ừư]\s+)?m[aấ]y\s+gi[oờ]"
+    )
+    return bool(re.search(pattern, cleaned))
+
+WORKING_HOURS_RESPONSE = (
+    "Petcare Assistant xin gửi bạn thông tin về giờ làm việc của chúng mình nhé: 😊\n"
+    "\n"
+    "⏰ **Thứ hai - Thứ bảy:**\n"
+    "- Sáng: 08:00 - 12:00\n"
+    "- Chiều: 14:00 - 19:00\n"
+    "\n"
+    "⏰ **Chủ nhật & Ngày lễ:**\n"
+    "- Sáng: 08:00 - 12:00\n"
+    "\n"
+    "Hân hạnh được phục vụ bạn và pet cưng! 🐶🐱"
+)
+
 
 
 class AgenticRAGPipeline:
@@ -481,6 +522,16 @@ class AgenticRAGPipeline:
                 "from_cache": False,
                 "standalone_query": query,
                 "intent": "GREETING",
+                "timing": {"fast_regex_match": 0.0}
+            }
+
+        if _is_working_hours_fast(query):
+            return {
+                "answer": WORKING_HOURS_RESPONSE,
+                "context": [],
+                "from_cache": False,
+                "standalone_query": query,
+                "intent": "KNOWLEDGE",
                 "timing": {"fast_regex_match": 0.0}
             }
 
