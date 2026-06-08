@@ -38,7 +38,7 @@ load_dotenv()
 
 EVAL_LLM_MODEL = "openrouter/openai/gpt-4o-mini"
 DEFAULT_TEST_DATA_PATH = "data/test_scenario_pro.json"
-DEFAULT_RESULTS_PATH = "outputs/deepeval_results_finetuning2.json"
+DEFAULT_RESULTS_PATH = "outputs/deepeval_results.json"
 METRIC_THRESHOLD = 0.5
 
 # ── Custom LLM (litellm + OpenRouter) ───────────────────────────────────────
@@ -64,19 +64,19 @@ class OpenRouterLLM(DeepEvalBaseLLM):
         from litellm import completion
 
         if schema:
-            client = instructor.from_litellm(completion)
+            client = instructor.from_litellm(completion, mode=instructor.Mode.JSON)
             return client.chat.completions.create(
                 model=self.model_name,
                 messages=[{"role": "user", "content": prompt}],
                 response_model=schema,
                 temperature=0,
-                max_tokens=4096,
+                max_tokens=4096
             )
         response = completion(
             model=self.model_name,
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
-            max_tokens=4096,
+            max_tokens=4096
         )
         return response.choices[0].message.content
 
@@ -85,19 +85,19 @@ class OpenRouterLLM(DeepEvalBaseLLM):
         from litellm import acompletion
 
         if schema:
-            client = instructor.from_litellm(acompletion)
+            client = instructor.from_litellm(acompletion, mode=instructor.Mode.JSON)
             return await client.chat.completions.create(
                 model=self.model_name,
                 messages=[{"role": "user", "content": prompt}],
                 response_model=schema,
                 temperature=0,
-                max_tokens=4096,
+                max_tokens=4096
             )
         response = await acompletion(
             model=self.model_name,
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
-            max_tokens=4096,
+            max_tokens=4096
         )
         return response.choices[0].message.content
 
@@ -219,19 +219,23 @@ def build_test_cases(
                 print(f"  ⚠️  No context retrieved — {elapsed:.2f}s")
             result["retrieved_contexts"] = [""]
 
+        response = result.get("response", "")
+        if not response or not response.strip():
+            response = "Không có câu trả lời từ hệ thống RAG."
+
         test_case = LLMTestCase(
             input=question,
-            actual_output=result["response"],
+            actual_output=response,
             expected_output=ground_truth,
             retrieval_context=result["retrieved_contexts"],
         )
         test_cases.append(test_case)
 
         raw_results.append({
-            "question": question,
-            "ground_truth": ground_truth,
-            "response": result["response"],
-            "retrieved_contexts": result["retrieved_contexts"],
+            "input": question,
+            "expected_output": ground_truth,
+            "actual_output": result["response"],
+            "retrieval_context": result["retrieved_contexts"],
             "intent": result["intent"],
             "elapsed_seconds": round(elapsed, 2),
         })
@@ -252,68 +256,68 @@ def build_test_cases(
 
 # ── Main Evaluation ─────────────────────────────────────────────────────────
 
-def evaluate_rag(
-    test_data_path: str = DEFAULT_TEST_DATA_PATH,
+def evaluate_pregenerated_answers(
+    answers_path: str,
     results_path: str = DEFAULT_RESULTS_PATH,
     verbose: bool = True,
     limit: Optional[int] = None,
 ) -> dict:
     """
-    Hàm chính — chạy toàn bộ flow evaluation DeepEval.
+    Chạy evaluation từ file câu trả lời đã được pre-generate.
 
-    1. Load test data từ JSON.
-    2. Build pipeline (reuse build_conversational_rag_chain).
-    3. Chạy pipeline trên từng câu hỏi → build LLMTestCase list.
-    4. Gọi deepeval.evaluate() với 4 metrics.
-    5. Xuất kết quả ra console + JSON file.
-
-    Args:
-        test_data_path: Đường dẫn tới file test dataset JSON.
-        results_path: Đường dẫn lưu kết quả evaluation.
-        verbose: In chi tiết ra console.
-        limit: Giới hạn số câu hỏi (None = chạy hết).
-
-    Returns:
-        dict chứa scores tổng hợp + per-sample.
+    1. Load pre-generated answers từ JSON.
+    2. Build LLMTestCase list từ data đã load.
+    3. Gọi deepeval.evaluate() với 4 metrics.
+    4. Xuất kết quả ra console + JSON file.
     """
-    # ── 1. Load test data ────────────────────────────────────────────────
     if verbose:
-        print("📂 Loading test data...")
+        print(f"📂 Loading pre-generated answers from {answers_path}...")
 
-    with open(test_data_path, "r", encoding="utf-8") as f:
-        test_data = json.load(f)
+    with open(answers_path, "r", encoding="utf-8") as f:
+        raw_results = json.load(f)
 
     if verbose:
-        print(f"   Loaded {len(test_data)} test samples from {test_data_path}")
+        print(f"   Loaded {len(raw_results)} answers.")
 
-    # Giới hạn số câu hỏi nếu có --limit
     if limit is not None and limit > 0:
-        test_data = test_data[:limit]
+        raw_results = raw_results[:limit]
         if verbose:
-            print(f"   ⚡ Limited to {len(test_data)} samples (--limit {limit})")
+            print(f"   ⚡ Limited to {len(raw_results)} samples (--limit {limit})")
 
-    # ── 2. Build pipeline ────────────────────────────────────────────────
-    if verbose:
-        print("\n🔧 Building RAG pipeline...")
+    # Build test cases from pre-generated results
+    test_cases = []
+    skipped_tool = 0
+    for item in raw_results:
+        # Bỏ qua các câu hỏi route sang TOOL (không có retrieval context thực tế)
+        if item.get("intent") == "TOOL":
+            skipped_tool += 1
+            continue
 
-    pipeline = build_conversational_rag_chain()
+        # Nếu không có context nào, gán chuỗi rỗng
+        retrieval_context = item.get("retrieval_context", [])
+        if not retrieval_context:
+            retrieval_context = [""]
 
-    if verbose:
-        print("   Pipeline ready.")
+        actual_output = item.get("actual_output", "")
+        if not actual_output or not actual_output.strip():
+            actual_output = "Không có câu trả lời từ hệ thống RAG."
 
-    # ── 3. Build test cases ──────────────────────────────────────────────
-    if verbose:
-        print("\n🔄 Running pipeline on test data...")
+        test_case = LLMTestCase(
+            input=item["input"],
+            actual_output=actual_output,
+            expected_output=item["expected_output"],
+            retrieval_context=retrieval_context,
+        )
+        test_cases.append(test_case)
 
-    test_cases, raw_results = build_test_cases(
-        pipeline, test_data, verbose=verbose
-    )
+    if verbose and skipped_tool > 0:
+        print(f"   ⏭️  Skipped {skipped_tool} samples with TOOL intent.")
 
     if not test_cases:
-        print("❌ No test cases to evaluate (all skipped or errored).")
+        print("❌ No test cases to evaluate.")
         return {"error": "No test cases to evaluate"}
 
-    # ── 4. DeepEval Evaluate ─────────────────────────────────────────────
+    # ── DeepEval Evaluate ─────────────────────────────────────────────
     if verbose:
         print("\n🧪 Running DeepEval evaluation...")
         print(f"   Judge LLM: {EVAL_LLM_MODEL} (via OpenRouter)")
@@ -344,7 +348,7 @@ def evaluate_rag(
     )
     eval_elapsed = time.time() - t0
 
-    # ── 5. Format & export results ───────────────────────────────────────
+    # ── Format & export results ───────────────────────────────────────
     # Metric name mapping (DeepEval uses display names like "Answer Relevancy")
     METRIC_KEY_MAP = {
         "Answer Relevancy": "answer_relevancy",
@@ -377,9 +381,9 @@ def evaluate_rag(
 
         # Merge raw_results nếu có
         if i < len(raw_results):
-            sample_data["ground_truth"] = raw_results[i].get("ground_truth", "")
-            sample_data["response_preview"] = raw_results[i].get("response", "")[:200]
-            sample_data["num_contexts"] = len(raw_results[i].get("retrieved_contexts", []))
+            sample_data["ground_truth"] = raw_results[i].get("expected_output", "")
+            sample_data["response_preview"] = raw_results[i].get("actual_output", "")[:200]
+            sample_data["num_contexts"] = len(raw_results[i].get("retrieval_context", []))
             sample_data["pipeline_time_s"] = raw_results[i].get("elapsed_seconds", 0)
 
         per_sample_scores.append(sample_data)
@@ -397,7 +401,7 @@ def evaluate_rag(
             "eval_framework": "deepeval",
             "eval_model": EVAL_LLM_MODEL,
             "embedding_model": "jina-embeddings-v5-text-small",
-            "test_data_path": test_data_path,
+            "answers_path": answers_path,
             "num_samples_evaluated": len(test_cases),
             "eval_duration_seconds": round(eval_elapsed, 2),
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -440,3 +444,72 @@ def evaluate_rag(
         print(f"{'='*60}")
 
     return output
+
+
+def evaluate_rag(
+    test_data_path: str = DEFAULT_TEST_DATA_PATH,
+    results_path: str = DEFAULT_RESULTS_PATH,
+    verbose: bool = True,
+    limit: Optional[int] = None,
+) -> dict:
+    """
+    Hàm chính tương thích ngược — chạy toàn bộ flow evaluation DeepEval.
+    Tự động sinh câu trả lời tạm thời rồi chạy evaluation.
+    """
+    # ── 1. Load test data ────────────────────────────────────────────────
+    if verbose:
+        print("📂 Loading test data...")
+
+    with open(test_data_path, "r", encoding="utf-8") as f:
+        test_data = json.load(f)
+
+    if verbose:
+        print(f"   Loaded {len(test_data)} test samples from {test_data_path}")
+
+    # Giới hạn số câu hỏi nếu có --limit
+    if limit is not None and limit > 0:
+        test_data = test_data[:limit]
+        if verbose:
+            print(f"   ⚡ Limited to {len(test_data)} samples (--limit {limit})")
+
+    # ── 2. Build pipeline ────────────────────────────────────────────────
+    if verbose:
+        print("\n🔧 Building RAG pipeline...")
+
+    pipeline = build_conversational_rag_chain()
+
+    if verbose:
+        print("   Pipeline ready.")
+
+    # ── 3. Build test cases ──────────────────────────────────────────────
+    if verbose:
+        print("\n🔄 Running pipeline on test data...")
+
+    test_cases, raw_results = build_test_cases(
+        pipeline, test_data, verbose=verbose
+    )
+
+    if not test_cases:
+        print("❌ No test cases to evaluate (all skipped or errored).")
+        return {"error": "No test cases to evaluate"}
+
+    # ── 4. Save temporary answers & evaluate ─────────────────────────────
+    temp_answers_path = results_path + ".temp_answers.json"
+    os.makedirs(os.path.dirname(temp_answers_path) or ".", exist_ok=True)
+    with open(temp_answers_path, "w", encoding="utf-8") as f:
+        json.dump(raw_results, f, ensure_ascii=False, indent=2)
+
+    try:
+        return evaluate_pregenerated_answers(
+            answers_path=temp_answers_path,
+            results_path=results_path,
+            verbose=verbose,
+        )
+    finally:
+        # Clean up temp file
+        if os.path.exists(temp_answers_path):
+            try:
+                os.remove(temp_answers_path)
+            except Exception:
+                pass
+

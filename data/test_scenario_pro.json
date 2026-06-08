@@ -1,502 +1,302 @@
 [
     {
-        "question": "Ôi trời, chó của mình tự dưng rụng lông nhiều quá! Mình không biết phải làm sao nữa, nhìn da nó mà lo quá! Có phải mình tắm cho nó nhiều quá không?",
-        "ground_truth": "Rụng lông ở chó có thể do tắm sai cách hoặc dùng hóa chất mạnh. Bạn nên theo dõi mức độ rụng lông, hành vi và bề mặt da của chó. Nếu thấy da có dấu hiệu bất thường như ngứa, đỏ hoặc mùi hôi, cần can thiệp sớm. Hãy kiểm tra vùng da bị rụng mỗi ngày và tách lớp lông ra để xem có dấu hiệu gì không.",
-        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+        "question": "Chó nhà em dạo này bỏ ăn, ốm yếu quá! Sờ vào bụng nó thì nó kêu rên và co người lại, bụng còn chướng lên nữa! Có phải ruột bị viêm không? Làm sao để nó hết đau với ăn uống được đây?",
+        "ground_truth": "Chó có thể bị viêm ruột, dẫn đến bỏ ăn, đau bụng và bụng chướng. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán và điều trị chính xác.",
+        "source": "https://petcare.vn/benh-viem-ruot-o-cho/",
+        "quote_from_chunk": "Bỏ ăn, chán ăn: Do ruột bị viêm nên chó cảm thấy đau bụng và khó chịu khi tiêu hóa thức ăn. Tình trạng này kéo dài sẽ khiến chó sụt cân nhanh chóng. Bụng chướng hoặc đau: Khi sờ vào vùng bụng, chó có thể phản ứng đau hoặc co rúm người. Bụng chướng lên do hơi hoặc dịch tích tụ trong ruột."
     },
     {
-        "question": "Chó của mình dạo này rụng lông mà nhìn da nó cũng không ổn nữa! Mình sợ là do ăn uống không đủ chất, có phải không bác sĩ?",
-        "ground_truth": "Đúng vậy, chế độ dinh dưỡng không hợp lý có thể ảnh hưởng đến tình trạng lông của chó. Bạn nên điều chỉnh chế độ ăn, thêm thực phẩm cung cấp omega-3, omega-6 như cá hồi, dầu cá, trứng và rau củ để giúp da khỏe và lông chắc hơn.",
-        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+        "question": "Mèo nhà tôi bụng phình to bất thường, căng tròn và sưng lên! Nó còn bỏ ăn, nôn mửa nữa! Có phải bị tắc ruột hay viêm ruột không? Làm sao bây giờ?",
+        "ground_truth": "Bụng phình to bất thường, bỏ ăn, nôn mửa có thể liên quan đến các vấn đề tiêu hóa như tắc nghẽn ruột hoặc viêm ruột. Bạn nên đưa mèo đến bác sĩ thú y để được chẩn đoán và điều trị kịp thời.",
+        "source": "https://petcare.vn/meo-bi-phinh-bung/",
+        "quote_from_chunk": "Bụng phình to bất thường: Bụng mèo có thể trở nên căng tròn, sưng lên, hoặc có cảm giác đầy đặn bất thường. Trong trường hợp nghiêm trọng, bụng có thể phình ra nhanh chóng và không đồng đều. Thay đổi trong hành vi ăn uống: Mèo có thể bỏ ăn do cảm giác khó chịu hoặc buồn nôn, hoặc ngược lại, có thể ăn nhiều hơn bình thường nhưng lại không tăng cân. Cảm giác no hoặc chán ăn sẽ thay đổi tùy theo tình trạng của mèo. Nôn mửa hoặc tiêu chảy: Phình bụng đôi khi đi kèm với tình trạng nôn mửa hoặc tiêu chảy. Điều này có thể do các vấn đề tiêu hóa, như tắc nghẽn ruột hoặc viêm ruột, gây khó khăn cho việc tiêu hóa thức ăn."
     },
     {
-        "question": "Mình đang rất lo lắng về việc cần cắt lông cho chó của mình mà không biết phải làm sao, có dịch vụ nào không nhỉ?",
-        "ground_truth": "Có, chúng tôi cung cấp dịch vụ chăm sóc cắt lông cho thú cưng, bao gồm cắt lông một phần, cắt lông toàn thân và cắt lông theo yêu cầu.",
-        "source": "data/rag_docs.pdf"
+        "question": "Chó nhà tôi bị tiêu chảy và nôn suốt cả ngày, nó mệt lả đi rồi!!! Có cách nào cứu nó không? Tôi có nên cho nó uống nước không hay phải làm sao trước khi đưa đi thú y? Tôi lo quá!",
+        "ground_truth": "Khi chó bị tiêu chảy hoặc nôn nhiều, cần truyền dịch hoặc cho uống dung dịch điện giải để tránh mất nước, đặc biệt trong trường hợp bệnh nặng. Bạn nên đưa chó đến thú y để được chẩn đoán và điều trị kịp thời.",
+        "source": "https://petcare.vn/benh-viem-ruot-o-cho/",
+        "quote_from_chunk": "Khi chó bị tiêu chảy hoặc nôn nhiều, cần truyền dịch hoặc cho uống dung dịch điện giải để tránh mất nước, đặc biệt trong trường hợp bệnh nặng."
     },
     {
-        "question": "Chó của mình có cần tắm và chải lông không? Mình không rõ lắm thì có dịch vụ nào không?",
-        "ground_truth": "Có, chúng tôi có dịch vụ tắm và chải lông cho chó, bao gồm tắm chải lông dài, tắm chải lông ngắn, tắm khô lông dài và tắm khô lông ngắn.",
-        "source": "data/rag_docs.pdf"
+        "question": "Trời ơi, mèo nhà tôi hôm nay thở dồn dập lắm, nó há miệng ra thở luôn, nhìn lưỡi nó tím tái! Có phải nó bị thiếu oxy không? Làm sao bây giờ?!",
+        "ground_truth": "Mèo thở dồn dập, há miệng để thở và có lưỡi tím tái có thể do thiếu oxy hoặc mèo bị nghẹt mũi khó thở. Bạn nên đưa mèo đến bác sĩ thú y để được chẩn đoán và điều trị kịp thời.",
+        "source": "https://petcare.vn/meo-bi-kho-tho/",
+        "quote_from_chunk": "Mèo thở dồn dập, số lần hít thở tăng cao hơn so với bình thường. Há miệng để thở: điều hiếm khi xảy ra ở mèo khỏe mạnh, đôi khi kèm theo lưỡi tím tái do thiếu oxy hoặc mèo bị nghẹt mũi khó thở."
     },
     {
-        "question": "Hôm nay chó của tôi có vẻ không ổn, nó cứ nôn mửa và tiêu chảy liên tục. Tôi không biết chuyện gì đang xảy ra, có phải nó ăn thứ gì đó không đúng không?",
-        "ground_truth": "Chó của bạn có thể đang gặp vấn đề về tiêu hóa do ăn phải thức ăn ôi thiu, thay đổi khẩu phần đột ngột hoặc có thể đã ăn phải vật lạ. Bạn cần đưa nó đến bác sĩ thú y để được chẩn đoán và điều trị kịp thời.",
-        "source": "https://petcare.vn/benh-viem-ruot-o-cho/"
+        "question": "Chó nhà em bị đau mắt, sưng đỏ và cứ dụi mắt vào chân ghế! Có nguy cơ mất thị lực không? Làm sao bây giờ?!",
+        "ground_truth": "Chấn thương nhãn cầu ở chó là một trong những tình trạng nguy hiểm có thể gây mất thị lực nếu không được xử lý kịp thời. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán và điều trị kịp thời.",
+        "source": "https://petcare.vn/chan-thuong-nhan-cau-o-cho/",
+        "quote_from_chunk": "Chấn thương nhãn cầu ở chó là một trong những tình trạng nguy hiểm có thể gây mất thị lực nếu không được xử lý kịp thời."
     },
     {
-        "question": "Chó của tôi dạo này rất hay căng thẳng, có thể do có khách đến nhà, và giờ nó bắt đầu có dấu hiệu nôn và tiêu chảy. Có phải stress cũng ảnh hưởng đến sức khỏe của nó không?",
-        "ground_truth": "Đúng, căng thẳng có thể góp phần gây ra các triệu chứng như nôn mửa và tiêu chảy ở chó. Ngoài ra, các bệnh lý khác như viêm tụy hoặc suy gan cũng có thể là nguyên nhân. Bạn nên đưa chó đến bác sĩ thú y để có chẩn đoán chính xác và điều trị phù hợp.",
-        "source": "https://petcare.vn/benh-viem-ruot-o-cho/"
+        "question": "Chó nhà em tự nhiên chảy máu mũi, em sợ quá! Làm sao bây giờ? Có phải chườm đá lên mũi là được không? Có cần đưa đi bác sĩ ngay không?",
+        "ground_truth": "Khi chó bị chảy máu mũi, bạn cần giữ cho chó nằm yên và hạn chế vận động. Cách sơ cứu hiệu quả là dùng khăn lạnh hoặc bọc đá chườm nhẹ nhàng lên sống mũi để giúp mạch máu co lại. Sau cùng, cần đưa chó đến cơ sở thú y ngay để được kiểm tra và cấp cứu kịp thời.",
+        "source": "https://petcare.vn/cach-cam-mau-nhanh-nhat-cho-cho/",
+        "quote_from_chunk": "Khi chó bị chảy máu mũi, bạn cần giữ cho chó nằm yên và hạn chế vận động để tránh làm máu chảy nhiều hơn. Nguyên nhân có thể đến từ không khí quá khô hoặc bệnh lý tiềm ẩn liên quan đến máu. Cách sơ cứu hiệu quả là dùng khăn lạnh hoặc bọc đá chườm nhẹ nhàng lên sống mũi để giúp mạch máu co lại. Trong lúc đó, tuyệt đối không để chó hắt hơi mạnh hoặc cúi đầu thấp vì dễ làm máu chảy nhiều hơn. Sau cùng, cần đưa chó đến cơ sở thú y ngay để được kiểm tra và cấp cứu kịp thời."
     },
     {
-        "question": "Ôi, con chó của tôi cứ đi ngoài nhiều lần một ngày, cứ như là nó không thể kiểm soát được. Tôi lo quá, không biết có chuyện gì nghiêm trọng không?",
-        "ground_truth": "Chó có thể mắc viêm đại tràng, dẫn đến triệu chứng tiêu chảy nhiều, mất nước và suy nhược. Cần bổ sung nước và điện giải để giúp chó hồi phục.",
-        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+        "question": "Mèo nhà tôi bụng phình to lên như cái trống, tôi có nên mang nó đến PETCARE không? Tôi hoảng quá!",
+        "ground_truth": "Mèo bị phình bụng có thể là dấu hiệu của nhiều vấn đề sức khỏe nghiêm trọng và cần được chú ý ngay từ khi phát hiện. Bạn nên đưa mèo đến PETCARE để được chăm sóc và điều trị hiệu quả.",
+        "source": "https://petcare.vn/meo-bi-phinh-bung/",
+        "quote_from_chunk": "PETCARE cam kết mang đến cho mèo yêu của bạn sự chăm sóc tốt nhất, giúp điều trị hiệu quả các vấn đề như phình bụng và các bệnh lý khác. Như vậy, mèo bị phình bụng có thể là dấu hiệu của nhiều vấn đề sức khỏe nghiêm trọng và cần được chú ý ngay từ khi phát hiện."
     },
     {
-        "question": "Tôi thấy chó của mình không chịu ăn gì cả, mà chỉ uống nước thôi. Nó có thể ăn gì để tốt cho bụng không?",
-        "ground_truth": "Chó cần ăn thức ăn dễ tiêu như cháo loãng, thức ăn ướt, thịt hấp hoặc thức ăn dành riêng cho chó bị bệnh đường ruột. Tránh đồ ăn nhiều dầu mỡ, đồ sống trong thời gian điều trị.",
-        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+        "question": "Chó nhà em bị tiêu chảy suốt mấy ngày nay, em lo quá! Nó cứ đi ngoài liên tục, em sợ nó mất nước rồi suy nhược mất! Bác sĩ bảo bổ sung nước và điện giải bằng cách truyền dịch có giúp nó hồi phục nhanh hơn và tránh kiệt sức không ạ?",
+        "ground_truth": "Bác sĩ có thể truyền dịch để cân bằng điện giải, giúp chó hồi phục nhanh hơn và tránh kiệt sức.",
+        "source": "https://petcare.vn/viem-dai-trang-o-cho/",
+        "quote_from_chunk": "Bổ sung nước và điện giải: Chó bị viêm đại tràng thường tiêu chảy nhiều, dẫn đến mất nước và suy nhược. Bác sĩ có thể truyền dịch để cân bằng điện giải, giúp chó hồi phục nhanh hơn và tránh kiệt sức."
     },
     {
-        "question": "Chó của tôi gần đây liên tục đi ngoài, tôi thấy phân của nó lỏng và có vẻ như rất khó chịu. Tôi đang rất lo lắng, không biết có chuyện gì nghiêm trọng không?",
-        "ground_truth": "Viêm đại tràng ở chó có thể khiến chúng bị tiêu chảy liên tục, điều này có thể gây mất nước và suy nhược nếu không được xử lý kịp thời. Bạn nên đưa chó đi khám càng sớm càng tốt.",
-        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+        "question": "Chó nhà em hôm qua bắt đầu ho sù sụ, thở khò khè, sốt cao 39.5 độ, bỏ ăn mấy ngày rồi! Em sợ nó bị viêm phổi quá! Có phải nếu bị viêm phổi thì bác sĩ sẽ kê kháng sinh, thuốc giảm viêm với long đờm không ạ? Em phải làm sao ngay bây giờ?",
+        "ground_truth": "Việc điều trị bệnh viêm phổi ở chó cần được thực hiện kịp thời và đúng phương pháp để tránh biến chứng nguy hiểm. Người nuôi nên đưa chó đến bác sĩ thú y ngay khi phát hiện các dấu hiệu nghi ngờ. Chó thường được kê kháng sinh, thuốc giảm viêm, long đờm hoặc hạ sốt tùy theo nguyên nhân và mức độ bệnh.",
+        "source": "https://petcare.vn/benh-viem-phoi-o-cho/",
+        "quote_from_chunk": "Việc điều trị bệnh viêm phổi ở chó cần được thực hiện kịp thời và đúng phương pháp để tránh biến chứng nguy hiểm. Người nuôi nên đưa chó đến bác sĩ thú y ngay khi phát hiện các dấu hiệu nghi ngờ. Dưới đây là những cách điều trị phổ biến được áp dụng: Sử dụng thuốc theo chỉ định của bác sĩ thú y: Chó thường được kê kháng sinh, thuốc giảm viêm, long đờm hoặc hạ sốt tùy theo nguyên nhân và mức độ bệnh."
     },
     {
-        "question": "Tôi thấy chó của mình giảm cân nhanh chóng và có vẻ mệt mỏi hơn bình thường. Liệu có phải dấu hiệu gì xấu không?",
-        "ground_truth": "Giảm cân nhanh chóng và tình trạng suy nhược có thể là triệu chứng của viêm đại tràng kéo dài. Nếu để tình trạng này kéo dài mà không điều trị, chó có thể gặp phải những vấn đề nghiêm trọng hơn như rối loạn điện giải hoặc nhiễm trùng.",
-        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+        "question": "Chó nhà em mấy nay không ị được, bụng căng cứng, nó rặn mãi không ra, nhìn thương lắm! Có cách nào giúp nó đi vệ sinh dễ hơn không? Em nghe nói cho ăn bí đỏ, xoa bụng hay cho chạy nhảy cũng đỡ táo bón phải không?",
+        "ground_truth": "Có thể tăng cường chất xơ trong khẩu phần ăn bằng cách thêm bí đỏ, khoai lang hoặc rau củ đã nấu mềm để hỗ trợ tiêu hóa tự nhiên. Cho chó vận động mỗi ngày như tập đi dạo, chạy nhảy nhẹ nhàng giúp kích thích đường ruột và đẩy phân nhanh hơn. Xoa bóp vùng bụng dưới nhẹ nhàng theo chiều kim đồng hồ cũng giúp giảm căng tức và hỗ trợ đào thải phân. Bạn nên theo dõi hậu môn và vệ sinh sạch sẽ để giảm khó chịu và ngăn viêm nhiễm do phân tích tụ lâu. Nếu cần, có thể dùng men tiêu hoá hoặc sản phẩm hỗ trợ theo tư vấn thú y.",
+        "source": "https://petcare.vn/cho-bi-tao-bon/",
+        "quote_from_chunk": "Tăng cường chất xơ trong khẩu phần ăn: Có thể thêm bí đỏ, khoai lang hoặc rau củ đã nấu mềm để hỗ trợ tiêu hóa tự nhiên.\nCho chó vận động mỗi ngày: Tập đi dạo, chạy nhảy nhẹ nhàng giúp kích thích đường ruột và đẩy phân nhanh hơn.\nXoa bóp vùng bụng dưới: Massage nhẹ nhàng theo chiều kim đồng hồ giúp giảm căng tức và hỗ trợ đào thải phân.\nDùng men tiêu hoá hoặc sản phẩm hỗ trợ theo tư vấn thú y: Giúp cân bằng hệ vi sinh đường ruột, chỉ sử dụng khi có hướng dẫn rõ ràng.\nTheo dõi hậu môn và vệ sinh sạch sẽ: Giúp giảm khó chịu và ngăn viêm nhiễm do phân tích tụ lâu.\n## Điều trị chó bị táo bón hiệu quả tại PETCARE"
     },
     {
-        "question": "Ôi trời ơi, tôi thật sự lo lắng, chó con của tôi mới có 6-7 tuần tuổi mà giờ đã phải tiêm vắc xin gì đó rồi hả? Tôi nghe nói tiêm cái 5 trong 1, nhưng tôi không biết nó giúp phòng những bệnh gì nữa. Chó của tôi có khỏe mạnh để tiêm không, hay có cần phải làm gì trước đó không?",
-        "ground_truth": "Chó con 6-7 tuần tuổi cần tiêm vắc xin đầu tiên, thường là vắc xin 5 trong 1 để phòng các bệnh như Care, Parvo, Ho cũi chó, Phó cúm và Viêm gan truyền nhiễm. Trước khi tiêm, chó cần khỏe mạnh và đã được tẩy giun.",
-        "source": "https://petcare.vn/cho-con-bao-nhieu-ngay-chich-ngua/"
+        "question": "Quan trọng gấp! Con chó nhà tôi cứ lắc đầu liên tục, tai bốc mùi hôi thối, tôi nghi nó bị viêm tai. Trong tài liệu có nói hạn chế cho chó tiếp xúc với bụi bẩn hoặc hóa chất, và cần cho ăn uống lành mạnh để giảm nguy cơ viêm tai đúng không? Vậy giờ tôi nên làm gì trước mắt để giúp nó đỡ khổ?",
+        "ground_truth": "Trích dẫn có đề cập đến việc hạn chế cho chó tiếp xúc với bụi bẩn hoặc hóa chất và cung cấp chế độ ăn uống lành mạnh để giảm nguy cơ viêm tai. Tuy nhiên, để giúp chó đỡ khổ, bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán và điều trị chính xác.",
+        "source": "https://petcare.vn/cho-bi-viem-tai/",
+        "quote_from_chunk": "Tránh cho chó tiếp xúc với bụi bẩn hoặc hóa chất: Hạn chế cho chó tiếp xúc với các môi trường bụi bẩn hoặc hóa chất có thể gây kích ứng tai. Chế độ ăn uống lành mạnh: Cung cấp chế độ ăn uống đầy đủ dưỡng chất, đặc biệt là các loại thực phẩm không gây dị ứng, để giúp tăng cường sức khỏe tổng thể và giảm nguy cơ viêm tai."
     },
     {
-        "question": "Chó con của tôi giờ đã 9-10 tuần tuổi, tôi nghe nói cần phải tiêm thêm mũi vắc xin thứ 2. Nhưng mà tôi không rõ là mũi này có gì khác mũi đầu tiên không và có cần phải chú ý gì không?",
-        "ground_truth": "Sau mũi đầu tiên khoảng 3-4 tuần, chó con cần tiêm mũi vắc xin thứ 2, thường là vắc xin 7 trong 1. Mũi này bổ sung ngừa Leptospira và Corona. Thời gian tiêm cần tuân thủ nghiêm ngặt, cách mũi 1 từ 21-28 ngày.",
-        "source": "https://petcare.vn/cho-con-bao-nhieu-ngay-chich-ngua/"
+        "question": "Trời ơi, chân con chó nhà tôi bị hoại tử rồi, nó đi khập khiễng và có mùi hôi thối từ ngón chân! Tôi phải làm sao bây giờ? Có chỗ nào điều trị hoại tử ngón chân ở chó uy tín không, mà phải giữ lại được chức năng bàn chân cho nó đấy!",
+        "ground_truth": "Bạn nên đưa chó đến PETCARE để được thăm khám kỹ và điều trị hoại tử ngón chân. Tại đây, họ sẽ theo dõi sát và điều trị theo từng giai đoạn để giảm đau, kiểm soát nhiễm trùng và giữ lại tối đa chức năng bàn chân cho chó.",
+        "source": "https://petcare.vn/hoai-tu-ngon-chan-o-cho/",
+        "quote_from_chunk": "CASE STUDY: Bé Pu – Điều trị hoại tử ngón chân thành công tại PETCARE. Tại đây, mỗi ca bệnh đều được thăm khám kỹ, theo dõi sát và điều trị theo từng giai đoạn để giảm đau, kiểm soát nhiễm trùng và giữ lại tối đa chức năng bàn chân cho bé."
     },
     {
-        "question": "Mình thấy chó có mùi lạ từ da và lông, mà vùng da thì lại bị rụng nữa, không biết có chuyện gì xảy ra không?",
-        "ground_truth": "Chó có thể bị rụng lông kèm theo mùi hôi khó chịu do vi khuẩn hoặc bã nhờn tích tụ lâu ngày. Việc này có thể do nhiều nguyên nhân khác nhau, trong đó có thể là dấu hiệu của bệnh lý cần được kiểm tra.",
-        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+        "question": "Chó nhà em bị 1 ngón chân sau đen thui, sưng to, sờ vào nó rên ư ử, em lo quá mọi người ơi!!! Có nguy hiểm không? Có bị lan ra cả bàn chân không???",
+        "ground_truth": "Hoại tử ngón chân ở chó là tình trạng nguy hiểm vì mô đã chết có thể nhanh chóng lan rộng sang các vùng xung quanh. Nếu không điều trị kịp thời, nhiễm trùng có thể xâm nhập sâu vào xương, dẫn đến viêm tủy xương hoặc nhiễm trùng huyết đe dọa tính mạng. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán và điều trị kịp thời.",
+        "source": "https://petcare.vn/hoai-tu-ngon-chan-o-cho/",
+        "quote_from_chunk": "Hoại tử ngón chân ở chó là tình trạng nguy hiểm vì mô đã chết có thể nhanh chóng lan rộng sang các vùng xung quanh. Nếu không điều trị kịp thời, nhiễm trùng có thể xâm nhập sâu vào xương, dẫn đến viêm tủy xương hoặc nhiễm trùng huyết đe dọa tính mạng."
     },
     {
-        "question": "Chó của mình đang rụng lông rất nhiều, mà mình cũng nhận thấy da nó có vẻ yếu đi, không biết có phải nó bị bệnh gì không?",
-        "ground_truth": "Khi tình trạng rụng lông kéo dài, lông chó trở nên thưa mỏng và da yếu, dễ nhiễm trùng. Nguyên nhân có thể do thay lông theo mùa, dị ứng với môi trường hoặc thức ăn, hoặc ký sinh trùng ngoài da như ve, rận, bọ chét.",
-        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+        "question": "Chó nhà em bỗng dưng mắt lồi hẳn ra ngoài, nhìn khiếp quá! Có phải bị vỡ giác mạc không? Có nguy hiểm lắm không? Phải đưa đi cấp cứu ngay đúng không ạ?!",
+        "ground_truth": "Mắt lồi hoặc xẹp bất thường là dấu hiệu rất nguy hiểm cần cấp cứu ngay. Bạn nên đưa chó đến cơ sở y tế để được chẩn đoán chính xác.",
+        "source": "https://petcare.vn/chan-thuong-nhan-cau-o-cho/",
+        "quote_from_chunk": "Mắt lồi hoặc xẹp bất thường: Nhãn cầu có thể bị đẩy ra ngoài hốc mắt (thoát vị nhãn cầu) hoặc xẹp do vỡ giác mạc, đây là dấu hiệu rất nguy hiểm cần cấp cứu ngay."
     },
     {
-        "question": "Ôi, mèo của tôi tự dưng bụng to lên, tôi không biết phải làm sao nữa. Có phải mèo bị bệnh không?",
-        "ground_truth": "Phình bụng ở mèo là một triệu chứng nghiêm trọng và cần được xử lý kịp thời. Bạn cần đưa mèo đến bác sĩ thú y ngay lập tức để được chẩn đoán chính xác.",
-        "source": "https://petcare.vn/meo-bi-phinh-bung/"
+        "question": "Mèo nhà em đang thở khò khè, khó thở lắm rồi! Em có nên cố ép nó ăn uống gì không hay phải làm sao đây?",
+        "ground_truth": "Không cố gắng cho mèo ăn uống khi đang khó thở, tránh nguy cơ sặc hoặc tắc nghẽn đường thở.",
+        "source": "https://petcare.vn/meo-bi-kho-tho/",
+        "quote_from_chunk": "Không cố gắng cho mèo ăn uống khi đang khó thở , tránh nguy cơ sặc hoặc tắc nghẽn đường thở."
     },
     {
-        "question": "Mèo tôi không chỉ bụng phình mà còn có dấu hiệu nôn mửa nữa, tôi rất lo lắng. Tôi nên làm gì bây giờ?",
-        "ground_truth": "Nếu mèo có triệu chứng phình bụng kèm theo nôn mửa, bạn cần theo dõi và cung cấp thông tin này cho bác sĩ thú y. Họ sẽ thực hiện các xét nghiệm như siêu âm hoặc X-quang để xác định nguyên nhân.",
-        "source": "https://petcare.vn/meo-bi-phinh-bung/"
+        "question": "Trời ơi con mèo của tôi cứ đi tiểu ra máu, nó rặn mãi không ra nước, tôi sợ quá! Có phải bệnh viêm đường tiết niệu nguy hiểm lắm không? Có biến chứng gì không? Làm sao đây, tôi phải đưa nó đi khám ngay bây giờ đúng không???",
+        "ground_truth": "Mèo bị viêm đường tiết niệu là bệnh lý không thể chủ quan, bởi chỉ một chút chậm trễ cũng có thể dẫn đến biến chứng nguy hiểm cho thú cưng của bạn. Việc theo dõi dấu hiệu, chăm sóc đúng cách và đưa mèo thăm khám kịp thời là chìa khóa giúp phòng ngừa tái phát.",
+        "source": "https://petcare.vn/meo-bi-viem-duong-tiet-nieu/",
+        "quote_from_chunk": "Mèo bị viêm đường tiết niệu là bệnh lý không thể chủ quan, bởi chỉ một chút chậm trễ cũng có thể dẫn đến biến chứng nguy hiểm cho thú cưng của bạn. Việc theo dõi dấu hiệu, chăm sóc đúng cách và đưa mèo thăm khám kịp thời là chìa khóa giúp phòng ngừa tái phát."
     },
     {
-        "question": "Chó của tôi vừa nôn mửa, tôi lo quá! Liệu có chuyện gì nghiêm trọng không? Tôi có cần phải đưa nó đến bác sĩ ngay không?",
-        "ground_truth": "Tình trạng chó bị nôn mửa có thể là dấu hiệu của nhiều vấn đề sức khỏe khác nhau, từ nhẹ đến nghiêm trọng. Người nuôi cần quan sát kỹ và đưa thú cưng đến cơ sở thú y uy tín khi có dấu hiệu bất thường.",
-        "source": "https://petcare.vn/cho-bi-non-mua/"
+        "question": "Mèo của tôi bị chảy mũi, khó thở, mắt loét! Có phải herpes không? Nguy hiểm lắm đúng không? Cần điều trị ngay phải không?!",
+        "ground_truth": "Bệnh herpes ở mèo có thể gây chảy mũi, khó thở, viêm loét giác mạc dẫn đến giảm thị lực hoặc mù lòa. Bệnh này được xem là nguy hiểm vì có thể gây tổn thương nặng ở đường hô hấp và mắt nếu không được điều trị kịp thời. Bạn nên đưa mèo đến bác sĩ thú y để được chẩn đoán và điều trị kịp thời.",
+        "source": "https://petcare.vn/benh-herpes-o-meo/",
+        "quote_from_chunk": "Bệnh herpes ở mèo được xem là nguy hiểm vì có thể gây tổn thương nặng ở đường hô hấp và mắt nếu không được điều trị kịp thời. Mèo mắc bệnh thường chảy mũi, khó thở, viêm loét giác mạc dẫn đến giảm thị lực hoặc mù lòa."
     },
     {
-        "question": "Mình thấy chó cứ nôn mửa hoài, mà không biết phải làm sao nữa! Có cách nào giúp nó không?",
-        "ground_truth": "Đưa chó đến bác sĩ thú y để được thăm khám, tiêm phòng và tư vấn dinh dưỡng phù hợp, giúp phòng ngừa các bệnh gây nôn mửa hiệu quả.",
-        "source": "https://petcare.vn/cho-bi-non-mua/"
+        "question": "Trời ơi, mèo nhà em nó thở khò khè, ngực phập phồng mạnh, nằm lì không chịu chơi, nhìn mệt mỏi lắm! Có phải nó bị bệnh về đường hô hấp như viêm phổi hay hen suyễn không? Giúp em với!",
+        "ground_truth": "Mèo có thể phát ra tiếng khò khè, ngực và bụng phập phồng mạnh, biểu hiện mệt mỏi như nằm nhiều, lười vận động và dễ kiệt sức khi di chuyển. Những triệu chứng này có thể liên quan đến bệnh về đường hô hấp như viêm phổi, hen suyễn. Bạn nên đưa mèo đến bác sĩ thú y để được chẩn đoán chính xác.",
+        "source": "https://petcare.vn/meo-bi-kho-tho/",
+        "quote_from_chunk": "Âm thanh bất thường: mèo có thể phát ra tiếng khò khè, tiếng rít hoặc tiếng huýt gió khi thở. Ngực và bụng phập phồng mạnh: cơ thể phải gắng sức để lấy oxy, bụng hóp lại theo từng nhịp thở. Biểu hiện mệt mỏi : mèo nằm nhiều, lười vận động, ít chơi đùa và dễ kiệt sức khi di chuyển. Lo lắng, bồn chồn : một số mèo có thể thay đổi hành vi, trốn tránh hoặc tỏ ra bất an khi khó thở kéo dài. ## Nguyên nhân dẫn đến mèo bị khó thở Hiện tượng mèo bị khó thở có thể bắt nguồn từ nhiều nguyên nhân khác nhau, liên quan đến cả đường hô hấp, tim mạch hoặc các yếu tố môi trường. Việc xác định đúng nguyên nhân rất quan trọng để có phương pháp điều trị phù hợp và tránh nguy cơ tái phát. Dưới đây là những nguyên nhân phổ biến nhất: Bệnh về đường hô hấp : viêm phổi, hen suyễn, nhiễm trùng đường hô hấp trên, viêm xoang hoặc tắc nghẽn do dịch nhầy."
     },
     {
-        "question": "Mình thấy mèo nhà mình cứ đi ngoài liên tục, phân lỏng lắm, còn không chịu ăn uống gì cả. Nó có sao không nhỉ?",
-        "ground_truth": "Tiêu chảy kéo dài, đặc biệt khi mèo bỏ ăn, có thể là dấu hiệu của bệnh lý nghiêm trọng. Cần đưa mèo đến bác sĩ thú y nếu tình trạng này kéo dài để được khám và chẩn đoán kịp thời.",
-        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/"
+        "question": "Sao con chó nhà tôi ho dữ dội quá, nghe tiếng ho cứ như bị vật gì mắc kẹt trong cổ họng ấy! Không hiểu nó mắc bệnh gì, chữa ở đâu bây giờ?",
+        "ground_truth": "Bệnh viện thú y PETCARE là địa chỉ uy tín hàng đầu trong việc chẩn đoán và điều trị các bệnh hô hấp, đặc biệt là viêm phế quản ở chó. Bạn nên đưa chó đến PETCARE để được chẩn đoán chính xác.",
+        "source": "https://petcare.vn/benh-viem-phe-quan-o-cho/",
+        "quote_from_chunk": "Bệnh viện thú y PETCARE là địa chỉ uy tín hàng đầu trong việc chẩn đoán và điều trị các bệnh hô hấp, đặc biệt là viêm phế quản ở chó. Với đội ngũ bác sĩ thú y giàu kinh nghiệm và trang thiết bị hiện đại, PETCARE luôn đưa ra phác đồ điều trị chính xác, giúp thú cưng phục hồi nhanh chóng."
     },
     {
-        "question": "Mèo mình bị tiêu chảy mấy ngày rồi, mà còn có cả máu trong phân nữa. Mình lo quá, không biết có chuyện gì nghiêm trọng không?",
-        "ground_truth": "Có máu trong phân là triệu chứng nghiêm trọng, có thể do nhiễm khuẩn, ký sinh trùng hoặc ngộ độc. Bạn nên đưa mèo đến bác sĩ thú y ngay lập tức để được kiểm tra và điều trị.",
-        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/"
+        "question": "Chó nhà em lông yếu xìu, khô xơ, sờ vào thấy gãy lông tùm lum, da còn bốc mùi hôi khó chịu nữa! Có phải do vi khuẩn hay bã nhờn tích tụ lâu ngày không? Làm sao để hết mùi và lông mượt lại được ạ?!",
+        "ground_truth": "Bộ lông trở nên thưa, dễ rối và gãy khi chạm; bề mặt không còn mịn mượt như bình thường. Có mùi lạ từ da hoặc lông: Vùng da bị rụng có thể xuất hiện mùi hôi khó chịu do vi khuẩn hoặc bã nhờn tích tụ lâu ngày. Bạn nên đưa chó đến cơ sở thú y để được chẩn đoán và điều trị chính xác.",
+        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/",
+        "quote_from_chunk": "Lông yếu, khô xơ và mất độ bóng” Bộ lông trở nên thưa, dễ rối và gãy khi chạm; bề mặt không còn mịn mượt như bình thường. Có mùi lạ từ da hoặc lông: Vùng da bị rụng có thể xuất hiện mùi hôi khó chịu do vi khuẩn hoặc bã nhờn tích tụ lâu ngày."
     },
     {
-        "question": "Tôi đang lo lắng vì không biết có phải gắn microchip cho thú cưng trước khi đi du lịch hay không? Nó có quan trọng không?",
-        "ground_truth": "Có, việc gắn microchip cho thú cưng là rất quan trọng để đảm bảo rằng thú cưng của bạn có thể được nhận diện và xác minh khi cần thiết, đặc biệt là khi đi du lịch quốc tế.",
-        "source": "data/rag_docs.pdf"
+        "question": "Chó nhà em gần đây cứ lấy chân sờ miệng suốt, hơi thở thì hôi lắm, sáng nay em thấy nó chảy dãi bất thường và khó nhai. Nghe nói PetCare có dịch vụ nha khoa, vậy mấy triệu chứng này có cần đưa nó đi kiểm tra khẩn cấp không? Chứ em sợ nó đau lợi hay mất răng quá!!!",
+        "ground_truth": "Nếu thấy các biểu hiện như hơi thở hôi, gặp khó khăn khi ăn uống, chảy nước miếng bất thường, bạn nên đem thú cưng tới bác sĩ thú y để được kiểm tra và điều trị.",
+        "source": "data/rag_docs.pdf",
+        "quote_from_chunk": "Nếu thấy các biểu hiện sau, vui lòng đem thú cưng tới bác sĩ thú y để được kiểm tra và điều trị: Hơi thở hôi. Đau miệng. Gặp khó khăn khi ăn uống. Mất răng hoặc răng lung lay. Lấy chân chạm vào miệng hoặc cọ xát miệng xuống đất,… Lợi chảy máu. Cao răng vàng hoặc nâu trên răng. Chảy nước miếng bất thường."
     },
     {
-        "question": "Tôi nghe nói cần chích ngừa và làm xét nghiệm cho thú cưng trước khi xuất cảnh, nhưng không biết là phải làm những gì và bao lâu trước chuyến đi thì nên thực hiện?",
-        "ground_truth": "Bạn cần chích ngừa đầy đủ và làm các xét nghiệm cần thiết, như chứng nhận kháng thể dại. Nên thực hiện các bước này ít nhất 6 tháng trước khi khởi hành để đảm bảo mọi thứ được chuẩn bị đầy đủ.",
-        "source": "data/rag_docs.pdf"
+        "question": "Có chó nhà em gần đây thấy mắt nó cứ bị đục đi, em lo quá! Không biết có phải bị bệnh đục mắt ở chó không? Nếu không chữa kịp thì có bị mù không ạ?",
+        "ground_truth": "Bệnh đục mắt ở chó là một trong những vấn đề thị lực phổ biến, có thể ảnh hưởng nghiêm trọng đến sức khỏe và chất lượng cuộc sống của thú cưng. Việc nhận biết sớm nguyên nhân, triệu chứng và cách điều trị sẽ giúp chó tránh nguy cơ mù lòa.",
+        "source": "https://petcare.vn/benh-duc-mat-o-cho/",
+        "quote_from_chunk": "Bệnh đục mắt ở chó là một trong những vấn đề thị lực phổ biến, có thể ảnh hưởng nghiêm trọng đến sức khỏe và chất lượng cuộc sống của thú cưng. Việc nhận biết sớm nguyên nhân, triệu chứng và cách điều trị sẽ giúp chó tránh nguy cơ mù lòa."
     },
     {
-        "question": "Ôi, tôi lo quá! Tôi muốn đưa cún đi nước ngoài nhưng không biết phải làm gì để nó có thể xuất cảnh?",
-        "ground_truth": "Để đưa cún đi nước ngoài, bạn cần thực hiện các thủ tục xuất cảnh như tư vấn thủ tục xuất cảnh, cấp giấy chứng nhận sức khỏe và hỗ trợ cấp giấy phép xuất cảnh.",
-        "source": "data/rag_docs.pdf"
+        "question": "Chó nhà em bị chảy máu! Có nguy hiểm không? Em cần đưa đi đâu ngay? PETCARE có cấp cứu và cầm máu được không? Làm ơn giúp em với!",
+        "ground_truth": "Chó bị chảy máu có thể nguy hiểm. Bạn nên đưa chó đến Bệnh Viện Thú Y PETCARE, nơi có dịch vụ cấp cứu 24/7 và đội ngũ bác sĩ có kinh nghiệm. PETCARE có thể giúp cầm máu và theo dõi điều trị toàn diện.",
+        "source": "https://petcare.vn/cach-cam-mau-nhanh-nhat-cho-cho/",
+        "quote_from_chunk": "Đặc biệt, khi chó bị chảy máu, việc lựa chọn một cơ sở thú y uy tín là vô cùng quan trọng để đảm bảo xử lý triệt để và an toàn. Bệnh Viện Thú Y PETCARE với đội ngũ bác sĩ nhiều kinh nghiệm, trang thiết bị hiện đại và dịch vụ cấp cứu 24/7 luôn sẵn sàng hỗ trợ trong các tình huống khẩn cấp. PETCARE không chỉ giúp cầm máu, khâu vết thương, mà còn theo dõi và điều trị toàn diện, từ kiểm soát sốc đến phòng ngừa nhiễm trùng."
     },
     {
-        "question": "Tôi sợ cưng không đủ sức khỏe để đi du lịch nước ngoài, làm sao tôi biết nó có cần giấy chứng nhận sức khỏe không?",
-        "ground_truth": "Bạn cần có giấy chứng nhận sức khỏe (health certificate) để đảm bảo cún đủ điều kiện sức khỏe khi xuất cảnh.",
-        "source": "data/rag_docs.pdf"
+        "question": "Mắt chó em bị thương do cành cây đâm trúng, nó chảy nước mắt và nheo mắt đau đớn! Em sợ quá, có nên rửa sạch dị vật hay lấy cái cành đó ra không? Hay phải làm sao bây giờ?",
+        "ground_truth": "Khi phát hiện chó bị chấn thương mắt, không chạm, không rửa, không tự lấy dị vật ra khỏi mắt. Nên dùng gạc sạch hoặc khăn mềm che mắt lại, tránh ánh sáng mạnh và đưa đến cơ sở thú y ngay lập tức.",
+        "source": "https://petcare.vn/chan-thuong-nhan-cau-o-cho/",
+        "quote_from_chunk": "Sơ cứu ban đầu: Khi phát hiện chó bị chấn thương mắt, không chạm, không rửa, không tự lấy dị vật ra khỏi mắt. Nên dùng gạc sạch hoặc khăn mềm che mắt lại, tránh ánh sáng mạnh và đưa đến cơ sở thú y ngay lập tức."
     },
     {
-        "question": "Ôi, tôi thấy chó của mình rụng lông nhiều quá, mà không biết tại sao. Nó còn gãi gãi và liếm liếm chỗ đó nữa, có phải là đang bị ngứa không? Tôi lo quá, có nguy hiểm gì không?",
-        "ground_truth": "Hiện tượng chó bị rụng lông có thể là dấu hiệu của nhiều vấn đề khác nhau, từ dị ứng cho đến tình trạng da. Nếu chó của bạn có biểu hiện ngứa, khó chịu và gãi nhiều, điều này có thể ảnh hưởng đến sức khỏe tổng thể của nó. Cần theo dõi kỹ và đưa chó đến bác sĩ thú y để được chẩn đoán chính xác.",
-        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+        "question": "Mèo nhà tôi thở khò khè, thở hổn hển cả ngày hôm nay rồi! Có phải nó bị viêm phổi hay do nó nuốt phải sợi dây đồ chơi nào đó không? Hay là suy tim với tích tụ dịch ở phổi? Làm ơn cho tôi biết nguyên nhân và cách chữa gấp!!!",
+        "ground_truth": "Mèo có thể bị viêm phổi, tắc nghẽn đường thở do nuốt phải dị vật nhỏ, hoặc suy tim với tích tụ dịch ở phổi, gây khó thở. Bạn nên đưa mèo đến bác sĩ thú y để được chẩn đoán và điều trị chính xác.",
+        "source": "https://petcare.vn/meo-bi-kho-tho/",
+        "quote_from_chunk": "Bệnh về đường hô hấp : viêm phổi, hen suyễn, nhiễm trùng đường hô hấp trên, viêm xoang hoặc tắc nghẽn do dịch nhầy. Vật cản trong khí quản : mèo nuốt phải dị vật nhỏ (xương cá, đồ chơi, sợi dây) gây tắc nghẽn đường thở. Bệnh tim mạch : suy tim, tích tụ dịch ở phổi hoặc khoang ngực có thể khiến mèo khó thở. Ký sinh trùng : giun phổi, giun tim hoặc các loại ký sinh trùng khác làm ảnh hưởng đến khả năng hô hấp. Dị ứng và hen suyễn : mèo phản ứng với bụi, phấn hoa, hóa chất, khói thuốc hoặc lông thú khác. Yếu tố môi trường : không khí ô nhiễm, khói bụi, nơi nuôi nhốt chật hẹp và thiếu thông thoáng. Chấn thương hoặc bệnh lý khác : gãy xương sườn, u bướu ở phổi, tích dịch trong khoang ngực."
     },
     {
-        "question": "Chó của tôi rụng lông rất nhiều, và bây giờ tôi thấy cả chỗ da trống nữa. Điều này có bình thường không? Tôi phải làm gì để giúp nó?",
-        "ground_truth": "Rụng lông nhiều hơn mức bình thường có thể là dấu hiệu không tốt, đặc biệt nếu kèm theo các triệu chứng như da khô, bong vảy hoặc đổi màu. Bạn nên kiểm tra và chăm sóc cho bộ lông của chó bằng cách giữ cho da và lông sạch sẽ, và nếu tình trạng không cải thiện, hãy đưa chó đến bác sĩ thú y để được tư vấn và điều trị kịp thời.",
-        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
+        "question": "Giúp em với! Chó nhà em bỏ ăn, nôn mửa, tiêu chảy ra máu, em nghi nó bị parvo rồi! Liệu bệnh parvo ở chó có chữa được không? Có phải là nó sẽ chết chắc không?",
+        "ground_truth": "Bệnh Parvo ở chó tuy rất nguy hiểm nhưng vẫn có thể chữa được nếu phát hiện sớm và điều trị kịp thời. Không giống như bệnh dại, Parvo không phải là “án tử chắc chắn”.",
+        "source": "https://petcare.vn/benh-parvo-o-cho-co-chua-duoc-khong/",
+        "quote_from_chunk": "Bệnh Parvo ở chó tuy rất nguy hiểm nhưng vẫn có thể chữa được nếu phát hiện sớm và điều trị kịp thời. Không giống như bệnh dại, Parvo không phải là “án tử chắc chắn”. Tuy nhiên, vì đây là bệnh do virus gây ra nên hiện nay chưa có thuốc đặc trị tiêu diệt tận gốc. Việc điều trị chủ yếu tập trung vào hỗ trợ và kiểm soát triệu chứng, giúp chó có đủ sức chống lại virus."
     },
     {
-        "question": "Mình thấy chó của mình gãi liên tục và có vẻ khó chịu, không biết có phải nó bị ký sinh trùng gì không nhỉ?",
-        "ground_truth": "Chó có thể bị ký sinh trùng như bọ chét, ve hoặc giun. Để phòng ngừa, bạn cần tẩy giun định kỳ và giữ vệ sinh môi trường sống. Theo dõi sức khỏe chó thường xuyên là rất quan trọng để phát hiện sớm các vấn đề.",
-        "source": "https://petcare.vn/ky-sinh-trung-o-cho/"
+        "question": "Chó nhà em cứ chảy máu cam không ngừng! Tôi đã thử cầm máu tạm thời rồi nhưng nó lại chảy tiếp, làm tôi hoảng quá! Có phải do ve ký sinh trùng máu không? Làm sao để biết nguyên nhân và có liệu trình điều trị dứt điểm không bác sĩ?",
+        "ground_truth": "Việc cầm máu khi chảy máu cam chỉ là can thiệp tạm thời. Quan trọng là phải xác định được nguyên nhân, từ đó BSTY sẽ đưa ra liệu trình điều trị phù hợp để giải quyết triệt để triệu chứng. Bạn nên đưa chó đến BSTY để được chẩn đoán chính xác và điều trị.",
+        "source": "https://petcare.vn/can-lam-gi-khi-cun-bi-chay-mau-cam/",
+        "quote_from_chunk": "Ngoài ra còn có các xét nghiệm khác như test nhanh ký sinh trùng máu do ve (Ehrlichia, Rickettsia…), xét nghiệm đông máu, đo huyết áp… Việc cầm máu khi chảy máu cam chỉ là can thiệp tạm thời. Quan trọng là phải xác định được nguyên nhân, từ đó BSTY sẽ đưa ra liệu trình điều trị phù hợp để giải quyết triệt để triệu chứng."
     },
     {
-        "question": "Chó của mình vừa mới có dấu hiệu lông xơ xác và suy yếu, mình cảm thấy lo lắng quá, có khi nào nó bị nhiễm ký sinh trùng không?",
-        "ground_truth": "Dấu hiệu lông xơ xác và suy yếu có thể là triệu chứng của nhiễm ký sinh trùng. Bạn nên đưa chó đi kiểm tra sức khỏe thường xuyên và thực hiện các biện pháp phòng ngừa như tẩy giun và chăm sóc lông đúng cách.",
-        "source": "https://petcare.vn/ky-sinh-trung-o-cho/"
+        "question": "Chó nhà em đang nheo mắt, sợ ánh sáng, chảy nước mắt với ghèn, mắt còn đỏ và to hơn bình thường nữa! Có phải do tuổi già, đục thủy tinh thể, tiểu đường, chấn thương, loét giác mạc, viêm màng bồ đào, bệnh tăng nhãn áp hay di truyền không? Nguy hiểm lắm đúng không?",
+        "ground_truth": "Biểu hiện kèm theo của chó bao gồm nheo mắt, sợ ánh sáng, chảy nước mắt hoặc có ghèn, mắt đỏ và to hơn bình thường. Nguyên nhân có thể là tuổi già (xơ cứng hạt nhân), đục thủy tinh thể, tiểu đường, chấn thương, loét giác mạc, viêm màng bồ đào, bệnh tăng nhãn áp hoặc di truyền. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán chính xác.",
+        "source": "https://petcare.vn/benh-duc-mat-o-cho/",
+        "quote_from_chunk": "Biểu hiện kèm theo: chó nheo mắt, sợ ánh sáng, chảy nước mắt hoặc có ghèn, đôi khi mắt đỏ và to hơn bình thường. Nguyên nhân: tuổi già (xơ cứng hạt nhân), đục thủy tinh thể, tiểu đường, chấn thương, loét giác mạc, viêm màng bồ đào, bệnh tăng nhãn áp hoặc di truyền."
     },
     {
-        "question": "Tôi không hiểu sao chó nhà tôi lại chán ăn, nó cứ nằm bẹp một chỗ và không muốn ăn uống gì cả. Có phải nó đang bị đau bụng không?",
-        "ground_truth": "Chó có thể chán ăn do cảm giác đau bụng và khó chịu. Nếu tình trạng này kéo dài, chó có thể bị sút cân nhanh và yếu dần.",
-        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+        "question": "Chân chó em nhìn tím đen một ngón, sưng vù lên, chảy dịch mùi thối kinh khủng! Có nguy cơ nhiễm trùng lan lên cả bàn chân không? Bác sĩ ơi có cách nào cứu ngón chân của nó không hay phải cắt bỏ rồi?",
+        "ground_truth": "Nếu thú cưng của bạn gặp tình trạng hoại tử ngón chân ở chó, đây là vấn đề nghiêm trọng không nên chủ quan vì có thể dẫn đến nhiễm trùng lan rộng. Việc nhận biết sớm và điều trị đúng cách sẽ giúp cứu mô chân và hạn chế nguy cơ phải cắt bỏ.",
+        "source": "https://petcare.vn/hoai-tu-ngon-chan-o-cho/",
+        "quote_from_chunk": "Nếu thú cưng của bạn gặp tình trạng hoại tử ngón chân ở chó, đây là vấn đề nghiêm trọng không nên chủ quan vì có thể dẫn đến nhiễm trùng lan rộng. Việc nhận biết sớm và điều trị đúng cách sẽ giúp cứu mô chân và hạn chế nguy cơ phải cắt bỏ."
     },
     {
-        "question": "Chó của tôi có vẻ không được khỏe, nó hay rên rỉ và bụng thì sôi sùng sục, có lúc nó cong lưng lại khi tôi chạm vào bụng. Liệu có vấn đề gì nghiêm trọng không?",
-        "ground_truth": "Khi chó có bụng đau, căng hoặc sôi ruột, có thể chúng đang gặp rắc rối về tiêu hóa. Chó có thể cong lưng, né tránh khi chạm vào bụng hoặc rên nhẹ.",
-        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+        "question": "Chó nhà em gần đây cứ liếm cắn lông suốt ngày! Em thấy lông rụng từng mảng, chỗ nào nó liếm nhiều thì da cũng đỏ ửng lên nữa. Có phải tại nó buồn chán quá không? Làm sao để cứu đám lông của nó với!!!",
+        "ground_truth": "Căng thẳng hoặc thay đổi tâm lý có thể khiến chó liếm/cắn lông tại một số vị trí, dẫn đến rụng và viêm da. Bạn nên xem xét tình trạng tâm lý và môi trường sống của chó để tìm cách cải thiện.",
+        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/",
+        "quote_from_chunk": "Căng thẳng hoặc thay đổi tâm lý: Khi quá lo lắng, buồn chán do thiếu vận động hoặc thay đổi môi trường sống, chó có thói quen liếm/cắn lông tại một số vị trí, dẫn đến rụng và viêm da."
     },
     {
-        "question": "Mèo nhà tôi dạo này cứ nằm một chỗ, không muốn chơi đùa gì cả, đi lại cũng thấy mệt mỏi, tôi rất lo lắng không biết có chuyện gì không?",
-        "ground_truth": "Biểu hiện mệt mỏi ở mèo như nằm nhiều, lười vận động, và dễ kiệt sức khi di chuyển có thể liên quan đến tình trạng khó thở do các vấn đề về đường hô hấp hoặc tim mạch. Tôi khuyên bạn nên đưa mèo đến khám bác sĩ thú y để xác định nguyên nhân và có phương pháp điều trị phù hợp.",
-        "source": "https://petcare.vn/meo-bi-kho-tho/"
+        "question": "Chó nhà em bị hắt hơi liên tục, chảy nước mũi trong suốt, giờ chuyển sang màu vàng rồi! Có phải nó bị nhiễm trùng nặng không? Làm sao để chữa gấp ạ?!",
+        "ground_truth": "Chảy nước mũi và hắt hơi liên tục có thể là dấu hiệu của nhiễm trùng khi dịch mũi chuyển sang màu vàng hoặc xanh. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán và điều trị chính xác.",
+        "source": "https://petcare.vn/benh-viem-phe-quan-o-cho/",
+        "quote_from_chunk": "Chảy nước mũi và hắt hơi liên tục : dịch mũi có thể trong, sau đó chuyển sang màu vàng hoặc xanh khi có nhiễm trùng."
     },
     {
-        "question": "Tôi thấy mèo của mình có vẻ lo lắng, nó hay trốn tránh và không thoải mái, có phải mèo bị khó thở không?",
-        "ground_truth": "Các dấu hiệu như lo lắng, bồn chồn và sự thay đổi trong hành vi có thể là do mèo gặp khó khăn trong việc hô hấp. Khó thở có thể do nhiều nguyên nhân như bệnh về đường hô hấp, bệnh tim mạch hoặc thậm chí là dị vật trong khí quản. Bạn nên đưa mèo đến bác sĩ thú y để được kiểm tra và chẩn đoán chính xác.",
-        "source": "https://petcare.vn/meo-bi-kho-tho/"
+        "question": "Chó nhà em đi tiểu ra máu, rặn mãi mới tè được một tí, bác sĩ bảo nghi bị sỏi bàng quang. Em lo quá! Sỏi bàng quang ở chó thường có những loại nào vậy ạ?",
+        "ground_truth": "Sỏi bàng quang ở chó có các loại: calcium oxylate, ureate, cystine, calcium phosphate và sỏi silicate.",
+        "source": "https://petcare.vn/soi-bang-quang-benh-o-nhung-chu-cho-ngoan/",
+        "quote_from_chunk": "Sỏi được hình thành ở bàng quang, có kích thước và số lượng khác nhau (có trường hợp sỏi chiếm 80% thể tích bàng quang). Gồm các loại: calcium oxylate, ureate, cystine, calcium phosphate và sỏi silicate. Thú có thể có một hoặc nhiều loại sỏi."
     },
     {
-        "question": "Ôi không, mình thấy chó nhà mình rụng lông từng mảng tròn, còn gãi liên tục nữa, mà giờ mình cũng thấy da mình có những vết đỏ hình tròn, không biết có phải bị lây không nhỉ?",
-        "ground_truth": "Nấm da có thể lây sang người, và các dấu hiệu ở người có thể bao gồm vết đỏ hình tròn và ngứa. Bạn nên đến bác sĩ thú y để kiểm tra và điều trị kịp thời.",
-        "source": "https://petcare.vn/petcare-benh-nam-da-o-thu-cung/"
+        "question": "Trời ơi cứu tôi với! Con chó nhà tôi hôm nay nó cứ đi ngoài liên tục, phân toàn nhầy và có lẫn máu, thấy nó ngồi mót rặn hoài mà không ra, trông mệt lả người rồi! Có phải nó bị viêm đại tràng không? Nguy hiểm lắm không?",
+        "ground_truth": "Chó có triệu chứng đi ngoài liên tục, phân nhầy máu, mót rặn và mệt mỏi có thể mắc viêm đại tràng. Nếu không được điều trị kịp thời, viêm đại tràng có thể trở thành mãn tính và khiến chó sút cân, mệt mỏi. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán và điều trị kịp thời.",
+        "source": "https://petcare.vn/viem-dai-trang-o-cho/",
+        "quote_from_chunk": "Viêm đại tràng ở chó là tình trạng lớp niêm mạc đại tràng bị viêm, gây ảnh hưởng đến khả năng tiêu hóa và hấp thu thức ăn. Chó mắc bệnh thường xuất hiện triệu chứng tiêu chảy, phân nhầy máu, mót rặn và đi ngoài nhiều lần trong ngày. Nếu không được điều trị kịp thời, viêm đại tràng có thể trở thành mãn tính và khiến chó sút cân, mệt mỏi."
     },
     {
-        "question": "Mình lo quá, nếu mà thú cưng bị nấm da thì mình phải làm gì để cho nó khỏi nhanh, và có lâu không thì mới thấy hết?",
-        "ground_truth": "Để điều trị nấm da, bạn cần cạo lông vùng bệnh, tắm thuốc đặc trị và sử dụng thuốc bôi kháng nấm. Thời gian điều trị trung bình là từ 4 đến 8 tuần, và không nên ngưng thuốc sớm để tránh tái phát.",
-        "source": "https://petcare.vn/petcare-benh-nam-da-o-thu-cung/"
+        "question": "Mèo nhà em hôm nay ỉa chảy toàn nước, mùi hôi thối, nó mệt rũ ra không ăn gì, còn nôn nữa! Có nguy hiểm không bác sĩ ơi?!",
+        "ground_truth": "Mèo bị tiêu chảy có thể có dấu hiệu mệt mỏi, chán ăn, uống nhiều nước hoặc nôn mửa. Nếu tình trạng này kéo dài quá hai ngày, mèo dễ bị mất nước, sút cân và cần được bác sĩ thú y kiểm tra ngay để xác định nguyên nhân chính xác. Bạn nên đưa mèo đến bác sĩ thú y để được kiểm tra.",
+        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/",
+        "quote_from_chunk": "Tiêu chảy ở mèo là tình trạng phân bị lỏng, nhão hoặc hoàn toàn ở dạng nước, thường có mùi hôi hơn bình thường và mèo đi ngoài nhiều lần trong ngày. Phân có thể kèm theo chất nhầy, máu hoặc bọt, tùy theo mức độ nghiêm trọng. Mèo bị tiêu chảy thường có dấu hiệu mệt mỏi, chán ăn, uống nhiều nước hoặc nôn mửa. Một số con còn rên rỉ, rút lui, hoặc đi vệ sinh ngoài khay do không kịp kiểm soát. Nếu tình trạng này kéo dài quá hai ngày, mèo dễ bị mất nước, sút cân và cần được bác sĩ thú y kiểm tra ngay để xác định nguyên nhân chính xác."
     },
     {
-        "question": "Ôi trời ơi, sao mà chó của mình lại cứ kéo lê mông trên sàn nhà vậy? Nó có bị làm sao không? Mình lo quá!",
-        "ground_truth": "Triệu chứng chó kéo lê mông trên sàn nhà thường gặp khi chó bị giun kim hoặc các loại giun sống gần trực tràng gây ngứa ngáy khó chịu.",
-        "source": "https://petcare.vn/ky-sinh-trung-o-cho/"
+        "question": "Chó nhà em tự nhiên thấy nó liếm đồ với cắn đồ suốt, rồi nướu có chỗ đỏ lên với sưng tấy lên nhìn rõ luôn! Có phải là nó sắp rụng răng không bác sĩ? Làm sao để cháu nó đỡ khó chịu đây ạ!?",
+        "ground_truth": "Chó có thể liếm hoặc cắn đồ vật khi cảm thấy ngứa hoặc khó chịu do răng sắp rụng. Nướu của chó có thể bị sưng và đỏ khi có vấn đề về răng miệng. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán và điều trị chính xác.",
+        "source": "https://petcare.vn/cho-bi-rung-rang-co-sao-khong/",
+        "quote_from_chunk": "Chó liếm hoặc cắn đồ vật : Đây là dấu hiệu phổ biến khi chó cảm thấy ngứa hoặc khó chịu do răng sắp rụng. Chúng có thể cắn đồ vật như giày, gậy, hoặc thậm chí các món đồ chơi để làm dịu cơn đau ở miệng.\nVết sưng và đỏ ở nướu : Khi răng sắp rụng hoặc có vấn đề về răng miệng, nướu của chó có thể bị sưng và đỏ."
     },
     {
-        "question": "Mình thấy phân của chó có những thứ giống như hạt gạo hoặc dây chỉ nhỏ, không biết có phải chó bị bệnh gì không? Mình cảm thấy rất lo lắng!",
-        "ground_truth": "Dấu hiệu phân xuất hiện vật thể lạ giống hạt gạo hoặc dây chỉ nhỏ là điển hình cho thấy chó đang nhiễm sán dây hoặc các loại giun trưởng thành sống trong đường ruột.",
-        "source": "https://petcare.vn/ky-sinh-trung-o-cho/"
+        "question": "Tôi có ngừng thuốc của nó không? Mấy hôm nay thấy nó hết co giật rồi có khi nào... Nhưng đọc ở đây bảo tự ý ngưng thuốc làm động kinh tái phát hoặc nghiêm trọng hơn! Có thật không vậy bác sĩ?",
+        "ground_truth": "Việc tự ý ngưng thuốc có thể khiến cơn động kinh tái phát hoặc nghiêm trọng hơn.",
+        "source": "https://petcare.vn/thu-cung-bi-co-giat-dong-kinh/",
+        "quote_from_chunk": "Việc tự ý ngưng thuốc có thể khiến cơn động kinh tái phát hoặc nghiêm trọng hơn."
     },
     {
-        "question": "Tôi thấy mèo của mình đi ngoài nhiều lần trong ngày, phân lỏng và có mùi hôi. Nó cũng có vẻ mệt mỏi và không muốn ăn uống gì cả. Liệu có vấn đề gì nghiêm trọng không?",
-        "ground_truth": "Tiêu chảy ở mèo có thể là dấu hiệu của một vấn đề tiêu hóa nghiêm trọng, đặc biệt nếu kéo dài hơn hai ngày. Mèo có thể bị mất nước, sút cân và cần được kiểm tra bởi bác sĩ thú y để xác định nguyên nhân.",
-        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/"
+        "question": "Chó nhà em gần đây đi tiểu rất khó khăn, rặn mãi mới ra được vài giọt, có lúc còn thấy lẫn máu trong nước tiểu. Em lo quá, không biết có phải bị sỏi bàng quang không? Có cách nào điều trị dứt điểm không bác sĩ ơi!",
+        "ground_truth": "Chó bị sỏi bàng quang là một vấn đề sức khỏe nghiêm trọng, gây ra đau đớn và ảnh hưởng đến chất lượng sống. Việc phát hiện và điều trị kịp thời sẽ giúp thú cưng của bạn nhanh chóng hồi phục và tránh các biến chứng nguy hiểm. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán chính xác và điều trị kịp thời.",
+        "source": "https://petcare.vn/soi-bang-quang-benh-o-nhung-chu-cho-ngoan/",
+        "quote_from_chunk": "Chó bị sỏi bàng quang là một vấn đề sức khỏe nghiêm trọng mà nhiều chú chó gặp phải, gây ra đau đớn và ảnh hưởng đến chất lượng sống. Việc phát hiện và điều trị kịp thời sẽ giúp thú cưng của bạn nhanh chóng hồi phục và tránh các biến chứng nguy hiểm."
     },
     {
-        "question": "Mèo của tôi tự dưng nôn mửa và không còn muốn ăn nữa, tôi rất lo lắng. Có phải mèo bị tiêu chảy không?",
-        "ground_truth": "Nếu mèo nôn mửa và không ăn uống, có thể là dấu hiệu của tiêu chảy hoặc một vấn đề tiêu hóa khác. Bạn nên đưa mèo đến bác sĩ thú y để được kiểm tra và điều trị kịp thời.",
-        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/"
+        "question": "Mèo nhà tôi bụng phình to nhanh lắm, nó còn nôn với mệt mỏi nữa! Có nguy hiểm không? Phải làm sao bây giờ?",
+        "ground_truth": "Nếu bụng mèo phình lên nhanh chóng kèm theo nôn mửa và mệt mỏi, bạn cần đưa mèo đến bác sĩ thú y ngay để được chẩn đoán và điều trị kịp thời.",
+        "source": "https://petcare.vn/meo-bi-phinh-bung/",
+        "quote_from_chunk": "Nếu bụng mèo phình lên nhanh chóng kèm theo các triệu chứng khác như nôn mửa, mệt mỏi, hoặc chán ăn, bạn cần đưa mèo đến bác sĩ thú y ngay để được chẩn đoán và điều trị kịp thời."
     },
     {
-        "question": "Chó của tôi dạo này đi ngoài nhiều lần trong ngày, phân thì có máu và nhầy, trông nó cứ như là đang rất khó chịu. Tôi không biết làm sao cả, không biết có chuyện gì nghiêm trọng không?",
-        "ground_truth": "Chó của bạn có thể đang gặp vấn đề với viêm đại tràng, đây là tình trạng viêm lớp niêm mạc đại tràng. Triệu chứng như đi ngoài nhiều lần, phân nhầy máu và cảm giác khó chịu là dấu hiệu điển hình. Bạn nên đưa chó đi khám thú y ngay để được chẩn đoán và điều trị kịp thời.",
-        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+        "question": "Chó bị ngứa ngáy, cắn vào da và gãi đến rụng lông là do gì?",
+        "ground_truth": "Chó bị ngứa ngáy, cắn vào da và gãi đến rụng lông là do ve, rận hoặc bọ chét hút máu gây kích ứng mạnh.",
+        "source": "https://petcare.vn/ky-sinh-trung-o-cho/",
+        "quote_from_chunk": "Ngứa ngáy liên tục, cắn vào da hoặc gãi đến rụng lông: Đây là phản ứng khi ve, rận hoặc bọ chét hút máu gây kích ứng mạnh và khiến da chó bị tổn thương nghiêm trọng."
     },
     {
-        "question": "Chó của tôi gần đây có vẻ mệt mỏi và sút cân, mà lại còn bị tiêu chảy nữa. Tôi lo quá, không biết có phải là bệnh gì không?",
-        "ground_truth": "Các triệu chứng như sút cân, mệt mỏi và tiêu chảy có thể liên quan đến viêm đại tràng ở chó. Nếu không được điều trị kịp thời, tình trạng này có thể trở thành mãn tính. Tôi khuyên bạn nên đưa chó đến bác sĩ thú y để được kiểm tra và điều trị sớm.",
-        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
+        "question": "Cún nhà em tự dưng chảy máu cam một bên mũi, kèm theo sưng vùng mắt và sống mũi! Có phải do abscess răng không? Em lo quá, phải làm sao bây giờ?!",
+        "ground_truth": "Chảy máu cam một bên mũi kèm theo sưng vùng mắt hoặc sống mũi có thể do abscess răng. Bạn nên đưa cún đến bác sĩ thú y để được chẩn đoán và can thiệp kịp thời.",
+        "source": "https://petcare.vn/can-lam-gi-khi-cun-bi-chay-mau-cam/",
+        "quote_from_chunk": "Chảy máu cam, thường xảy ra trên cún hơn mèo, được định nghĩa là chảy máu cấp tính từ lỗ mũi hoặc vòm họng. Nguyên nhân chảy máu cam đột ngột có thể đơn giản do chấn thương hoặc viêm đường hô hấp trên. Hoặc do các nguyên nhân khác nghiêm trọng hơn và cần can thiệp ngay: Nguyên nhân gây chảy máu 1 bên mũi: ngoại vật gây kích ứng mũi; abscess răng gây chảy máu cam kèm theo sưng vùng mắt hoặc vùng sống mũi; bướu trong mũi"
     },
     {
-        "question": "Mình có thấy mèo nhà mình dạo này đi vệ sinh không bình thường, có vẻ như nó bị tiêu chảy. Mình lo quá, không biết có phải do thức ăn không hợp không hay là có vấn đề gì khác không?",
-        "ground_truth": "Tiêu chảy ở mèo thường có thể phòng ngừa bằng cách chú ý đến chế độ ăn uống. Hạn chế thay đổi thức ăn đột ngột và luôn chọn thức ăn chất lượng, phù hợp với độ tuổi và thể trạng của mèo.",
-        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/"
+        "question": "Chó nhà em bị xe tông hồi sáng, giờ mắt nó lồi hẳn ra ngoài, hình như vỡ luôn rồi! Có cách nào cứu không bác sĩ ơi?!",
+        "ground_truth": "Tai nạn giao thông có thể gây vỡ nhãn cầu do lực va đập mạnh. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán và điều trị kịp thời.",
+        "source": "https://petcare.vn/chan-thuong-nhan-cau-o-cho/",
+        "quote_from_chunk": "Tai nạn giao thông: Là nguyên nhân nặng nề nhất, có thể gây thoát vị hoặc vỡ nhãn cầu do lực va đập mạnh."
     },
     {
-        "question": "Mèo mình gần đây không chỉ đi ngoài nhiều mà còn có vẻ mệt mỏi, mình có vệ sinh sạch sẽ nhưng không biết có cách nào khác để bảo vệ sức khỏe cho nó không?",
-        "ground_truth": "Để bảo vệ sức khỏe cho mèo, bạn nên giữ vệ sinh sạch sẽ cho khay cát, bát ăn và khu vực sinh hoạt. Ngoài ra, tẩy giun và tiêm phòng định kỳ cũng là biện pháp quan trọng để phòng ngừa các bệnh truyền nhiễm gây tiêu chảy.",
-        "source": "https://petcare.vn/cach-chua-tieu-chay-cho-meo/"
+        "question": "Ôi! Con chó nhà em đi ngoài nhiều lần quá, phân lỏng toàn nhầy với vệt máu đỏ tươi thế này là bị làm sao vậy?! Có phải viêm đại tràng không? Em lo quá!",
+        "ground_truth": "Chó đi ngoài nhiều lần trong ngày, phân lỏng hoặc sệt kèm dịch nhầy, đôi khi có vệt máu đỏ tươi là dấu hiệu cho thấy niêm mạc đại tràng đang bị tổn thương. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán chính xác.",
+        "source": "https://petcare.vn/viem-dai-trang-o-cho/",
+        "quote_from_chunk": "Tiêu chảy kéo dài, phân nhầy hoặc có máu: Chó thường đi ngoài nhiều lần trong ngày, phân lỏng hoặc sệt kèm dịch nhầy, đôi khi có vệt máu đỏ tươi. Đây là dấu hiệu đặc trưng cho thấy niêm mạc đại tràng đang bị tổn thương."
     },
     {
-        "question": "Chó của tôi đang bị tiêu chảy, nó nôn mửa liên tục và tôi thấy nó có vẻ rất khổ sở. Tôi phải làm gì để giúp nó?",
-        "ground_truth": "Trong trường hợp chó bị tiêu chảy và nôn nhiều, cần phải bổ sung nước và điện giải ngay lập tức. Bạn có thể truyền dịch hoặc cho chó uống dung dịch điện giải để tránh mất nước, đặc biệt nếu tình trạng bệnh nặng.",
-        "source": "https://petcare.vn/benh-viem-ruot-o-cho/"
+        "question": "Chó nhà em bị đục mắt, mắt nó cứ mờ đục như có màng trắng che phủ, em lo quá! Có chỗ nào uy tín để khám và điều trị dứt điểm không, hay là phải mổ gấp vậy bác sĩ?!",
+        "ground_truth": "Bạn nên đưa chó đến PETCARE để được khám và điều trị đục mắt. Tại đây, đội ngũ bác sĩ thú y giàu kinh nghiệm và trang thiết bị hiện đại sẽ giúp thú cưng phục hồi nhanh chóng.",
+        "source": "https://petcare.vn/benh-duc-mat-o-cho/",
+        "quote_from_chunk": "Khi chó bị đục mắt, việc lựa chọn đơn vị khám chữa uy tín là yếu tố then chốt để đảm bảo chẩn đoán chính xác và điều trị hiệu quả. Tại PETCARE , đội ngũ bác sĩ thú y giàu kinh nghiệm, trang thiết bị hiện đại và phác đồ điều trị chuyên biệt sẽ giúp thú cưng phục hồi nhanh chóng, giảm thiểu rủi ro biến chứng."
     },
     {
-        "question": "Tôi không biết chó của mình có cần thuốc gì không, vì nó đang có triệu chứng nôn mửa và tiêu chảy. Có nên cho nó uống thuốc gì không?",
-        "ground_truth": "Bác sĩ có thể chỉ định một số loại thuốc điều trị như thuốc kháng sinh, thuốc kháng viêm, thuốc giảm nôn, hoặc thuốc bảo vệ niêm mạc ruột tùy thuộc vào nguyên nhân gây ra triệu chứng cho chó.",
-        "source": "https://petcare.vn/benh-viem-ruot-o-cho/"
+        "question": "Chó nhà em tự dưng đi cà nhắc, em kiểm tra thấy ngón chân nó sưng tím tái lại, rõ ràng là đau lắm. Ban đầu em nghĩ nó chạy nhảy va đập thôi, nhưng đọc tài liệu mới thấy gì mà hoại tử ngón chân còn do ký sinh trùng hay tuần hoàn máu nữa! Bác sĩ ơi, nếu chó bị hoại tử ngón chân như vậy thì phải xử lý thế nào?",
+        "ground_truth": "Chấn thương cơ học như đâm phải vật nhọn, kẹp chân, té mạnh hay bị vật nặng đè có thể làm tổn thương mô sâu và nếu không điều trị, vết thương dễ chuyển thành hoại tử. Các bệnh lý như tắc mạch, viêm mạch hoặc khối u chèn ép cũng có thể khiến máu không đến được ngón chân, dẫn đến hoại tử. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán và điều trị chính xác.",
+        "source": "https://petcare.vn/hoai-tu-ngon-chan-o-cho/",
+        "quote_from_chunk": "Chấn thương cơ học: Đâm phải vật nhọn, kẹp chân, té mạnh hay bị vật nặng đè đều có thể làm tổn thương mô sâu. Nếu không điều trị, vết thương dễ chuyển thành hoại tử. ... Các bệnh lý như tắc mạch, viêm mạch hoặc khối u chèn ép khiến máu không đến được ngón chân. Khi mô thiếu oxy lâu ngày, hoại tử sẽ xuất hiện."
     },
     {
-        "question": "Mình thấy thú cưng của mình có vẻ không khỏe, nó hay nằm một chỗ, không chịu chơi và đôi khi kêu lên như đang đau đớn. Mình có nên đưa nó đi siêu âm không?",
-        "ground_truth": "Có, siêu âm là một phương pháp phổ biến để đánh giá tình trạng sức khỏe vật nuôi và chẩn đoán bệnh trong các trường hợp có dấu hiệu đau đớn, đặc biệt là liên quan đến khối u hoặc các vấn đề ở vùng bụng.",
-        "source": "data/rag_docs.pdf"
+        "question": "Trời ơi cứu em với con mèo nhà em nó tiểu ra máu, nó kêu đau ơi là đau, nó cứ đi vệ sinh mãi không được, có nguy hiểm lắm không ạ?!",
+        "ground_truth": "Mèo bị viêm đường tiết niệu có thể rất nguy hiểm, đặc biệt nếu không được phát hiện sớm. Khi thấy mèo tiểu ra máu, kêu đau hoặc không tiểu được, cần đưa đi thú y ngay để tránh biến chứng nguy hiểm.",
+        "source": "https://petcare.vn/meo-bi-viem-duong-tiet-nieu/",
+        "quote_from_chunk": "Mèo bị viêm đường tiết niệu có thể rất nguy hiểm, đặc biệt nếu không được phát hiện sớm. ... Vì vậy, khi thấy mèo tiểu khó, tiểu ra máu, kêu đau hoặc không tiểu được, cần đưa đi thú y ngay để tránh biến chứng nguy hiểm."
     },
     {
-        "question": "Thú cưng của mình đột nhiên bỏ ăn và mình thấy bụng nó hơi sưng, liệu có cần chụp X-quang không?",
-        "ground_truth": "Có, chụp X-quang thường được dùng để phát hiện các vấn đề về xương khớp, khối u, hoặc các vật thể lạ trong cơ thể như sỏi thận hoặc dị vật đường ruột, đây có thể là lý do khiến thú cưng của bạn có triệu chứng như vậy.",
-        "source": "data/rag_docs.pdf"
+        "question": "Trời ơi mèo nhà em bỗng nhiên lừ đừ, bỏ ăn, sụt cân thấy rõ, lông xơ xác hết cả rồi! Em sợ quá, có phải nó bị bệnh herpes không vậy?!",
+        "ground_truth": "Các triệu chứng như lừ đừ, bỏ ăn, sụt cân và lông xơ xác có thể liên quan đến bệnh herpes ở mèo. Tuy nhiên, để có chẩn đoán chính xác, bạn nên đưa mèo đến bác sĩ thú y.",
+        "source": "https://petcare.vn/benh-herpes-o-meo/",
+        "quote_from_chunk": "Toàn thân: sốt, mệt mỏi, giảm vận động, biếng ăn, uống ít nước.\nMiệng: viêm loét miệng, tiết nhiều nước dãi, hơi thở hôi.\nCác dấu hiệu khác: sụt cân, lông xơ xác, một số trường hợp nặng có thể dẫn đến viêm phổi.\n## Nguyên nhân dẫn đến bệnh herpes ở mèo\nBệnh herpes ở mèo (FHV-1) xuất phát từ một loại virus lây lan nhanh, chủ yếu qua đường hô hấp và tiếp xúc trực tiếp."
     },
     {
-        "question": "Chó của tôi đang bị táo bón, nó không đi vệ sinh được và trông rất khó chịu. Nó cũng không muốn ăn gì cả, tôi nên làm gì bây giờ?",
-        "ground_truth": "Táo bón ở chó thường không quá nguy hiểm nếu chỉ xảy ra trong thời gian ngắn, nhưng có thể gây đau đớn và khó chịu cho chúng. Bạn cần theo dõi tình trạng của chó, nếu triệu chứng kéo dài hoặc có dấu hiệu nặng hơn, hãy đưa chó đến bác sĩ thú y để được thăm khám và điều trị kịp thời.",
-        "source": "https://petcare.vn/cho-bi-tao-bon/"
+        "question": "Chó nhà em hôm qua bị va đập mạnh vào mắt, giờ mắt nó sưng húp lên, em sợ quá! Liệu có nguy hiểm không bác sĩ ơi? Có thể bị mù mắt vĩnh viễn thật không ạ?",
+        "ground_truth": "Chấn thương nhãn cầu ở chó là tình trạng rất nguy hiểm vì có thể gây tổn thương sâu đến các cấu trúc quan trọng trong mắt, ảnh hưởng trực tiếp đến thị lực. Nếu không được xử lý đúng cách và kịp thời, chó có thể bị giảm thị lực vĩnh viễn, mù mắt hoặc mất nhãn cầu.",
+        "source": "https://petcare.vn/chan-thuong-nhan-cau-o-cho/",
+        "quote_from_chunk": "Chấn thương nhãn cầu ở chó là tình trạng rất nguy hiểm vì có thể gây tổn thương sâu đến các cấu trúc quan trọng trong mắt, ảnh hưởng trực tiếp đến thị lực. Nếu không được xử lý đúng cách và kịp thời, chó có thể bị giảm thị lực vĩnh viễn, mù mắt hoặc mất nhãn cầu."
     },
     {
-        "question": "Tôi thấy chó của mình bị chướng bụng và mệt mỏi do táo bón, liệu có biến chứng gì không?",
-        "ground_truth": "Nếu không được xử lý kịp thời, tình trạng táo bón có thể dẫn đến các biến chứng nghiêm trọng như tổn thương niêm mạc ruột, tắc ruột hoặc nhiễm độc. Vì vậy, bạn cần theo dõi sát và nếu tình trạng không cải thiện, hãy đưa chó đến bác sĩ thú y ngay.",
-        "source": "https://petcare.vn/cho-bi-tao-bon/"
+        "question": "Chó nhà em bỏ ăn, nôn mửa liên tục, rồi tiêu chảy ra máu, em sợ quá! Có phải bệnh parvo không bác sĩ ơi? Làm sao bây giờ?!",
+        "ground_truth": "Bệnh Parvo ở chó là một bệnh truyền nhiễm cấp tính do virus Parvo gây ra, tấn công vào đường ruột, gây viêm ruột xuất huyết, nôn mửa, tiêu chảy có máu và mất nước nghiêm trọng. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán và điều trị kịp thời.",
+        "source": "https://petcare.vn/benh-parvo-o-cho-co-chua-duoc-khong/",
+        "quote_from_chunk": "Bệnh Parvo ở chó (Canine Parvovirus – CPV) là một bệnh truyền nhiễm cấp tính, nguy hiểm do virus Parvo gây ra. Virus này tấn công chủ yếu vào đường ruột, gây viêm ruột xuất huyết, nôn mửa, tiêu chảy có máu và mất nước nghiêm trọng."
     },
     {
-        "question": "Ôi, chó của tôi bị chảy máu ở chân, trông nó thật khổ sở, tôi không biết làm thế nào cả! Nó có thể bị thương nặng không?",
-        "ground_truth": "Chảy máu ở chân có thể do vết rách sâu hoặc tai nạn làm tổn thương mạch máu lớn, dẫn đến máu chảy ồ ạt. Bạn cần sơ cứu nhanh chóng để cầm máu tạm thời và đưa chó đến bác sĩ thú y ngay.",
-        "source": "https://petcare.vn/cach-cam-mau-nhanh-nhat-cho-cho/"
+        "question": "Mèo nhà tôi gần đây cứ đụng vào bụng là nó kêu la ầm ĩ, có lần suýt cắn tôi! Nó bị đau bụng hay sao ấy, làm sao bây giờ?!",
+        "ground_truth": "Nếu mèo của bạn kêu la hoặc có phản ứng mạnh mẽ khi chạm vào bụng, điều này chỉ ra rằng vùng bụng có thể đang bị tổn thương hoặc bị đầy hơi, làm tăng cảm giác khó chịu. Bạn nên đưa mèo đến bác sĩ thú y để được chẩn đoán và điều trị chính xác.",
+        "source": "https://petcare.vn/meo-bi-phinh-bung/",
+        "quote_from_chunk": "Đau hoặc khó chịu khi chạm vào bụng: Nếu bạn chạm vào vùng bụng của mèo, chúng có thể phản ứng mạnh mẽ, kêu la hoặc thậm chí cắn nếu cảm thấy đau đớn. Điều này chỉ ra rằng vùng bụng đang bị tổn thương hoặc bị đầy hơi, làm tăng cảm giác khó chịu."
     },
     {
-        "question": "Chó của tôi bị chảy máu ở bàn chân, tôi thấy móng của nó gãy và đệm chân bị rách, không biết có nguy hiểm không?",
-        "ground_truth": "Chảy máu ở bàn chân có thể do móng gãy hoặc đệm chân bị cắt rách. Bạn nên xử lý vết thương bằng cách cầm máu tạm thời và đưa chó đến bác sĩ thú y để được điều trị thích hợp.",
-        "source": "https://petcare.vn/cach-cam-mau-nhanh-nhat-cho-cho/"
-    },
-    {
-        "question": "Chó của tôi mấy hôm nay không ăn gì cả, cứ nằm một chỗ, không chịu ra ngoài chơi, và nó cũng rất nhạy cảm với ánh sáng. Tôi thấy nó hình như đau đớn lắm, không biết có chuyện gì xảy ra với nó không?",
-        "ground_truth": "Các triệu chứng như chán ăn, sợ ánh sáng và mệt mỏi có thể là dấu hiệu của đau nhức hoặc khó chịu. Bạn nên đưa chó đến bác sĩ thú y để được kiểm tra và chẩn đoán chính xác.",
-        "source": "https://petcare.vn/chan-thuong-nhan-cau-o-cho/"
-    },
-    {
-        "question": "Tôi thấy chó của tôi gần đây cứ né ánh sáng, nằm nhiều và không muốn ăn, có phải nó bị làm sao không?",
-        "ground_truth": "Chó có thể né ánh sáng và chán ăn do đau nhức hoặc khó chịu. Đây là những triệu chứng mà bạn nên chú ý và đưa chó đến bác sĩ thú y để được thăm khám cụ thể.",
-        "source": "https://petcare.vn/chan-thuong-nhan-cau-o-cho/"
-    },
-    {
-        "question": "Ôi không, chó của tôi đang bị chảy máu mũi! Tôi phải làm sao bây giờ? Nó có thể bị làm sao vậy?",
-        "ground_truth": "Khi chó bị chảy máu mũi, trước tiên bạn cần giữ cho chó nằm yên và hạn chế vận động để tránh làm máu chảy nhiều hơn. Nguyên nhân có thể do không khí quá khô hoặc bệnh lý tiềm ẩn liên quan đến máu. Hãy dùng khăn lạnh hoặc bọc đá chườm nhẹ nhàng lên sống mũi để giúp mạch máu co lại và nhanh chóng đưa chó đến cơ sở thú y để được kiểm tra và cấp cứu kịp thời.",
-        "source": "https://petcare.vn/cach-cam-mau-nhanh-nhat-cho-cho/"
-    },
-    {
-        "question": "Chó tôi tự dưng chảy máu ở mũi, tôi đang lo lắng quá! Có cách nào sơ cứu tạm thời không?",
-        "ground_truth": "Cách sơ cứu hiệu quả khi chó chảy máu mũi là dùng khăn lạnh hoặc bọc đá chườm nhẹ nhàng lên sống mũi để giúp mạch máu co lại. Trong lúc đó, bạn cần tuyệt đối không để chó hắt hơi mạnh hoặc cúi đầu thấp vì dễ làm máu chảy nhiều hơn. Sau khi sơ cứu, cần nhanh chóng đưa chó đến bác sĩ thú y để được điều trị chuyên sâu.",
-        "source": "https://petcare.vn/cach-cam-mau-nhanh-nhat-cho-cho/"
-    },
-    {
-        "question": "Chó của tôi vừa nôn ra một thứ gì đó, tôi không biết phải làm sao. Nó còn nôn liên tục và có vẻ mệt mỏi nữa. Tôi nên làm gì bây giờ?",
-        "ground_truth": "Nếu chó nôn liên tục, kèm theo triệu chứng như tiêu chảy, bỏ ăn, mệt mỏi hoặc chất nôn có máu, bạn cần đưa chó đến bác sĩ thú y ngay để xác định nguyên nhân và điều trị kịp thời.",
-        "source": "https://petcare.vn/cho-bi-non-mua/"
-    },
-    {
-        "question": "Tôi thấy chó tôi nôn và không ăn được gì cả. Tôi có thể cho nó ăn lại không? Nó có cần ăn cái gì đặc biệt không?",
-        "ground_truth": "Sau khi chó ngừng nôn, bạn có thể bắt đầu cho ăn lại nhẹ nhàng với các món mềm, dễ tiêu như cháo thịt băm, cơm nấu nhuyễn hoặc thức ăn chuyên dụng dành cho chó đang hồi phục.",
-        "source": "https://petcare.vn/cho-bi-non-mua/"
-    },
-    {
-        "question": "Ôi, mình thấy chó nhà mình cứ rụng lông liên tục, mà da thì lại ngứa ngáy nữa, không biết có phải bị ký sinh trùng gì không?",
-        "ground_truth": "Chó có thể bị ký sinh trùng ngoài da như ve, rận, bọ chét hoặc ghẻ, gây ngứa dữ dội. Chó sẽ gãi liên tục, dẫn đến da trầy xước, nhiễm trùng và rụng lông thành từng mảng rõ rệt. Bạn nên đưa chó đến bác sĩ thú y để kiểm tra và điều trị kịp thời.",
-        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
-    },
-    {
-        "question": "Chó mình gần đây có vẻ buồn và hay liếm lông, mà mình thấy lông rụng nhiều quá, có khi nào do căng thẳng không?",
-        "ground_truth": "Căng thẳng hoặc thay đổi tâm lý có thể khiến chó có thói quen liếm hoặc cắn lông tại một số vị trí, dẫn đến tình trạng rụng lông và viêm da. Bạn nên tạo điều kiện cho chó vận động nhiều hơn và tạo môi trường sống ổn định để giảm căng thẳng.",
-        "source": "https://petcare.vn/tai-sao-cho-lai-rung-long/"
-    },
-    {
-        "question": "Chó nhà mình dạo này răng bị lỏng và có vẻ như sắp rụng, mình thấy nó ăn uống cũng khó khăn nữa. Không biết có vấn đề gì không nhỉ?",
-        "ground_truth": "Chó có thể gặp vấn đề về sức khỏe răng miệng do tuổi tác, dẫn đến tình trạng răng bị lỏng hoặc rụng. Ngoài ra, viêm nướu và mảng bám cũng có thể là nguyên nhân gây ra triệu chứng này.",
-        "source": "https://petcare.vn/cho-bi-rung-rang-co-sao-khong/"
-    },
-    {
-        "question": "Mình lo lắm, chó mình ăn không ngon, thấy có dấu hiệu răng bị rụng. Có khi nào do ăn uống không đủ chất không?",
-        "ground_truth": "Chế độ ăn thiếu vitamin và khoáng chất cần thiết cho sức khỏe răng miệng có thể dẫn đến rụng răng ở chó. Các chất dinh dưỡng như canxi, vitamin C và vitamin D là rất quan trọng cho sức khỏe răng miệng.",
-        "source": "https://petcare.vn/cho-bi-rung-rang-co-sao-khong/"
-    },
-    {
-        "question": "Tôi thấy chó của mình đang gặp vấn đề trong việc sinh nở, nó có vẻ đau đớn và không biết phải làm sao. Tôi nên làm gì bây giờ?",
-        "ground_truth": "Bạn nên đưa chó đến cơ sở thú y uy tín ngay lập tức. Việc nhận biết sớm các dấu hiệu sinh khó và can thiệp kịp thời là rất quan trọng để đảm bảo an toàn cho cả mẹ và con.",
-        "source": "https://petcare.vn/cho-sinh-kho/"
-    },
-    {
-        "question": "Chó của tôi đang có dấu hiệu khó sinh và tôi rất lo lắng. Có cách nào giúp nó không?",
-        "ground_truth": "Cách tốt nhất là bạn nhanh chóng đưa chó đến bệnh viện thú y để được thăm khám và xử lý kịp thời. Đội ngũ bác sĩ ở bệnh viện sẽ có biện pháp hỗ trợ an toàn cho quá trình sinh nở.",
-        "source": "https://petcare.vn/cho-sinh-kho/"
-    },
-    {
-        "question": "Tôi thấy chó của tôi cứ kêu rên khi đi vệ sinh, nó cúi gằm và có vẻ đau bụng lắm. Phải làm sao đây?",
-        "ground_truth": "Chó có thể đang bị táo bón, điều này khiến chúng khó khăn khi đi vệ sinh. Bạn nên theo dõi tình trạng đi ngoài của chó và thực hiện các biện pháp hỗ trợ tại nhà để giúp chúng đào thải phân dễ dàng hơn. Nếu tình trạng này kéo dài, hãy đưa chó đến bác sĩ thú y để được kiểm tra.",
-        "source": "https://petcare.vn/cho-bi-tao-bon/"
-    },
-    {
-        "question": "Chó của tôi không muốn ăn, nó cứ nằm một chỗ và không muốn chơi đùa. Tôi lo lắng lắm! Có thể có vấn đề gì không?",
-        "ground_truth": "Các triệu chứng như chán ăn, mệt mỏi và ít vận động có thể là dấu hiệu chó đang bị táo bón. Chó có thể cảm thấy khó chịu do tình trạng này, bạn nên quan sát và nếu có dấu hiệu kéo dài, hãy đưa chó đến bác sĩ thú y để được khám và điều trị kịp thời.",
-        "source": "https://petcare.vn/cho-bi-tao-bon/"
-    },
-    {
-        "question": "Mình đang rất hoảng hốt vì không biết phải gọi ai khi thú cưng của mình có vẻ không khỏe. Mình đã nghe nói về Petcare, nhưng không biết số điện thoại của họ là gì để gọi nhờ giúp đỡ.",
-        "ground_truth": "Bạn có thể gọi đến Petcare qua số điện thoại 0918 271 246.",
-        "source": "data/rag_docs.pdf"
-    },
-    {
-        "question": "Thú cưng của mình dạo này ăn uống không tốt lắm, mình đang tìm một nơi để đưa nó đi khám. Mình nghe nói Petcare 2 là một địa chỉ tốt, nhưng không biết số điện thoại của họ là gì.",
-        "ground_truth": "Số điện thoại của Petcare 2 là 0917 941 246.",
-        "source": "data/rag_docs.pdf"
-    },
-    {
-        "question": "Mình rất lo lắng, không biết sao mà chú chó của mình lại nằm im không nhúc nhích, có vẻ như nó không muốn ăn gì cả, có phải nó bị làm sao không?",
-        "ground_truth": "Có thể chú chó của bạn đang gặp vấn đề sức khỏe nghiêm trọng. Nếu chó của bạn không ăn, nằm im và có dấu hiệu khác như nôn mửa hoặc tiêu chảy, bạn nên nhanh chóng đưa nó đến cơ sở thú y gần nhất để được kiểm tra kịp thời.",
-        "source": "data/rag_docs.pdf"
-    },
-    {
-        "question": "Tôi thấy mèo của mình cứ kêu liên tục, mà nó lại có vẻ khó chịu, không chịu chơi đùa như mọi khi. Liệu có phải nó đang bị bệnh không?",
-        "ground_truth": "Hành vi mèo kêu liên tục và không muốn chơi có thể là dấu hiệu của sự khó chịu hoặc đau đớn. Bạn nên gọi cho chi nhánh PetCare gần nhất và đưa mèo của bạn đến bệnh viện thú y để được khám và chẩn đoán chính xác.",
-        "source": "data/rag_docs.pdf"
-    },
-    {
-        "question": "Tôi thấy chó nhà mình gãi và cắn vào da rất nhiều, mà còn rụng lông nữa, không biết có sao không?",
-        "ground_truth": "Chó có thể đang bị ký sinh trùng như ve, rận hoặc bọ chét. Những ký sinh trùng này hút máu và gây kích ứng mạnh, dẫn đến tình trạng ngứa ngáy và tổn thương da. Bạn nên kiểm tra và điều trị kịp thời để tránh tình trạng trở nên nghiêm trọng.",
-        "source": "https://petcare.vn/ky-sinh-trung-o-cho/"
-    },
-    {
-        "question": "Chó của tôi có vẻ yếu hơn bình thường, ăn uống kém, có phải do ký sinh trùng không?",
-        "ground_truth": "Có thể chó của bạn đang bị ký sinh trùng, điều này có thể dẫn đến thiếu máu, suy dinh dưỡng và rối loạn tiêu hóa. Việc theo dõi các biểu hiện và đưa chó đi khám để điều trị kịp thời là rất quan trọng.",
-        "source": "https://petcare.vn/ky-sinh-trung-o-cho/"
-    },
-    {
-        "question": "Mình thấy chó của mình tự dưng khó thở, nó cứ thở hổn hển và có vẻ như rất mệt mỏi. Mình không biết phải làm sao nữa, có ai đã gặp trường hợp này chưa?",
-        "ground_truth": "Khó thở có thể là dấu hiệu của nhiều vấn đề sức khỏe nghiêm trọng. Bạn nên đưa chó đến cơ sở thú y ngay lập tức để được kiểm tra và chẩn đoán chính xác.",
-        "source": "data/rag_docs.pdf"
-    },
-    {
-        "question": "Chó mình đang bị nôn mửa liên tục, còn kèm theo tiêu chảy nữa. Mình rất lo lắng và không biết có chuyện gì nghiêm trọng không?",
-        "ground_truth": "Nôn mửa và tiêu chảy có thể là dấu hiệu của nhiều vấn đề tiêu hóa hoặc có thể do nhiễm trùng. Bạn cần đưa chó đến bác sĩ thú y để được khám và điều trị kịp thời.",
-        "source": "data/rag_docs.pdf"
-    },
-    {
-        "question": "Mình thấy chó nhà mình dạo này khó đi cầu, cứ ngồi đó hoài mà không ra được gì. Mình lo lắm, không biết có phải nó bị làm sao không?",
-        "ground_truth": "Chó có dấu hiệu khó khăn trong việc đi tiêu có thể là triệu chứng của táo bón. Việc theo dõi và vệ sinh sạch sẽ khu vực hậu môn rất quan trọng để giảm khó chịu và ngăn ngừa viêm nhiễm. Bạn nên đưa chó đến PETCARE để được thăm khám và xác định nguyên nhân cụ thể.",
-        "source": "https://petcare.vn/cho-bi-tao-bon/"
-    },
-    {
-        "question": "Chó của mình cứ kêu la và không chịu ăn mấy hôm nay, mình không biết có phải nó bị bệnh gì không. Có cách nào giúp nó dễ chịu hơn không?",
-        "ground_truth": "Khi chó không ăn và có dấu hiệu khó chịu, có thể chúng đang gặp vấn đề về tiêu hóa như táo bón. Tại PETCARE, các bác sĩ thú y sẽ thăm khám để xác định nguyên nhân và đưa ra phác đồ điều trị phù hợp. Đảm bảo vệ sinh sạch sẽ cũng như theo dõi tình trạng sức khỏe của chó trong suốt quá trình điều trị sẽ giúp cải thiện tình trạng của nó.",
-        "source": "https://petcare.vn/cho-bi-tao-bon/"
-    },
-    {
-        "question": "Mèo của tôi bỗng dưng thở gấp gáp và nhịp thở nhanh quá, tôi thấy nó cứ há miệng ra để thở như kiểu không đủ oxy ấy, tôi lo lắm! Liệu có vấn đề gì nghiêm trọng không bác sĩ?",
-        "ground_truth": "Có thể mèo của bạn đang gặp phải tình trạng khó thở, có thể do nhiều nguyên nhân khác nhau. Việc thở gấp và há miệng để thở là dấu hiệu thường gặp khi mèo bị thiếu oxy hoặc gặp vấn đề về hô hấp. Bạn nên đưa mèo đến cơ sở thú y ngay lập tức để được thăm khám và chẩn đoán chính xác.",
-        "source": "https://petcare.vn/meo-bi-kho-tho/"
-    },
-    {
-        "question": "Mèo tôi đang chơi bỗng dưng nằm nhiều hơn, không chịu vận động, mà còn có vẻ lo lắng nữa. Lúc thở phát ra tiếng khò khè, tôi cảm thấy rất sợ! Có phải mèo bị bệnh gì không bác sĩ?",
-        "ground_truth": "Các triệu chứng bạn mô tả cho thấy mèo có thể đang gặp vấn đề về hô hấp. Tiếng khò khè và biểu hiện mệt mỏi, lo lắng có thể là dấu hiệu của khó thở. Tôi khuyên bạn nên đưa mèo đến bác sĩ thú y để kiểm tra và điều trị kịp thời, vì tình trạng này có thể để lại hậu quả nghiêm trọng nếu không được xử lý.",
-        "source": "https://petcare.vn/meo-bi-kho-tho/"
-    },
-    {
-        "question": "Chó của tôi không đi ngoài mấy ngày rồi, nó có vẻ khó chịu và không chịu ăn, tôi phải làm sao đây?",
-        "ground_truth": "Bạn nên bắt đầu bằng cách đảm bảo chó luôn có nước sạch để uống, vì nước sẽ giúp làm mềm phân. Bạn cũng có thể tăng cường chất xơ trong khẩu phần ăn bằng cách thêm bí đỏ, khoai lang hay rau củ đã nấu mềm. Đừng quên cho chó vận động hàng ngày để kích thích đường ruột.",
-        "source": "https://petcare.vn/cho-bi-tao-bon/"
-    },
-    {
-        "question": "Tôi thấy bụng chó hơi cứng và nó cứ kêu lên khi tôi sờ vào, có cách nào giúp chó bớt khó chịu không?",
-        "ground_truth": "Bạn có thể thử xoa bóp vùng bụng dưới của chó nhẹ nhàng theo chiều kim đồng hồ. Điều này có thể giúp giảm căng tức và hỗ trợ quá trình đào thải phân. Nếu tình trạng không cải thiện, hãy xem xét việc sử dụng men tiêu hóa theo tư vấn của bác sĩ thú y.",
-        "source": "https://petcare.vn/cho-bi-tao-bon/"
-    },
-    {
-        "question": "Tôi thấy chó nhà tôi hay ho, thở gấp và có vẻ mệt mỏi, tôi lo quá! Chó có thể bị làm sao vậy?",
-        "ground_truth": "Chó có thể đang mắc bệnh viêm phổi, một bệnh rất nguy hiểm ảnh hưởng đến hệ hô hấp. Các triệu chứng như ho, khó thở và mệt mỏi là dấu hiệu cần được chú ý. Nếu không được phát hiện và điều trị kịp thời, bệnh có thể tiến triển thành suy hô hấp cấp hoặc nặng hơn.",
-        "source": "https://petcare.vn/benh-viem-phoi-o-cho/"
-    },
-    {
-        "question": "Chó của tôi thở rất nhanh và còn khò khè nữa, tôi không biết có chuyện gì xảy ra với nó! Có nghiêm trọng không?",
-        "ground_truth": "Đó có thể là triệu chứng của bệnh viêm phổi. Khi chó gặp khó khăn trong việc thở và có các dấu hiệu như ho khan hoặc ho có đờm, điều này có thể cho thấy phổi bị viêm. Cần đưa chó đến bác sĩ thú y ngay lập tức để được thăm khám và điều trị kịp thời.",
-        "source": "https://petcare.vn/benh-viem-phoi-o-cho/"
-    },
-    {
-        "question": "Ôi, mình đang rất lo lắng vì chó con của mình hình như chưa được chích ngừa. Không biết là nó cần phải chích ngừa từ khi nào nhỉ?",
-        "ground_truth": "Chó con cần được chích ngừa đúng lịch để đảm bảo sức khỏe tốt và phát triển ổn định. Thời gian cụ thể để chích ngừa sẽ phụ thuộc vào loại vắc xin và hướng dẫn từ bác sĩ thú y.",
-        "source": "https://petcare.vn/cho-con-bao-nhieu-ngay-chich-ngua/"
-    },
-    {
-        "question": "Mình nghe nói chích ngừa cho chó con là rất quan trọng, nhưng mà không biết là lý do gì mà mình phải làm như vậy, có ai biết không?",
-        "ground_truth": "Chích ngừa cho chó con rất quan trọng vì nó giúp tạo miễn dịch chủ động, giảm nguy cơ tử vong, ngăn ngừa lây lan dịch bệnh, bảo vệ sức khỏe con người, đảm bảo phát triển khỏe mạnh và tuân thủ pháp luật.",
-        "source": "https://petcare.vn/cho-con-bao-nhieu-ngay-chich-ngua/"
-    },
-    {
-        "question": "Chó của tôi cứ nôn liên tục, mà không thấy dấu hiệu dừng lại. Tôi rất lo lắng, không biết có vấn đề gì nghiêm trọng không?",
-        "ground_truth": "Nếu chó nôn liên tục, kèm theo tiêu chảy, bỏ ăn, mệt mỏi hoặc chất nôn có máu, cần đưa đi khám ngay để xác định nguyên nhân và điều trị kịp thời.",
-        "source": "https://petcare.vn/cho-bi-non-mua/"
-    },
-    {
-        "question": "Tôi không biết phải làm sao khi chó bắt đầu nôn, nó có thể ăn lại được không hay là phải chờ thêm?",
-        "ground_truth": "Sau khi chó ngừng nôn, có thể cho ăn các món mềm, dễ tiêu như cháo thịt băm, cơm nấu nhuyễn hoặc thức ăn chuyên dụng dành cho chó đang hồi phục.",
-        "source": "https://petcare.vn/cho-bi-non-mua/"
-    },
-    {
-        "question": "Ôi không, chó của tôi có vẻ rất bẩn và lông thì rối bù. Tôi không biết phải làm sao, có cách nào giúp tôi không?",
-        "ground_truth": "Bạn có thể đưa chó đến dịch vụ chăm sóc cơ bản, nơi họ sẽ tắm chải, cắt móng và rửa tai, rửa mắt cho chó của bạn.",
-        "source": "data/rag_docs.pdf"
-    },
-    {
-        "question": "Tôi thấy mèo của mình có lông dài và nó đang rất khó chịu. Có phải tôi nên làm gì đó cho nó không?",
-        "ground_truth": "Bạn nên xem xét đưa mèo đến dịch vụ chăm sóc toàn thân, nơi họ có thể tắm chải, cắt lông, cắt móng, và rửa tai, rửa mắt cho mèo của bạn.",
-        "source": "data/rag_docs.pdf"
-    },
-    {
-        "question": "Tôi đang rất lo lắng vì chó mẹ nhà tôi đã rặn lâu mà không thấy con ra, cứ cố rặn hơn 30 phút rồi mà vẫn chưa có gì cả. Có phải nó gặp vấn đề gì không?",
-        "ground_truth": "Chó sinh khó là một tình trạng rất nguy hiểm, có thể đe dọa đến tính mạng của cả chó mẹ và con nếu không được can thiệp kịp thời. Khi thấy chó có dấu hiệu rặn lâu mà không sinh được, cần đưa đến bác sĩ thú y ngay lập tức để được hỗ trợ chuyên môn.",
-        "source": "https://petcare.vn/cho-sinh-kho/"
-    },
-    {
-        "question": "Chó mẹ của tôi có ra dịch hôi và máu từ âm hộ, tôi rất hoang mang không biết có phải chó nó bị bệnh gì nghiêm trọng không?",
-        "ground_truth": "Có dịch hôi hoặc máu ra từ âm hộ là dấu hiệu nguy hiểm, cho thấy có thể thai đã chết hoặc bị kẹt trong đường sinh. Việc phát hiện sớm giúp chủ nuôi kịp thời đưa chó đến cơ sở thú y để can thiệp, tránh nguy hiểm cho cả mẹ và con.",
-        "source": "https://petcare.vn/cho-sinh-kho/"
-    },
-    {
-        "question": "Chó của tôi dạo này đi vệ sinh liên tục, mà phân thì loãng và có cả chất nhầy nữa. Tôi lo lắng quá! Có phải nó bị bệnh gì không?",
-        "ground_truth": "Chó có dấu hiệu đi vệ sinh liên tục với phân lỏng kèm dịch nhầy là biểu hiện của viêm đại tràng. Bạn nên đưa chó đi khám để được chẩn đoán và điều trị kịp thời.",
-        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
-    },
-    {
-        "question": "Tôi thấy chó nhà mình cứ cố gắng đi vệ sinh nhưng phân rất ít, làm nó trông mệt mỏi lắm. Tôi không biết phải làm sao nữa!",
-        "ground_truth": "Tình trạng chó cố gắng đi vệ sinh dù không có nhiều phân có thể là triệu chứng của viêm đại tràng. Điều này khiến chó cảm thấy khó chịu và mệt mỏi. Bạn nên đưa chó đến bác sĩ thú y để được kiểm tra.",
-        "source": "https://petcare.vn/viem-dai-trang-o-cho/"
-    },
-    {
-        "question": "Chó của tôi bỗng dưng bị tiêu chảy, phân thì lỏng và có mùi rất khó chịu, có khi thấy lẫn máu nữa. Tôi không biết phải làm sao, có phải nó bị bệnh gì nghiêm trọng không?",
-        "ground_truth": "Chó có dấu hiệu tiêu chảy, đặc biệt nếu phân lỏng, có lẫn máu hoặc chất nhầy, có thể là triệu chứng của bệnh viêm ruột. Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán và điều trị kịp thời.",
-        "source": "https://petcare.vn/benh-viem-ruot-o-cho/"
-    },
-    {
-        "question": "Gần đây, chó của tôi hay nôn mửa sau khi ăn và nhìn nó thì có vẻ mệt mỏi, không muốn ăn gì cả. Tôi rất lo lắng, không biết nó có vấn đề gì không?",
-        "ground_truth": "Tình trạng nôn mửa sau khi ăn, cùng với việc chó không muốn ăn và có dấu hiệu mệt mỏi, có thể liên quan đến bệnh viêm ruột. Bạn cần đưa chó đến bác sĩ thú y để kiểm tra và nhận được sự chăm sóc y tế cần thiết.",
-        "source": "https://petcare.vn/benh-viem-ruot-o-cho/"
-    },
-    {
-        "question": "Tôi thấy chó của mình bị nôn mửa suốt ngày, nó có vẻ mệt mỏi và không muốn ăn, tôi đang rất lo lắng liệu có phải nó đang bị bệnh gì không?",
-        "ground_truth": "Nếu chó bạn nôn mửa liên tục kèm theo mệt mỏi, bỏ ăn, thì đây có thể là dấu hiệu của vấn đề nghiêm trọng. Nôn mửa kéo dài có thể dẫn đến mất nước và suy yếu nhanh chóng, do đó cần đưa chó đến bác sĩ thú y ngay.",
-        "source": "https://petcare.vn/cho-bi-non-mua/"
-    },
-    {
-        "question": "Chó tôi thỉnh thoảng nôn mửa nhưng vẫn ăn uống bình thường, như vậy có sao không?",
-        "ground_truth": "Nếu chó chỉ nôn mửa thỉnh thoảng và vẫn ăn uống, sinh hoạt bình thường thì có thể không quá nguy hiểm. Tuy nhiên, bạn vẫn nên theo dõi kỹ để chắc chắn rằng không có dấu hiệu bất thường nào khác.",
-        "source": "https://petcare.vn/cho-bi-non-mua/"
-    },
-    {
-        "question": "Ôi trời ơi, mình thấy chó nhà mình đang tự dưng rụng răng, có phải nó bị bệnh gì không? Mình lo quá!",
-        "ground_truth": "Chó bị rụng răng có thể không phải vấn đề lớn nếu đó là do quá trình thay răng tự nhiên ở chó con. Tuy nhiên, nếu rụng răng do các bệnh lý như viêm nướu, nhiễm trùng hoặc bệnh răng miệng, thì có thể ảnh hưởng đến sức khỏe và cần được chú ý ngay.",
-        "source": "https://petcare.vn/cho-bi-rung-rang-co-sao-khong/"
-    },
-    {
-        "question": "Chó mình đang có dấu hiệu lạ lắm, nó có thể sắp rụng răng, mình không biết có phải là dấu hiệu của bệnh gì không?",
-        "ground_truth": "Khi chó sắp rụng răng, đặc biệt là trong quá trình thay răng hoặc gặp vấn đề về răng miệng, có thể có một số dấu hiệu như đau đớn, khó khăn khi ăn hoặc chảy máu nướu. Những biểu hiện này cần được theo dõi để chăm sóc kịp thời.",
-        "source": "https://petcare.vn/cho-bi-rung-rang-co-sao-khong/"
-    },
-    {
-        "question": "Tôi rất lo lắng về sức khỏe của chú chó của mình, nó có vẻ không được vui vẻ lắm và có thể không ăn uống gì trong vài ngày. Tôi không biết có vấn đề gì không, bác sĩ có thể giúp tôi không?",
-        "ground_truth": "Chúng tôi có bác sĩ thú y kiểm tra sức khỏe hàng ngày và có hệ thống camera theo dõi thú cưng để đảm bảo tình trạng sức khỏe của chúng. Nếu chú chó của bạn không ăn uống trong vài ngày, tôi khuyên bạn nên đưa chú ấy đến bệnh viện để được thăm khám kịp thời.",
-        "source": "data/rag_docs.pdf"
-    },
-    {
-        "question": "Chó của tôi đang ở nhà một mình và tôi rất lo lắng, nếu có gì không ổn, tôi không thể đưa nó đến bác sĩ ngay lập tức. Liệu có cách nào để bác sĩ có thể đến thăm nó không?",
-        "ground_truth": "Chúng tôi hỗ trợ bác sĩ thú y tận nhà để thăm khám và thực hiện các dịch vụ đơn giản mà không cần kết quả xét nghiệm và chẩn đoán hình ảnh. Bạn có thể sử dụng dịch vụ này để bác sĩ đến kiểm tra cho chú chó của bạn tại nhà.",
-        "source": "data/rag_docs.pdf"
-    },
-    {
-        "question": "Mình thấy chú chó nhà mình dạo này cứ nằm yên một chỗ, không muốn chơi đùa gì cả. Nó có vẻ buồn và không ăn uống gì cả. Mình lo lắm, không biết có chuyện gì với nó không?",
-        "ground_truth": "Có thể chú chó của bạn đang gặp vấn đề sức khỏe. Việc không ăn uống và nằm yên một chỗ có thể chỉ ra một số bệnh lý. Bạn nên đưa chú chó đến khám tại bệnh viện thú y để được chẩn đoán và điều trị kịp thời.",
-        "source": "https://petcare.vn/cach-cam-mau-nhanh-nhat-cho-cho/"
-    },
-    {
-        "question": "Mèo của mình bỗng dưng kêu la suốt cả ngày, nó cũng không chịu ăn uống gì cả. Mình cảm thấy rất lo lắng, không biết nó có bị làm sao không?",
-        "ground_truth": "Mèo kêu la liên tục và bỏ ăn có thể là dấu hiệu của sự không thoải mái, có thể do đau đớn hoặc căng thẳng. Bạn nên đưa mèo đến gặp bác sĩ thú y để xác định nguyên nhân và nhận được sự chăm sóc phù hợp.",
-        "source": "https://petcare.vn/cach-cam-mau-nhanh-nhat-cho-cho/"
+        "question": "Chết mất! Mèo nhà em hôm nay thở khò khè, mở miệng thở hổn hển, lưỡi và lợi tím tái, em phải làm sao bây giờ? Có nguy hiểm không? Cứu em với!!!",
+        "ground_truth": "Mèo bị khó thở là một trong những dấu hiệu cảnh báo nguy hiểm mà nhiều chủ nuôi thường dễ bỏ qua, nhưng thực tế có thể đe dọa trực tiếp đến tính mạng của thú cưng. Bạn nên đưa mèo đến bác sĩ thú y để được chẩn đoán và điều trị kịp thời.",
+        "source": "https://petcare.vn/meo-bi-kho-tho/",
+        "quote_from_chunk": "Mèo bị khó thở là một trong những dấu hiệu cảnh báo nguy hiểm mà nhiều chủ nuôi thường dễ bỏ qua, nhưng thực tế có thể đe dọa trực tiếp đến tính mạng của thú cưng."
     }
 ]
