@@ -89,7 +89,7 @@ class JinaEmbeddings(Embeddings):
         Embed danh sách documents (passages).
         Sử dụng task='retrieval.passage' để tối ưu cho indexing.
         """
-        batch_size = 15
+        batch_size = 20
         all_embeddings = []
         for i in range(0, len(texts), batch_size):
             if i > 0:
