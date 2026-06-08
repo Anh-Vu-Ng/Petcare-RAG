@@ -1,5 +1,11 @@
 import os
 import sys
+from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+sys.path.append(str(PROJECT_ROOT))
+sys.stdout.reconfigure(encoding='utf-8')
+
+import time
 import json
 import string
 import pickle
@@ -14,11 +20,11 @@ from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_classic.text_splitter import RecursiveCharacterTextSplitter
 from langchain_text_splitters import MarkdownHeaderTextSplitter
-from langchain_community.vectorstores import FAISS
-from langchain_community.retrievers import BM25Retriever
+from langchain_qdrant import QdrantVectorStore, FastEmbedSparse, RetrievalMode
+from qdrant_client import QdrantClient
 
 from src.jina_embeddings import JinaEmbeddings
-from src.config import PARENT_CHUNK_SIZE, PARENT_CHUNK_OVERLAP, RRF_K
+from src.config import PARENT_CHUNK_SIZE, PARENT_CHUNK_OVERLAP
 
 # Cấu hình logging
 logging.basicConfig(
@@ -28,9 +34,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Ensure stdout uses UTF-8 encoding
-sys.stdout.reconfigure(encoding='utf-8')
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv()
 
 # --- CONSTANTS ---
@@ -200,13 +203,12 @@ def split_parent_child_param(
 def reciprocal_rank_fusion_param(
     dense_results: List[Document], 
     sparse_results: List[Document], 
-    rrf_k: int = RRF_K, 
+    rrf_k: int = 60, 
     top_k_final: int = 8
 ) -> List[Document]:
     """
     RRF combining dense and sparse results.
     """
-    # Using defaultdict simplifies the initialization logic
     rrf_scores = defaultdict(lambda: {"score": 0.0, "doc": None})
 
     def add_to_scores(results: List[Document]):
@@ -266,46 +268,88 @@ def normalize_text(text: str) -> str:
     return " ".join(text.split())
 
 
+def cosine_similarity(vec1: List[float], vec2: List[float]) -> float:
+    """Tính độ tương đồng Cosine giữa hai vector."""
+    dot_product = sum(a * b for a, b in zip(vec1, vec2))
+    magnitude1 = sum(a * a for a in vec1) ** 0.5
+    magnitude2 = sum(b * b for b in vec2) ** 0.5
+    if magnitude1 == 0 or magnitude2 == 0:
+        return 0.0
+    return dot_product / (magnitude1 * magnitude2)
+
 def evaluate_combination(
     eval_set: List[Dict[str, str]],
-    parent_docs: Dict[str, Document],
-    dense_retriever,
-    sparse_retriever,
-    top_k: int
-) -> Tuple[float, float]:
+    hybrid_retriever,
+    cached_embeddings: CachedEmbeddings,
+    semantic_threshold: float = 0.55
+) -> Tuple[float, float, float]:
     """
-    Retrieves and evaluates metrics for a specific top_k configuration using pre-built retrievers.
+    Đánh giá cấu hình sử dụng độ tương đồng ngữ nghĩa.
+    - KPI Chính: Hit Rate và MRR (đo lường trực tiếp hiệu quả Retrieval).
+    - Chỉ số ngầm: debug_sim (Best Match Similarity) dùng để tham khảo phổ điểm.
     """
     hit_count = 0
-    total_overlap = 0.0
+    total_mrr = 0.0
+    total_debug_sim = 0.0
     total = len(eval_set)
 
     if total == 0:
-        return 0.0, 0.0
+        return 0.0, 0.0, 0.0
 
+    # 1. Thu thập tất cả các đoạn văn bản cần tạo embedding
+    queries_data = []
+    texts_to_embed = []
+    
     for item in eval_set:
         query = item["question"]
         gt = item["ground_truth"]
-
-        dense_docs = dense_retriever.invoke(query)
-        sparse_docs = sparse_retriever.invoke(query)
-
-        fused_docs = reciprocal_rank_fusion_param(dense_docs, sparse_docs, top_k_final=top_k)
-        retrieved_docs = expand_to_parent(fused_docs, parent_docs)
-
-        full_text = " ".join([doc.page_content for doc in retrieved_docs])
         
-        norm_gt_words = set(normalize_text(gt).split())
-        norm_text_words = set(normalize_text(full_text).split())
+        # Lấy trực tiếp từ hybrid retriever (child chunks)
+        fused_docs = hybrid_retriever.invoke(query)
+        doc_contents = [doc.page_content for doc in fused_docs]
+            
+        queries_data.append({
+            "gt": gt,
+            "doc_contents": doc_contents
+        })
         
-        overlap_ratio = len(norm_gt_words.intersection(norm_text_words)) / len(norm_gt_words) if norm_gt_words else 0.0
-        total_overlap += overlap_ratio
+        texts_to_embed.append(gt)
+        texts_to_embed.extend(doc_contents)
+
+    # 2. Loại bỏ trùng lặp văn bản và sinh batch embedding
+    unique_texts = list(set(texts_to_embed))
+    unique_embeddings = cached_embeddings.embed_documents(unique_texts)
+    text_to_emb = dict(zip(unique_texts, unique_embeddings))
+    
+    # 3. Tính toán độ tương đồng và điểm số
+    for q_data in queries_data:
+        gt = q_data["gt"]
+        gt_emb = text_to_emb[gt]
         
-        if overlap_ratio >= 0.75:
+        best_sim = 0.0
+        mrr_score = 0.0
+        
+        for rank, doc_content in enumerate(q_data["doc_contents"], start=1):
+            doc_emb = text_to_emb[doc_content]
+            doc_sim = cosine_similarity(gt_emb, doc_emb)
+            
+            # Lưu lại điểm similarity cao nhất (để debug phổ điểm)
+            if doc_sim > best_sim:
+                best_sim = doc_sim
+                
+            # Tính MRR cho chunk ĐẦU TIÊN vượt ngưỡng
+            if doc_sim >= semantic_threshold and mrr_score == 0.0:
+                mrr_score = 1.0 / rank
+                
+        total_debug_sim += best_sim
+        total_mrr += mrr_score
+        
+        # Hit rate: Chỉ cần có ít nhất 1 chunk vượt ngưỡng
+        if best_sim >= semantic_threshold:
             hit_count += 1
-
-    return hit_count / total, total_overlap / total
-
+            
+    # Trả về: (hit_rate, mrr_score, debug_sim)
+    return hit_count / total, total_mrr / total, total_debug_sim / total
 
 def main():
     logger.info("=" * 60)
@@ -327,8 +371,8 @@ def main():
     cached_emb = CachedEmbeddings(jina_emb)
 
     # 3. Parameter Grid
-    child_sizes = [200, 300, 350, 400, 450]
-    child_overlaps = [30, 40, 50, 60]
+    child_sizes = [300, 310, 320]
+    child_overlaps = [10, 20]
     top_k_children = [6, 8]
     
     results = []
@@ -346,49 +390,72 @@ def main():
                 logger.warning("No child documents generated. Skipping evaluation for this config.")
                 continue
 
-            # BUILD INDICES ONLY ONCE PER CHUNK CONFIGURATION (HUGE PERFORMANCE BOOST)
-            logger.info("Building FAISS and BM25 indices...")
-            vectorstore = FAISS.from_documents(child_docs, cached_emb)
-            dense_retriever = vectorstore.as_retriever(search_kwargs={"k": DEFAULT_RETRIEVE_K})
-            sparse_retriever = BM25Retriever.from_documents(child_docs, k=DEFAULT_RETRIEVE_K)
+            # BUILD INDICES ONLY ONCE PER CHUNK CONFIGURATION
+            logger.info("Building Qdrant (in-memory) hybrid index...")
+            qclient = QdrantClient(location=":memory:")
+            from qdrant_client.http import models
+            qclient.create_collection(
+                collection_name="eval_collection",
+                vectors_config=models.VectorParams(
+                    size=1024, # Jina v5 embedding size
+                    distance=models.Distance.COSINE
+                ),
+                sparse_vectors_config={
+                    "langchain-sparse": models.SparseVectorParams()
+                }
+            )
+            sparse_emb = FastEmbedSparse(model_name="Qdrant/bm25")
+            vectorstore = QdrantVectorStore(
+                client=qclient,
+                collection_name="eval_collection",
+                embedding=cached_emb,
+                sparse_embedding=sparse_emb,
+                retrieval_mode=RetrievalMode.HYBRID,
+            )
+            vectorstore.add_documents(child_docs)
 
             for k in top_k_children:
                 current_run += 1
                 logger.info(f"[{current_run}/{total_runs}] Testing combo: top_k={k}")
                 
+                # Khởi tạo lại retriever bên trong lặp để đảm bảo tham số `k` ăn khớp
+                hybrid_retriever = vectorstore.as_retriever(search_kwargs={"k": k})
+                
                 try:
-                    hit_rate, avg_overlap = evaluate_combination(
+                    hit_rate, mrr_score, debug_sim = evaluate_combination(
                         eval_set=eval_set,
-                        parent_docs=parent_docs,
-                        dense_retriever=dense_retriever,
-                        sparse_retriever=sparse_retriever,
-                        top_k=k
+                        hybrid_retriever=hybrid_retriever,
+                        cached_embeddings=cached_emb,
+                        semantic_threshold=0.55 
                     )
-                    logger.info(f" => Hit Rate: {hit_rate:.2%} | Avg Overlap: {avg_overlap:.2%}")
+                    logger.info(f" => Hit Rate: {hit_rate:.2%} | MRR: {mrr_score:.2%} | (Debug Sim: {debug_sim:.2%})")
+                    
+                    # Cập nhật lại các key được lưu vào list
                     results.append({
                         "child_size": c_size,
                         "child_overlap": c_overlap,
                         "top_k": k,
                         "hit_rate": hit_rate,
-                        "average_overlap": avg_overlap
+                        "mrr_score": mrr_score,
+                        "debug_sim": debug_sim
                     })
+                    time.sleep(0.5) 
                 except Exception as e:
                     logger.error(f" => Error evaluating combo: {e}")
 
     # 5. Report results
     df_results = pd.DataFrame(results)
-    df_results = df_results.sort_values(by=["hit_rate", "average_overlap"], ascending=False).reset_index(drop=True)
+    df_results = df_results.sort_values(by=["mrr_score", "hit_rate", "debug_sim"], ascending=False).reset_index(drop=True)
 
     logger.info("\n" + "=" * 60)
     logger.info("📊 Grid Search Results Summary")
     logger.info("=" * 60)
-    print(df_results.to_markdown(index=False)) # Print bảng markdown ra console cho dễ đọc
+    print(df_results.to_markdown(index=False))
     
     # 6. Save to CSV
     os.makedirs(os.path.dirname(RESULTS_CSV_PATH), exist_ok=True)
     df_results.to_csv(RESULTS_CSV_PATH, index=False)
     logger.info(f"💾 Results successfully saved to {RESULTS_CSV_PATH}")
-
 
 if __name__ == "__main__":
     main()

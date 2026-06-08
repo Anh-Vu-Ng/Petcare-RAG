@@ -3,8 +3,10 @@ import os
 from dotenv import load_dotenv
 
 from langchain_openai import ChatOpenAI
+from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+sys.path.append(str(PROJECT_ROOT))
 sys.stdout.reconfigure(encoding='utf-8')
-sys.path.append(".")
 from src.prompts import greetings_prompt
 load_dotenv()
 test_queries = [

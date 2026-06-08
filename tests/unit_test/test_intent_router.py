@@ -7,7 +7,7 @@ from langchain_openai import ChatOpenAI
 from src.intent_router import IntentRouter
 
 # Cấu hình tự động nhận diện đường dẫn tuyệt đối của thư mục gốc
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(PROJECT_ROOT))
 sys.stdout.reconfigure(encoding='utf-8')
 
