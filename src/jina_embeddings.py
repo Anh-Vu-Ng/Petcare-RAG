@@ -6,6 +6,7 @@ thay vì chạy model local. Hỗ trợ task-specific LoRA adapters.
 """
 
 import os
+import time
 import requests
 from typing import List
 from langchain_core.embeddings import Embeddings
@@ -57,12 +58,25 @@ class JinaEmbeddings(Embeddings):
             "embedding_type": "float",
         }
 
-        try:
-            response = requests.post(self.api_url, headers=headers, json=payload, timeout=60)
-            response.raise_for_status()
-            result = response.json()
-        except requests.exceptions.RequestException as e:
-            raise RuntimeError(f"[Jina Embeddings] Lỗi gọi API: {e}")
+        for attempt in range(5):
+            try:
+                response = requests.post(self.api_url, headers=headers, json=payload, timeout=60)
+                if response.status_code == 429:
+                    if attempt == 4:
+                        raise RuntimeError("[Jina Embeddings] Rate limited (429) sau 5 lần thử.")
+                    wait_time = (2 ** attempt) + 1
+                    print(f"⚠️ [Jina Embeddings] Rate limited (429). Retrying in {wait_time}s (attempt {attempt + 1}/5)...")
+                    time.sleep(wait_time)
+                    continue
+                response.raise_for_status()
+                result = response.json()
+                break
+            except requests.exceptions.RequestException as e:
+                if attempt == 4:
+                    raise RuntimeError(f"[Jina Embeddings] Lỗi gọi API sau 5 lần thử: {e}")
+                wait_time = (2 ** attempt) + 1
+                print(f"⚠️ [Jina Embeddings] Lỗi kết nối: {e}. Thử lại sau {wait_time}s (attempt {attempt + 1}/5)...")
+                time.sleep(wait_time)
 
         # Sắp xếp theo index để đảm bảo thứ tự đúng
         data = sorted(result.get("data", []), key=lambda x: x["index"])
@@ -75,10 +89,11 @@ class JinaEmbeddings(Embeddings):
         Embed danh sách documents (passages).
         Sử dụng task='retrieval.passage' để tối ưu cho indexing.
         """
-        # Jina API giới hạn batch size, chia thành batches nếu cần
-        batch_size = 100
+        batch_size = 15
         all_embeddings = []
         for i in range(0, len(texts), batch_size):
+            if i > 0:
+                time.sleep(5) 
             batch = texts[i : i + batch_size]
             embeddings = self._call_api(batch, task="retrieval.passage")
             all_embeddings.extend(embeddings)
