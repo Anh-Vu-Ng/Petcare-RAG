@@ -5,7 +5,7 @@ langchain-core
 langchain-openrouter
 PyMuPDF
 openai
-faiss-cpu
+#faiss-cpu
 pydantic
 python-dotenv
 beautifulsoup4
@@ -14,3 +14,4 @@ streamlit
 rank-bm25
 torchvision
 deepeval
+qdrant-client
