@@ -1,26 +1,35 @@
 """
 Semantic Cache module cho RAG pipeline.
 
-Sử dụng FAISS để index query embeddings và so sánh cosine similarity.
+Sử dụng Qdrant để index query embeddings và so sánh cosine similarity.
 Nếu tìm thấy query tương tự (similarity > threshold), trả về cached answer
 thay vì chạy lại toàn bộ pipeline RAG.
 """
 
 import os
-import pickle
 import time
-import shutil
+import hashlib
+import uuid
 from typing import Optional, Dict, List, Any
 
-from langchain_community.vectorstores import FAISS
+from qdrant_client import QdrantClient
+from qdrant_client.http import models
+
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
-from src.config import CACHE_SIMILARITY_THRESHOLD, CACHE_INDEX_PATH, CACHE_MAX_SIZE
+from src.config import (
+    URL_QDRANT,
+    QDRANT_API_KEY,
+    QDRANT_CACHE_COLLECTION,
+    EMBEDDING_DIM,
+    CACHE_SIMILARITY_THRESHOLD,
+    CACHE_MAX_SIZE
+)
 
 
 class SemanticCache:
     """
-    Semantic Cache sử dụng FAISS để lưu trữ và tìm kiếm query embeddings.
+    Semantic Cache sử dụng Qdrant để lưu trữ và tìm kiếm query embeddings.
     Khi query mới có cosine similarity >= threshold với query đã cache,
     trả về answer đã lưu thay vì chạy lại pipeline.
     """
@@ -29,7 +38,6 @@ class SemanticCache:
         self,
         embeddings,
         threshold: float = CACHE_SIMILARITY_THRESHOLD,
-        index_path: str = CACHE_INDEX_PATH,
         max_size: int = CACHE_MAX_SIZE,
     ):
         # Đồng nhất task embedding cho cache để tránh lệch phân phối giữa query và passage
@@ -50,46 +58,39 @@ class SemanticCache:
 
         self.embeddings = CacheEmbeddings(embeddings)
         self.threshold = threshold
-        self.index_path = index_path
         self.max_size = max_size
-        self.metadata_path = os.path.join(index_path, "cache_metadata.pkl")
+        self.collection_name = QDRANT_CACHE_COLLECTION
 
         # Thống kê
         self.hit_count = 0
         self.miss_count = 0
 
-        # Key: query text, Value: {"answer", "context_docs", "timestamp"}
-        self.cache_entries: Dict[str, Dict[str, Any]] = {}
-        self.vectorstore = None
+        # Khởi tạo Qdrant Client
+        if not URL_QDRANT or not QDRANT_API_KEY:
+            raise ValueError("Chưa cấu hình URL_QDRANT hoặc QDRANT_API_KEY trong file .env.")
+            
+        self.client = QdrantClient(url=URL_QDRANT, api_key=QDRANT_API_KEY)
+        
+        # Đảm bảo collection tồn tại
+        self._ensure_collection()
 
-        # Load từ disk nếu có
-        self._load()
-
-    def _load(self):
-        """Load cache từ disk."""
-        faiss_path = os.path.join(self.index_path, "index.faiss")
-        if os.path.exists(faiss_path) and os.path.exists(self.metadata_path):
-            try:
-                self.vectorstore = FAISS.load_local(
-                    self.index_path,
-                    self.embeddings,
-                    allow_dangerous_deserialization=True,
+    def _ensure_collection(self):
+        """Kiểm tra và tạo collection cho cache nếu chưa có."""
+        try:
+            self.client.get_collection(self.collection_name)
+        except Exception:
+            print(f"ℹ️ Creating Qdrant collection '{self.collection_name}' for cache...")
+            self.client.create_collection(
+                collection_name=self.collection_name,
+                vectors_config=models.VectorParams(
+                    size=EMBEDDING_DIM,
+                    distance=models.Distance.COSINE
                 )
-                with open(self.metadata_path, "rb") as f:
-                    self.cache_entries = pickle.load(f)
-                print(f"✅ Loaded semantic cache: {len(self.cache_entries)} entries")
-            except Exception as e:
-                print(f"⚠️ Không thể load cache, khởi tạo mới: {e}")
-                self.cache_entries = {}
-                self.vectorstore = None
+            )
 
     def save(self):
-        """Persist cache xuống disk."""
-        if self.vectorstore is not None:
-            os.makedirs(self.index_path, exist_ok=True)
-            self.vectorstore.save_local(self.index_path)
-            with open(self.metadata_path, "wb") as f:
-                pickle.dump(self.cache_entries, f)
+        """Qdrant Cloud tự động lưu trữ, không cần lưu thủ công xuống disk (No-op)."""
+        pass
 
     def lookup(self, query: str) -> Optional[Dict[str, Any]]:
         """
@@ -101,36 +102,44 @@ class SemanticCache:
         Returns:
             Dict với answer + context_docs nếu cache hit, None nếu miss.
         """
-        if not self.vectorstore or not self.cache_entries:
-            self.miss_count += 1
-            return None
-
         try:
-            results = self.vectorstore.similarity_search_with_score(query, k=1)
-        except Exception:
+            query_vector = self.embeddings.embed_query(query)
+            results = self.client.query_points(
+                collection_name=self.collection_name,
+                query=query_vector,
+                limit=1,
+            )
+        except Exception as e:
+            print(f"⚠️ Lỗi tìm kiếm trong cache Qdrant: {e}")
             self.miss_count += 1
             return None
 
-        if not results:
+        if not results or not results.points:
             self.miss_count += 1
             return None
 
-        doc, score = results[0]
-
-        # FAISS IndexFlatL2 trả về L2 distance squared.
-        # Với normalized vectors: L2² = 2 * (1 - cosine_similarity)
-        # => cosine_similarity = 1 - L2² / 2
-        cosine_sim = 1.0 - (score / 2.0)
+        point = results.points[0]
+        cosine_sim = point.score
 
         if cosine_sim >= self.threshold:
-            cached_query = doc.page_content
-            if cached_query in self.cache_entries:
+            payload = point.payload
+            if payload and "query" in payload:
                 self.hit_count += 1
-                entry = self.cache_entries[cached_query]
+                
+                # Deserialization cho context_docs
+                context_docs = []
+                for doc_dict in payload.get("context_docs", []):
+                    context_docs.append(
+                        Document(
+                            page_content=doc_dict.get("page_content", ""),
+                            metadata=doc_dict.get("metadata", {})
+                        )
+                    )
+                    
                 return {
-                    "answer": entry["answer"],
-                    "context_docs": entry["context_docs"],
-                    "cached_query": cached_query,
+                    "answer": payload.get("answer", ""),
+                    "context_docs": context_docs,
+                    "cached_query": payload.get("query"),
                     "similarity": cosine_sim,
                 }
 
@@ -146,61 +155,103 @@ class SemanticCache:
             answer: Câu trả lời từ LLM.
             context_docs: Danh sách Document đã retrieve được.
         """
-        # Nếu query đã tồn tại, update
-        if query in self.cache_entries:
-            self.cache_entries[query].update({
+        try:
+            query_vector = self.embeddings.embed_query(query)
+            
+            # Tạo UUID dạng định danh duy nhất từ nội dung query (tránh trùng lặp)
+            query_hash = hashlib.md5(query.encode('utf-8')).hexdigest()
+            point_id = str(uuid.UUID(query_hash))
+            
+            # Kiểm tra xem query này đã có trong cache chưa
+            is_new = True
+            try:
+                existing = self.client.retrieve(
+                    collection_name=self.collection_name,
+                    ids=[point_id],
+                    with_payload=False,
+                )
+                if existing:
+                    is_new = False
+            except Exception:
+                pass
+
+            # Nếu là query mới, kiểm tra và dọn dẹp cache (Eviction) nếu đầy
+            if is_new:
+                count_result = self.client.count(collection_name=self.collection_name)
+                if count_result.count >= self.max_size:
+                    # Scroll lấy các points để lọc ra point cũ nhất
+                    records, _ = self.client.scroll(
+                        collection_name=self.collection_name,
+                        limit=self.max_size,
+                        with_payload=True,
+                        with_vectors=False,
+                    )
+                    records_with_ts = [r for r in records if r.payload and "timestamp" in r.payload]
+                    if records_with_ts:
+                        oldest = min(records_with_ts, key=lambda r: r.payload["timestamp"])
+                        self.client.delete(
+                            collection_name=self.collection_name,
+                            points_selector=models.PointIdsList(
+                                points=[oldest.id]
+                            )
+                        )
+                        print(f"🗑️ Evicted oldest cache entry with ID {oldest.id} (query: {oldest.payload.get('query')[:30]}...)")
+
+            # Chuẩn bị payload để lưu
+            payload = {
+                "query": query,
                 "answer": answer,
-                "context_docs": context_docs,
+                "context_docs": [{"page_content": doc.page_content, "metadata": doc.metadata} for doc in context_docs],
                 "timestamp": time.time(),
-            })
-            self.save()
-            return
+            }
 
-        # Evict entry cũ nhất nếu đầy
-        if len(self.cache_entries) >= self.max_size:
-            oldest = min(self.cache_entries, key=lambda k: self.cache_entries[k]["timestamp"])
-            del self.cache_entries[oldest]
-            self._rebuild_index()
-
-        # Thêm entry mới vào FAISS index
-        doc = Document(page_content=query)
-        if self.vectorstore is None:
-            self.vectorstore = FAISS.from_documents([doc], self.embeddings)
-        else:
-            self.vectorstore.add_documents([doc])
-
-        self.cache_entries[query] = {
-            "answer": answer,
-            "context_docs": context_docs,
-            "timestamp": time.time(),
-        }
-
-        self.save()
+            # Lưu (Upsert) lên Qdrant
+            self.client.upsert(
+                collection_name=self.collection_name,
+                points=[
+                    models.PointStruct(
+                        id=point_id,
+                        vector=query_vector,
+                        payload=payload
+                    )
+                ]
+            )
+        except Exception as e:
+            print(f"⚠️ Lỗi khi lưu vào cache Qdrant: {e}")
 
     def _rebuild_index(self):
-        """Rebuild FAISS index từ các cache entries còn lại."""
-        if not self.cache_entries:
-            self.vectorstore = None
-            return
-        docs = [Document(page_content=q) for q in self.cache_entries]
-        self.vectorstore = FAISS.from_documents(docs, self.embeddings)
+        """Qdrant hỗ trợ ghi đè trực tiếp, không cần rebuild index (No-op)."""
+        pass
 
     def clear(self):
         """Xóa toàn bộ cache."""
-        self.cache_entries = {}
-        self.vectorstore = None
-        self.hit_count = 0
-        self.miss_count = 0
-        if os.path.exists(self.index_path):
-            shutil.rmtree(self.index_path)
-        print("🗑️ Đã xóa toàn bộ semantic cache.")
+        try:
+            self.client.recreate_collection(
+                collection_name=self.collection_name,
+                vectors_config=models.VectorParams(
+                    size=EMBEDDING_DIM,
+                    distance=models.Distance.COSINE
+                )
+            )
+            self.hit_count = 0
+            self.miss_count = 0
+            print("🗑️ Đã xóa toàn bộ semantic cache trên Qdrant.")
+        except Exception as e:
+            print(f"⚠️ Lỗi khi xóa semantic cache: {e}")
 
     def stats(self) -> Dict[str, Any]:
         """Trả về thống kê cache."""
+        try:
+            count_result = self.client.count(collection_name=self.collection_name)
+            total_entries = count_result.count
+        except Exception:
+            total_entries = 0
+            
         total = self.hit_count + self.miss_count
         return {
-            "total_entries": len(self.cache_entries),
+            "total_entries": total_entries,
             "hit_count": self.hit_count,
             "miss_count": self.miss_count,
             "hit_rate": f"{(self.hit_count / total * 100):.1f}%" if total > 0 else "N/A",
         }
+

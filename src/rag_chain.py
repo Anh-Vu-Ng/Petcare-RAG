@@ -4,11 +4,9 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI 
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 
-from src.config import LLM_MODEL, ROUTER_MODEL, GREETINGS_MODEL, CSV_PRICING_PATH, REWRITE_MODEL
+from src.config import LLM_MODEL, ROUTER_MODEL, GREETINGS_MODEL, CSV_PRICING_PATH, REWRITE_MODEL, TOP_K_FINAL
 from src.prompts import contextualize_q_prompt, qa_prompt, tool_qa_prompt, greetings_prompt
-from src.bm25_retriever import get_bm25_retriever
-from src.hybrid_retriever import HybridRetriever
-from src.vector_store import get_faiss_retriever, get_embeddings
+from src.vector_store import get_qdrant_retriever, get_embeddings
 from src.semantic_cache import SemanticCache
 from src.jina_reranker import JinaReranker
 from src.intent_router import IntentRouter
@@ -37,7 +35,7 @@ def get_llm():
         timeout=30,
         extra_body={
             "provider": {
-                "only": ["novita"] 
+                "only": ["google-vertex"] 
             }
         }
     )
@@ -216,53 +214,62 @@ class AgenticRAGPipeline:
         # Chain để trả lời greetings (dùng gemma-3-4b-it)
         self.greetings_chain = greetings_prompt | greetings_llm
 
-        # Load parent documents mapping
-        from src.config import PARENT_DOCS_PATH
-        import pickle
-        if os.path.exists(PARENT_DOCS_PATH):
-            print(f"Loading parent documents mapping from {PARENT_DOCS_PATH}...")
-            with open(PARENT_DOCS_PATH, "rb") as f:
-                self.parent_docs = pickle.load(f)
-        else:
-            print("Warning: parent_docs.pkl not found. Parent expansion will not work.")
-            self.parent_docs = {}
+        from qdrant_client import QdrantClient
+        from src.config import URL_QDRANT, QDRANT_API_KEY, QDRANT_PARENT_COLLECTION
+        self.qdrant_client = QdrantClient(url=URL_QDRANT, api_key=QDRANT_API_KEY)
+        self.qdrant_parent_collection = QDRANT_PARENT_COLLECTION
 
     def _expand_to_parent(self, child_docs: list) -> list:
         """
-        Map child documents to their parent documents using parent_id.
+        Batch retrieve parent documents from Qdrant by parent_ids.
         Deduplicates parent documents if multiple children point to the same parent.
         """
-        if not self.parent_docs:
-            print("Warning: self.parent_docs is empty. Returning original child documents.")
-            return child_docs
-            
         parent_docs_list = []
         seen_parent_ids = set()
         
+        # Lấy tất cả parent_ids cần truy vấn
+        parent_ids = list(set([
+            doc.metadata.get("parent_id") 
+            for doc in child_docs 
+            if doc.metadata.get("parent_id")
+        ]))
+        
+        # Batch retrieve từ Qdrant parent collection
+        parent_docs_map = {}
+        if parent_ids:
+            try:
+                records = self.qdrant_client.retrieve(
+                    collection_name=self.qdrant_parent_collection,
+                    ids=parent_ids,
+                )
+                for r in records:
+                    parent_docs_map[r.id] = r.payload
+            except Exception as e:
+                print(f"⚠️ Warning: Lỗi batch retrieve parent documents từ Qdrant: {e}")
+                
         for doc in child_docs:
             parent_id = doc.metadata.get("parent_id")
-            if parent_id and parent_id in self.parent_docs:
+            if parent_id and parent_id in parent_docs_map:
                 if parent_id not in seen_parent_ids:
                     seen_parent_ids.add(parent_id)
                     
-                    # Tạo bản sao của parent document để tránh chỉnh sửa tham chiếu gốc,
-                    # đồng thời copy lại các metadata động từ child document (như điểm số rerank, rrf)
                     from langchain_core.documents import Document
-                    orig_parent = self.parent_docs[parent_id]
-                    parent_meta = orig_parent.metadata.copy()
+                    payload = parent_docs_map[parent_id]
+                    parent_meta = payload.get("metadata", {}).copy()
                     
+                    # Copy over dynamic scores from child chunk
                     if "rerank_score" in doc.metadata:
                         parent_meta["rerank_score"] = doc.metadata["rerank_score"]
                     if "rrf_score" in doc.metadata:
                         parent_meta["rrf_score"] = doc.metadata["rrf_score"]
                         
                     parent_doc = Document(
-                        page_content=orig_parent.page_content,
+                        page_content=payload.get("page_content", ""),
                         metadata=parent_meta
                     )
                     parent_docs_list.append(parent_doc)
             else:
-                # Nếu không tìm thấy parent_id, giữ lại child doc làm phương án dự phòng
+                # Fallback giữ lại child doc nếu không tìm thấy parent tương ứng
                 parent_docs_list.append(doc)
                 
         return parent_docs_list
@@ -312,6 +319,9 @@ class AgenticRAGPipeline:
         t0 = time.time()
         docs = self.hybrid_retriever.invoke(standalone_query)
         timing["hybrid_retrieval"] = time.time() - t0
+
+        # Giới hạn lấy TOP_K_FINAL kết quả tốt nhất sau khi fusion RRF
+        docs = docs[:TOP_K_FINAL]
 
         # --- Jina Reranker ---
         t0 = time.time()
@@ -562,10 +572,8 @@ def build_conversational_rag_chain():
     greetings_llm = get_greetings_llm()
     rewrite_llm = get_rewrite_llm()
     
-    # 1. Khởi tạo các retrievers
-    dense_retriever = get_faiss_retriever()
-    sparse_retriever = get_bm25_retriever()
-    hybrid_retriever = HybridRetriever(dense_retriever=dense_retriever, sparse_retriever=sparse_retriever)
+    # 1. Khởi tạo Qdrant hybrid retriever
+    hybrid_retriever =  get_qdrant_retriever()
     
     # 2. Khởi tạo Jina Reranker
     reranker = JinaReranker()
