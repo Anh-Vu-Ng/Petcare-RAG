@@ -25,7 +25,6 @@ RUN uv sync --frozen --no-install-project
 # Copy toàn bộ mã nguồn của dự án vào container
 COPY src/ ./src/
 COPY data/ ./data/
-COPY import_db.py ./
 
 # Thiết lập biến môi trường bắt buộc
 ENV PYTHONIOENCODING=utf-8

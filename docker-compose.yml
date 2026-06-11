@@ -9,6 +9,7 @@ services:
     volumes:
       # Ánh xạ thư mục data ở host vào container để lưu trữ lâu dài FAISS index và cache
       - ./data:/app/data
+      - ./src:/app/src
     env_file:
       - .env
     environment:

@@ -36,4 +36,7 @@ dependencies = [
     "deepeval>=4.0.0",
     "litellm",
     "instructor",
+    "langchain-qdrant>=1.1.0",
+    "qdrant-client>=1.18.0",
+    "fastembed>=0.8.0",
 ]
