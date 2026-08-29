@@ -28,3 +28,21 @@ class IntentRouter:
         except Exception as e:
             print(f"[IntentRouter] Lỗi classify, fallback KNOWLEDGE: {e}")
             return "KNOWLEDGE"
+
+    async def aclassify(self, query: str) -> str:
+        """
+        Phân loại query thành GREETING, KNOWLEDGE hoặc TOOL (Bất đồng bộ).
+        """
+        try:
+            response = await self.chain.ainvoke({"query": query})
+            result = response.content.strip().upper()
+
+            if "TOOL" in result:
+                return "TOOL"
+            elif "GREETING" in result:
+                return "GREETING"
+            return "KNOWLEDGE"
+        except Exception as e:
+            print(f"[IntentRouter] Lỗi classify async, fallback KNOWLEDGE: {e}")
+            return "KNOWLEDGE"
+

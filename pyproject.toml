@@ -39,4 +39,7 @@ dependencies = [
     "langchain-qdrant>=1.1.0",
     "qdrant-client>=1.18.0",
     "fastembed>=0.8.0",
+    "locust>=2.44.3",
+    "asyncpg>=0.31.0",
+    "aiosqlite>=0.22.1",
 ]

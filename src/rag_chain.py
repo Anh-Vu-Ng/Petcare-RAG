@@ -1,5 +1,6 @@
 import os
 import time
+import asyncio
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI 
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
@@ -11,7 +12,7 @@ from src.semantic_cache import SemanticCache
 from src.jina_reranker import JinaReranker
 from src.intent_router import IntentRouter
 from src.service_db import ServiceDB
-from src.tools import lookup_service_price, calculate_final_price, format_final_price_for_llm, _resolve_service_type, _resolve_all_service_types
+from src.tools import lookup_service_price, calculate_final_price, format_final_price_for_llm, _resolve_service_type, _resolve_all_service_types, lookup_service_price_async, calculate_final_price_async
 import re
 
 load_dotenv()
@@ -214,10 +215,30 @@ class AgenticRAGPipeline:
         # Chain để trả lời greetings (dùng gemma-3-4b-it)
         self.greetings_chain = greetings_prompt | greetings_llm
 
-        from qdrant_client import QdrantClient
+        from qdrant_client import QdrantClient, AsyncQdrantClient
         from src.config import URL_QDRANT, QDRANT_API_KEY, QDRANT_PARENT_COLLECTION
         self.qdrant_client = QdrantClient(url=URL_QDRANT, api_key=QDRANT_API_KEY)
+        self.async_qdrant_client = AsyncQdrantClient(url=URL_QDRANT, api_key=QDRANT_API_KEY)
         self.qdrant_parent_collection = QDRANT_PARENT_COLLECTION
+        self._background_tasks = set()
+
+    def _schedule_background_task(self, coro):
+        """Khởi chạy và giữ strong reference cho background task để chống bị GC thu gom."""
+        task = asyncio.create_task(coro)
+        self._background_tasks.add(task)
+        def _on_done(t):
+            self._background_tasks.discard(t)
+            if not t.cancelled() and t.exception() is not None:
+                print(f"⚠️ [BackgroundTask] Lỗi trong tác vụ nền: {t.exception()}")
+        task.add_done_callback(_on_done)
+        return task
+
+    async def aclose(self):
+        """Đóng các kết nối bất đồng bộ khi tắt ứng dụng."""
+        if hasattr(self.reranker, "aclose"):
+            await self.reranker.aclose()
+        if hasattr(self.semantic_cache.embeddings.base_embeddings, "aclose"):
+            await self.semantic_cache.embeddings.base_embeddings.aclose()
 
     def _expand_to_parent(self, child_docs: list) -> list:
         """
@@ -297,23 +318,8 @@ class AgenticRAGPipeline:
 
     def _handle_knowledge(self, standalone_query: str, chat_history: list, timing: dict) -> dict:
         """
-        Xử lý nhánh KNOWLEDGE: Semantic Cache → Hybrid RAG.
+        Xử lý nhánh KNOWLEDGE: Hybrid RAG (Cache Miss).
         """
-        # --- Semantic Cache lookup ---
-        t0 = time.time()
-        cached = self.semantic_cache.lookup(standalone_query)
-        timing["cache_lookup"] = time.time() - t0
-
-        if cached:
-            return {
-                "answer": cached["answer"],
-                "context": cached["context_docs"],
-                "from_cache": True,
-                "standalone_query": standalone_query,
-                "similarity": cached["similarity"],
-                "intent": "KNOWLEDGE",
-                "timing": timing,
-            }
 
         # --- Hybrid Retrieval (cache miss) ---
         t0 = time.time()
@@ -550,6 +556,21 @@ class AgenticRAGPipeline:
         standalone_query = self._rewrite_query(query, chat_history)
         timing["rewrite_query"] = time.time() - t0
 
+        # --- Step 1.5: Cache Lookup (Bypass Intent Router if HIT) ---
+        t0 = time.time()
+        cached = self.semantic_cache.lookup(standalone_query)
+        timing["cache_lookup"] = time.time() - t0
+        if cached:
+            return {
+                "answer": cached["answer"],
+                "context": cached["context_docs"],
+                "from_cache": True,
+                "standalone_query": standalone_query,
+                "similarity": cached.get("similarity", 1.0),
+                "intent": "KNOWLEDGE",
+                "timing": timing,
+            }
+
         # --- Step 2: Intent Router ---
         t0 = time.time()
         intent = self.router.classify(standalone_query)
@@ -563,6 +584,273 @@ class AgenticRAGPipeline:
             return self._handle_tool(standalone_query, chat_history, timing)
         else:
             return self._handle_knowledge(standalone_query, chat_history, timing)
+
+    # --- ASYNCHRONOUS PIPELINE METHODS ---
+    async def _expand_to_parent_async(self, child_docs: list) -> list:
+        """
+        Batch retrieve parent documents from Qdrant by parent_ids (Async).
+        """
+        parent_docs_list = []
+        seen_parent_ids = set()
+        
+        parent_ids = list(set([
+            doc.metadata.get("parent_id") 
+            for doc in child_docs 
+            if doc.metadata.get("parent_id")
+        ]))
+        
+        parent_docs_map = {}
+        if parent_ids:
+            try:
+                records = await self.async_qdrant_client.retrieve(
+                    collection_name=self.qdrant_parent_collection,
+                    ids=parent_ids,
+                )
+                for r in records:
+                    parent_docs_map[r.id] = r.payload
+            except Exception as e:
+                print(f"⚠️ Warning: Lỗi batch retrieve parent documents từ Qdrant async: {e}")
+                
+        for doc in child_docs:
+            parent_id = doc.metadata.get("parent_id")
+            if parent_id and parent_id in parent_docs_map:
+                if parent_id not in seen_parent_ids:
+                    seen_parent_ids.add(parent_id)
+                    
+                    from langchain_core.documents import Document
+                    payload = parent_docs_map[parent_id]
+                    parent_meta = payload.get("metadata", {}).copy()
+                    
+                    if "rerank_score" in doc.metadata:
+                        parent_meta["rerank_score"] = doc.metadata["rerank_score"]
+                    if "rrf_score" in doc.metadata:
+                        parent_meta["rrf_score"] = doc.metadata["rrf_score"]
+                        
+                    parent_doc = Document(
+                        page_content=payload.get("page_content", ""),
+                        metadata=parent_meta
+                    )
+                    parent_docs_list.append(parent_doc)
+            else:
+                parent_docs_list.append(doc)
+                
+        return parent_docs_list
+
+    async def _rewrite_query_async(self, query: str, chat_history: list) -> str:
+        """
+        Viết lại câu hỏi thành standalone query (Async).
+        """
+        if not chat_history:
+            return query
+        
+        try:
+            response = await self.rewrite_chain.ainvoke({
+                "chat_history": chat_history,
+                "input": query,
+            })
+            rewritten = response.content.strip()
+            if rewritten:
+                return rewritten
+            return query
+        except Exception as e:
+            print(f"[Query Rewriter] Lỗi rewrite query async, fallback query gốc: {e}")
+            return query
+
+    async def _handle_knowledge_async(self, standalone_query: str, chat_history: list, timing: dict) -> dict:
+        """
+        Xử lý nhánh KNOWLEDGE: Hybrid RAG (Async Cache Miss).
+        """
+
+        # --- Hybrid Retrieval (cache miss) ---
+        t0 = time.time()
+        docs = await self.hybrid_retriever.ainvoke(standalone_query)
+        timing["hybrid_retrieval"] = time.time() - t0
+
+        docs = docs[:TOP_K_FINAL]
+
+        # --- Jina Reranker ---
+        t0 = time.time()
+        docs = await self.reranker.arerank(standalone_query, docs)
+        timing["jina_reranker"] = time.time() - t0
+
+        # --- Parent Document Expansion ---
+        docs = await self._expand_to_parent_async(docs)
+
+        # --- QA Generation ---
+        t0 = time.time()
+        answer = await self.qa_chain.ainvoke({
+            "context": docs,
+            "chat_history": chat_history,
+            "input": standalone_query,
+        })
+        timing["qa_generation"] = time.time() - t0
+
+        # --- Store vào cache (Chạy dưới nền an toàn với strong reference) ---
+        t0 = time.time()
+        self._schedule_background_task(self.semantic_cache.astore(standalone_query, answer, docs))
+        timing["cache_store"] = time.time() - t0
+
+        return {
+            "answer": answer,
+            "context": docs,
+            "from_cache": False,
+            "standalone_query": standalone_query,
+            "intent": "KNOWLEDGE",
+            "timing": timing,
+        }
+
+    async def _handle_tool_async(self, standalone_query: str, chat_history: list, timing: dict) -> dict:
+        """
+        Xử lý nhánh TOOL: Bypass cache → Supabase lookup → calculate_final_price → LLM (Async).
+        """
+        t0 = time.time()
+
+        resolved_types = _resolve_all_service_types(standalone_query)
+        weights = self._extract_all_numbers(standalone_query, ["kg", "kí", "ký", "cân", "ki", "can"])
+        days_list = self._extract_all_numbers(standalone_query, ["ngày", "ngay", "hôm", "đêm", "hom", "dem"])
+
+        if not resolved_types:
+            price_data = await lookup_service_price_async(
+                db=self.service_db,
+                query=standalone_query,
+            )
+            all_price_data = [price_data]
+        else:
+            async def _fetch_single_service_price(i: int, stype: str) -> str:
+                weight = None
+                if len(weights) == 1:
+                    weight = weights[0]
+                elif i < len(weights):
+                    weight = weights[i]
+
+                res = await lookup_service_price_async(
+                    db=self.service_db,
+                    query=standalone_query,
+                    service_type=stype,
+                    weight_kg=weight,
+                )
+
+                if stype == "luu_tru_24h" and weight:
+                    num_days = days_list[0] if days_list else None
+                    base_info = await self.service_db.lookup_price_async("luu_tru_24h", weight)
+                    
+                    if base_info and num_days:
+                        final_price_result = await calculate_final_price_async(
+                            base_price_per_day=base_info["price"],
+                            num_days=num_days,
+                            service_type="luu_tru_24h",
+                            weight_kg=weight,
+                            db=self.service_db,
+                        )
+                        final_price_info = format_final_price_for_llm(final_price_result)
+                        res = res + "\n\n" + final_price_info
+                return res
+
+            all_price_data = await asyncio.gather(
+                *[_fetch_single_service_price(i, stype) for i, stype in enumerate(resolved_types)]
+            )
+        
+        price_data = "\n\n---\n\n".join(all_price_data)
+        timing["tool_lookup"] = time.time() - t0
+
+        t0 = time.time()
+        response = await self.tool_qa_chain.ainvoke({
+            "price_data": price_data,
+            "chat_history": chat_history,
+            "input": standalone_query,
+        })
+        answer = response.content
+        timing["qa_generation"] = time.time() - t0
+
+        return {
+            "answer": answer,
+            "context": [],
+            "from_cache": False,
+            "standalone_query": standalone_query,
+            "intent": "TOOL",
+            "price_data": price_data,
+            "timing": timing,
+        }
+
+    async def _handle_greeting_async(self, standalone_query: str, chat_history: list, timing: dict) -> dict:
+        """
+        Xử lý nhánh GREETING (Async).
+        """
+        t0 = time.time()
+        response = await self.greetings_chain.ainvoke({
+            "chat_history": chat_history,
+            "input": standalone_query
+        })
+        answer = response.content
+        timing["greetings_generation"] = time.time() - t0
+
+        return {
+            "answer": answer,
+            "context": [],
+            "from_cache": False,
+            "standalone_query": standalone_query,
+            "intent": "GREETING",
+            "timing": timing
+        }
+
+    async def ainvoke(self, inputs: dict) -> dict:
+        """
+        Chạy pipeline Agentic RAG một cách bất đồng bộ.
+        """
+        query = inputs.get("input", "")
+        chat_history = inputs.get("chat_history", [])
+        timing = {}
+
+        if _is_greeting_fast(query):
+            return {
+                "answer": GREETING_RESPONSE,
+                "context": [],
+                "from_cache": False,
+                "standalone_query": query,
+                "intent": "GREETING",
+                "timing": {"fast_regex_match": 0.0}
+            }
+
+        if _is_working_hours_fast(query):
+            return {
+                "answer": WORKING_HOURS_RESPONSE,
+                "context": [],
+                "from_cache": False,
+                "standalone_query": query,
+                "intent": "KNOWLEDGE",
+                "timing": {"fast_regex_match": 0.0}
+            }
+
+        t0 = time.time()
+        standalone_query = await self._rewrite_query_async(query, chat_history)
+        timing["rewrite_query"] = time.time() - t0
+
+        # --- Step 1.5: Cache Lookup (Bypass Intent Router if HIT) ---
+        t0 = time.time()
+        cached = await self.semantic_cache.alookup(standalone_query)
+        timing["cache_lookup"] = time.time() - t0
+        if cached:
+            return {
+                "answer": cached["answer"],
+                "context": cached["context_docs"],
+                "from_cache": True,
+                "standalone_query": standalone_query,
+                "similarity": cached.get("similarity", 1.0),
+                "intent": "KNOWLEDGE",
+                "timing": timing,
+            }
+
+        t0 = time.time()
+        intent = await self.router.aclassify(standalone_query)
+        timing["intent_router"] = time.time() - t0
+        print(f"🧭 Intent Router (Async): {standalone_query} → {intent}")
+
+        if intent == "GREETING":
+            return await self._handle_greeting_async(standalone_query, chat_history, timing)
+        elif intent == "TOOL":
+            return await self._handle_tool_async(standalone_query, chat_history, timing)
+        else:
+            return await self._handle_knowledge_async(standalone_query, chat_history, timing)
 
 
 def build_conversational_rag_chain():

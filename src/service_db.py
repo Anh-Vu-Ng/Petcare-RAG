@@ -6,7 +6,7 @@ import csv
 from typing import List, Dict, Optional, Any
 from sqlalchemy import text
 from src.config import CSV_PRICING_PATH
-from src.db.database import engine, SessionLocal
+from src.db.database import engine, SessionLocal, async_engine, AsyncSessionLocal
 from src.db import models
 
 # Mapping từ tên cột CSV sang tên hiển thị tiếng Việt
@@ -262,3 +262,143 @@ class ServiceDB:
                 models.ChatHistoryModel.session_id == session_id
             ).delete()
             db.commit()
+
+    # --- ASYNCHRONOUS DATABASE METHODS ---
+    async def init_db_async(self):
+        """Khởi tạo các bảng và index một cách bất đồng bộ."""
+        async with async_engine.begin() as conn:
+            await conn.run_sync(models.Base.metadata.create_all)
+            try:
+                await conn.execute(text("CREATE INDEX IF NOT EXISTS idx_services_service_type ON services (service_type)"))
+                await conn.execute(text("CREATE INDEX IF NOT EXISTS idx_services_weight_kg ON services (weight_kg)"))
+            except Exception as e:
+                print(f"⚠️ Không thể tạo index tự động async: {e}")
+
+    async def lookup_price_async(self, service_type: str, weight_kg: float) -> Optional[Dict[str, Any]]:
+        from sqlalchemy import select
+        async with AsyncSessionLocal() as db:
+            # Tìm mức cân nặng gần nhất >= weight_kg
+            stmt = (
+                select(models.ServiceModel)
+                .filter(
+                    models.ServiceModel.service_type == service_type,
+                    models.ServiceModel.weight_kg >= weight_kg
+                )
+                .order_by(models.ServiceModel.weight_kg.asc())
+                .limit(1)
+            )
+            result = await db.execute(stmt)
+            service = result.scalars().first()
+
+            # Nếu không có, lấy mức cao nhất
+            if not service:
+                stmt = (
+                    select(models.ServiceModel)
+                    .filter(models.ServiceModel.service_type == service_type)
+                    .order_by(models.ServiceModel.weight_kg.desc())
+                    .limit(1)
+                )
+                result = await db.execute(stmt)
+                service = result.scalars().first()
+
+            return self._model_to_dict(service)
+
+    async def search_services_async(self, query: str) -> List[Dict[str, Any]]:
+        from sqlalchemy import select
+        async with AsyncSessionLocal() as db:
+            query_lower = query.lower()
+            matching_types = []
+            
+            for stype, sname in SERVICE_NAME_MAP.items():
+                if query_lower in sname.lower() or query_lower in stype.lower():
+                    matching_types.append(stype)
+
+            if not matching_types:
+                stmt = (
+                    select(models.ServiceModel)
+                    .filter(models.ServiceModel.service_name.ilike(f"%{query}%"))
+                    .order_by(models.ServiceModel.weight_kg)
+                )
+            else:
+                stmt = (
+                    select(models.ServiceModel)
+                    .filter(models.ServiceModel.service_type.in_(matching_types))
+                    .order_by(models.ServiceModel.weight_kg)
+                )
+
+            result = await db.execute(stmt)
+            results = result.scalars().all()
+            return [self._model_to_dict(r) for r in results]
+
+    async def get_all_services_async(self) -> List[Dict[str, Any]]:
+        from sqlalchemy import select
+        async with AsyncSessionLocal() as db:
+            stmt = select(models.ServiceModel).order_by(
+                models.ServiceModel.service_type, 
+                models.ServiceModel.weight_kg
+            )
+            result = await db.execute(stmt)
+            results = result.scalars().all()
+            return [self._model_to_dict(r) for r in results]
+
+    async def get_price_table_for_service_async(self, service_type: str) -> List[Dict[str, Any]]:
+        from sqlalchemy import select
+        async with AsyncSessionLocal() as db:
+            stmt = (
+                select(models.ServiceModel)
+                .filter(models.ServiceModel.service_type == service_type)
+                .order_by(models.ServiceModel.weight_kg)
+            )
+            result = await db.execute(stmt)
+            results = result.scalars().all()
+            return [self._model_to_dict(r) for r in results]
+
+    async def get_chat_history_async(self, session_id: str, limit: int = 50) -> List[Dict[str, Any]]:
+        from sqlalchemy import select
+        async with AsyncSessionLocal() as db:
+            stmt = (
+                select(models.ChatHistoryModel)
+                .filter(models.ChatHistoryModel.session_id == session_id)
+                .order_by(models.ChatHistoryModel.created_at.desc())
+                .limit(limit)
+            )
+            result = await db.execute(stmt)
+            results = result.scalars().all()
+            results = results[::-1]
+            return [
+                {
+                    "id": r.id,
+                    "session_id": r.session_id,
+                    "role": r.role,
+                    "content": r.content,
+                    "created_at": r.created_at,
+                }
+                for r in results
+            ]
+
+    async def save_chat_message_async(self, session_id: str, role: str, content: str) -> Dict[str, Any]:
+        async with AsyncSessionLocal() as db:
+            msg = models.ChatHistoryModel(
+                session_id=session_id,
+                role=role,
+                content=content
+            )
+            db.add(msg)
+            await db.commit()
+            await db.refresh(msg)
+            return {
+                "id": msg.id,
+                "session_id": msg.session_id,
+                "role": msg.role,
+                "content": msg.content,
+                "created_at": msg.created_at,
+            }
+
+    async def clear_chat_history_async(self, session_id: str):
+        from sqlalchemy import delete
+        async with AsyncSessionLocal() as db:
+            stmt = delete(models.ChatHistoryModel).filter(
+                models.ChatHistoryModel.session_id == session_id
+            )
+            await db.execute(stmt)
+            await db.commit()

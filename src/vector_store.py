@@ -1,7 +1,7 @@
 import os
 import time
 from langchain_qdrant import QdrantVectorStore, FastEmbedSparse, RetrievalMode
-from qdrant_client import QdrantClient
+from qdrant_client import QdrantClient, AsyncQdrantClient
 from qdrant_client.http import models
 
 from src.config import (

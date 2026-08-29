@@ -28,8 +28,6 @@ QDRANT_KB_COLLECTION = "petcare_knowledge_base"
 QDRANT_PARENT_COLLECTION = "petcare_parent_documents"
 QDRANT_CACHE_COLLECTION = "petcare_semantic_cache"
 
-CHAT_HISTORY_WINDOW = 4
-
 # Semantic Cache
 CACHE_SIMILARITY_THRESHOLD = 0.95  
 CACHE_MAX_SIZE = 500 

@@ -282,3 +282,141 @@ def _resolve_all_service_types(query: str) -> List[str]:
                 break
 
     return found_types
+
+
+# --- ASYNCHRONOUS HELPER FUNCTIONS ---
+async def _lookup_service_price_with_range_async(
+    db: ServiceDB,
+    service_type: str,
+    weight_kg: float,
+) -> Optional[str]:
+    """Tra cứu bảng giá dịch vụ Petcare theo cân nặng bất đồng bộ."""
+    prices = await db.get_price_table_for_service_async(service_type)
+    if not prices:
+        return None
+        
+    exact_match = None
+    for p in prices:
+        if abs(p['weight_kg'] - weight_kg) < 1e-5:
+            exact_match = p
+            break
+            
+    if exact_match:
+        return db.format_for_llm([exact_match])
+        
+    lower_bound = None
+    upper_bound = None
+    for p in prices:
+        w = p['weight_kg']
+        if w < weight_kg:
+            if lower_bound is None or w > lower_bound['weight_kg']:
+                lower_bound = p
+        elif w > weight_kg:
+            if upper_bound is None or w < upper_bound['weight_kg']:
+                upper_bound = p
+                
+    if lower_bound and upper_bound:
+        service_name = SERVICE_NAME_MAP.get(service_type, service_type)
+        price_lower = f"{lower_bound['price']:,}đ".replace(",", ".")
+        price_upper = f"{upper_bound['price']:,}đ".replace(",", ".")
+        
+        lines = [
+            "📋 BẢNG GIÁ DỊCH VỤ PETCARE:",
+            "",
+            f"🔹 {service_name}:",
+            f"   • {lower_bound['weight_kg']}kg - {upper_bound['weight_kg']}kg: {price_lower} - {price_upper}",
+            "",
+            "📌 Lưu ý: Giá lưu trú đã bao gồm dịch vụ ăn uống."
+        ]
+        return "\n".join(lines)
+        
+    elif upper_bound:
+        return db.format_for_llm([upper_bound])
+        
+    elif lower_bound:
+        return db.format_for_llm([lower_bound])
+        
+    return None
+
+
+async def lookup_service_price_async(
+    db: ServiceDB,
+    query: str,
+    service_type: str = None,
+    weight_kg: float = None,
+) -> str:
+    """Tra cứu bảng giá dịch vụ Petcare từ database một cách bất đồng bộ."""
+    if service_type and weight_kg is not None:
+        res = await _lookup_service_price_with_range_async(db, service_type, weight_kg)
+        if res:
+            return res
+    
+    if service_type:
+        results = await db.get_price_table_for_service_async(service_type)
+        if results:
+            return db.format_for_llm(results)
+
+    if query:
+        resolved_type = _resolve_service_type(query)
+        if resolved_type:
+            if weight_kg is not None:
+                res = await _lookup_service_price_with_range_async(db, resolved_type, weight_kg)
+                if res:
+                    return res
+            else:
+                results = await db.get_price_table_for_service_async(resolved_type)
+                if results:
+                    return db.format_for_llm(results)
+
+        results = await db.search_services_async(query)
+        if results:
+            return db.format_for_llm(results)
+
+    return "Không tìm thấy dịch vụ phù hợp. Vui lòng liên hệ Petcare để được tư vấn cụ thể."
+
+
+async def calculate_final_price_async(
+    base_price_per_day: int,
+    num_days: int,
+    service_type: str = "luu_tru_24h",
+    weight_kg: float = None,
+    db: ServiceDB = None,
+) -> Dict[str, Any]:
+    """Tính giá cuối cùng cho dịch vụ lưu trú với discount bất đồng bộ."""
+    total_before_discount = base_price_per_day * num_days
+
+    if num_days > 10:
+        discount_pct = 15
+        free_bath = True
+    elif num_days > 5:
+        discount_pct = 10
+        free_bath = False
+    elif num_days > 3:
+        discount_pct = 5
+        free_bath = False
+    else:
+        discount_pct = 0
+        free_bath = False
+
+    discount_amount = int(total_before_discount * discount_pct / 100)
+    final_price = total_before_discount - discount_amount
+
+    result = {
+        "base_price_per_day": base_price_per_day,
+        "num_days": num_days,
+        "total_before_discount": total_before_discount,
+        "discount_pct": discount_pct,
+        "discount_amount": discount_amount,
+        "final_price": final_price,
+        "free_bath": free_bath,
+        "free_bath_price": 0,
+        "note": "Giá lưu trú đã bao gồm ăn uống, không phát sinh thêm chi phí.",
+    }
+
+    if free_bath and db and weight_kg:
+        bath_info = await db.lookup_price_async("tam", weight_kg)
+        if bath_info:
+            result["free_bath_price"] = bath_info["price"]
+
+    return result
+
