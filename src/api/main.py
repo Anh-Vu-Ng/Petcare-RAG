@@ -93,7 +93,7 @@ app = FastAPI(
 
 # Cấu hình CORS bảo mật
 origins = [
-    "https://petcare-fe-iota.vercel.app",
+    "https://petcare-seven-beta.vercel.app",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
