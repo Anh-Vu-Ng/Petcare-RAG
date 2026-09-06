@@ -1,0 +1,214 @@
+% --- UNIVERSAL PREAMBLE BLOCK ---
+\documentclass[11pt, a4paper]{article}
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+
+% Cấu hình ngôn ngữ tiếng Việt bằng babel gọn gàng
+\usepackage[vietnamese, english]{babel}
+
+% Sử dụng fontspec để tải Noto Sans (Bắt buộc chọn Compiler là XeLaTeX hoặc LuaLaTeX trên Overleaf)
+\usepackage{fontspec}
+\setmainfont{Noto Sans}
+
+\usepackage{enumitem}
+\setlist[itemize]{label=-}
+
+% Nạp các gói lệnh nâng cao cho bảng biểu, công thức toán và định dạng liên kết
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{fancyvrb} % Hỗ trợ định dạng prompt trực quan hơn
+
+% Gói lệnh hyperref luôn luôn nạp cuối cùng trong phần Preamble
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=black]{hyperref}
+
+% Định nghĩa cột căn giữa tự động giãn cho tabularx
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+% --- THÔNG TIN TÀI LIỆU ---
+\title{\textbf{Báo Cáo Kỹ Thuật: Thiết Kế, Đánh Giá và Tối Ưu Hóa\\Kiến Trúc RAG cho Trợ Lý Ảo Chăm Sóc Thú Cưng Petcare}}
+\author{\textbf{Nguyễn Văn Anh Vũ}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Báo cáo này trình bày chi tiết nghiên cứu thực nghiệm về quá trình tối ưu hóa hệ thống Trợ lý ảo Petcare dựa trên mô hình RAG (Retrieval-Augmented Generation). Trọng tâm của nghiên cứu xoay quanh ba bài toán chính: (1) Tinh chỉnh tham số phân mảnh văn bản (Chunking) bằng phương pháp Grid Search để đạt hiệu quả truy xuất thông tin y tế tối ưu; (2) Thiết kế, đánh giá và định tuyến ý định (Intent Routing) dựa trên Prompt Engineering chống nhiễu ngữ cảnh trên các mô hình ngôn ngữ lớn (LLMs); (3) Đánh giá chất lượng phản hồi cuối cùng (End-to-End Generation) bằng framework DeepEval để xác định hiện tượng ảo giác (hallucination). Kết quả thực nghiệm cho thấy, sau khi tinh chỉnh Prompt chống bẫy ngữ cảnh, mô hình \texttt{gpt-4o-mini} và \texttt{qwen3-8b} đạt độ chính xác phân loại tuyệt đối ($100\%$), đồng thời việc lựa chọn cấu hình \texttt{child\_size=310, top\_k=8} giúp hệ thống đạt độ bao phủ ngữ cảnh hoàn hảo (Recall = $1.0$).
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% --- SECTION 1: SYSTEM OVERVIEW ---
+\section{Tổng Quan Hệ Thống và Bối Cảnh}
+Trợ lý ảo Petcare được thiết kế nhằm tự động hóa quy trình phản hồi khách hàng, hỗ trợ giải đáp nhanh về giá cả dịch vụ (tắm rửa, cạo lông, cắt móng, lưu trú...) cũng như tư vấn kiến thức y tế thú y cơ bản. 
+
+Kiến trúc luồng xử lý thông tin được tổ chức thành một pipeline tích hợp gồm 3 phân hệ cốt lõi:
+\begin{enumerate}
+    \item \textbf{LLM Intent Router (Định tuyến Ý định):} Tiếp nhận tin nhắn đầu vào từ người dùng và phân loại chính xác vào một trong ba luồng nghiệp vụ chính:
+    \begin{itemize}
+        \item \texttt{GREETING}: Chào hỏi, giao tiếp xã giao, tán gẫu, hoặc phản hồi các câu hỏi không liên quan đến dịch vụ của Petcare.
+        \item \texttt{TOOL}: Tra cứu nhanh bảng giá dịch vụ chăm sóc thú cưng đã được niêm yết của cửa hàng.
+        \item \texttt{KNOWLEDGE}: Các câu hỏi về y khoa thú y, cần truy vấn cơ sở tri thức nội bộ.
+    \end{itemize}
+    \item \textbf{Retrieval Pipeline (Truy xuất Tri thức):} Đối với các câu hỏi thuộc luồng \texttt{KNOWLEDGE}, hệ thống sử dụng mô hình nhúng tri thức để tính toán độ tương đồng cosine và truy xuất ra các chunk tài liệu liên quan nhất từ cơ sở dữ liệu vector.
+    \item \textbf{Response Generator (Sinh phản hồi):} LLM nhận các context được truy xuất từ bước trước cùng với câu hỏi gốc để tổng hợp và biên soạn câu trả lời chính xác, đáng tin cậy.
+\end{enumerate}
+
+% --- SECTION 2: RETRIEVAL TUNING ---
+\section{Tối Ưu Hóa Luồng Truy Xuất (Retrieval Tuning)}
+Một trong những điểm nghẽn lớn nhất của kiến trúc RAG là chất lượng của tài liệu nền tảng cung cấp cho LLM (Context). Nếu quá trình phân mảnh (chunking) không hợp lý, context truyền vào sẽ bị loãng hoặc thiếu hụt thông tin quan trọng. 
+
+Chúng tôi đã thiết lập một quy trình thực nghiệm Grid Search tự động dựa trên tập dữ liệu tri thức thú y để tìm ra bộ tham số phân mảnh tối ưu nhất. Thử nghiệm sử dụng mô hình nhúng tri thức \texttt{jina-embeddings-v5-text-small}.
+
+\subsection{Thiết Lập Tham Số Grid Search}
+Quá trình Grid Search được quét trên ba trục tham số quan trọng:
+\begin{itemize}
+    \item \texttt{child\_size}: Kích thước của mỗi mảnh văn bản con (từ 300 đến 320 tokens).
+    \item \texttt{child\_overlap}: Độ gối đầu giữa các mảnh con lân cận (10 hoặc 20 tokens) để bảo toàn mạch ngữ cảnh.
+    \item \texttt{top\_k}: Số lượng mảnh tài liệu liên quan nhất được lấy ra để làm ngữ cảnh nền (6 hoặc 8 chunks).
+\end{itemize}
+
+\subsection{Kết Quả Thử Nghiệm Grid Search}
+Dựa trên kết quả ghi nhận từ tệp tin dữ liệu thực nghiệm \texttt{pdr\_tuning\_results.csv}, Bảng~\ref{tab:gridsearch} thể hiện 5 cấu hình xuất sắc nhất được xếp hạng dựa trên hai metric chính: \textbf{Hit Rate} (Tỉ lệ tìm thấy thông tin cần thiết) và \textbf{MRR Score} (Mean Reciprocal Rank - đo lường vị trí xuất hiện của tài liệu chuẩn trong kết quả tìm kiếm).
+
+\begin{table}[htbp]
+\centering
+\caption{Bảng xếp hạng kết quả Grid Search tối ưu nhất}
+\label{tab:gridsearch}
+\begin{tabularx}{\textwidth}{@{} c c c c Y Y @{}}
+\toprule
+\textbf{child\_size} & \textbf{overlap} & \textbf{top\_k} & \textbf{Hit Rate} & \textbf{MRR Score} & \textbf{Debug Similarity} \\
+\midrule
+310 & 20 & 8 & \textbf{0.9867} & \textbf{0.9406} & 0.7759 \\
+310 & 10 & 8 & \textbf{0.9867} & \textbf{0.9406} & 0.7757 \\
+310 & 20 & 6 & 0.9800 & 0.9397 & 0.7706 \\
+310 & 10 & 6 & 0.9800 & 0.9397 & 0.7705 \\
+300 & 10 & 8 & 0.9800 & 0.9317 & 0.7769 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Phân tích và Ra quyết định:} Kết quả thực nghiệm chỉ ra rằng kích thước mảnh \texttt{child\_size=310} mang lại hiệu năng ổn định vượt trội so với các kích thước khác. Chúng tôi quyết định lựa chọn cấu hình \textbf{\texttt{child\_size=310, overlap=20, top\_k=8}} làm cấu hình chính thức cho hệ thống production. Việc chọn \texttt{top\_k=8} giúp tối ưu hóa chỉ số Hit Rate lên mức tối đa ($98.67\%$), đảm bảo LLM sinh phản hồi hiếm khi rơi vào tình trạng thiếu hụt dữ liệu tham chiếu gốc.
+
+\newpage
+% --- SECTION 3: INTENT ROUTING ---
+\section{Định Tuyến Ý Định và Đánh Giá Hiệu Năng Mô Hình (Intent Routing)}
+Hệ thống Router đặt ở đầu phễu có vai trò cực kỳ quan trọng giúp giảm thiểu tối đa chi phí gọi API sinh phản hồi không cần thiết (đối với luồng \texttt{GREETING}) và định vị đúng luồng xử lý. 
+
+Để đánh giá độ bền bỉ của Router, chúng tôi xây dựng một tập dữ liệu benchmark gồm \textbf{49 mẫu thử thử thách} (edge cases). Các mẫu thử này mô phỏng thói quen hành vi thực tế của khách hàng: kể lể dài dòng, đưa thông tin gây nhiễu ở đầu câu rồi mới đưa ra yêu cầu thật ở cuối câu (ví dụ: \textit{"Chồng mình bảo đi cắt móng cho con Poodle tốn tiền lắm, shop báo cho mình cái bill để mình đưa ổng coi thử."}).
+
+\subsection{Kết Quả Đánh Giá Trước Khi Tối Ưu Prompt}
+Trong thử nghiệm ban đầu (được trích xuất từ báo cáo benchmark \texttt{benchmark\_raw\_report\_20260527\_102810.txt}), prompt điều khiển Router chỉ mang tính chất định nghĩa thuần túy, chưa có chỉ thị chống bẫy ngữ cảnh. Kết quả phân loại được thể hiện trong Bảng~\ref{tab:benchmark_raw}.
+
+\begin{table}[htbp]
+\centering
+\caption{Kết quả benchmark Intent Router ban đầu (Chưa tối ưu prompt)}
+\label{tab:benchmark_raw}
+\begin{tabularx}{\textwidth}{@{} X c c c @{}}
+\toprule
+\textbf{Tên Mô Hình} & \textbf{Số Câu Đúng} & \textbf{Độ Chính Xác (Accuracy)} & \textbf{Thời Gian Chạy (Latency)} \\
+\midrule
+\texttt{openai/gpt-4o-mini} & 48/49 & 97.96\% & 69.56\,\text{s} \\
+\texttt{google/gemma-3-27b-it} & 46/49 & 93.88\% & 55.22\,\text{s} \\
+\texttt{qwen/qwen3-8b} & 45/49 & 91.84\% & 60.25\,\text{s} \\
+\texttt{meta-llama/llama-3.1-8b-instruct} & 37/49 & 75.51\% & \textbf{43.25\,\text{s}} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Phân tích lỗi (Error Analysis):} Việc phân tích nhật ký lỗi cho thấy mô hình mã nguồn mở cỡ nhỏ như \texttt{llama-3.1-8b} bị đánh lừa nghiêm trọng bởi các từ khóa nhiễu. Điển hình ở câu số 17: \textit{"Chồng mình bảo đi cắt móng cho con Poodle tốn tiền lắm..."}, mô hình dễ dàng dự đoán sai thành \texttt{GREETING} thay vì \texttt{TOOL}, do tập trung vào câu chuyện phiếm ở đầu câu thay vì phần hỏi giá ở cuối câu.
+
+\subsection{Tinh Chỉnh Prompt Chống Nhiễu Ngữ Cảnh}
+Để khắc phục điểm yếu này, chúng tôi tiến hành tối ưu hóa Prompt thông qua kỹ thuật bổ sung chỉ thị cảnh báo và cấu trúc lại hệ thống ví dụ minh họa (Few-shot Examples). Prompt mới được bổ sung dòng lệnh chỉ thị tối quan trọng:
+
+\begin{quote}
+\textit{\textbf{"QUAN TRỌNG:} Người dùng thường kể lể, vòng vo ở đầu câu rồi mới đưa ra yêu cầu thật ở cuối. Hãy đọc TOÀN BỘ câu, xác định yêu cầu thật ở cuối, rồi mới classify."}
+\end{quote}
+
+Bên cạnh đó, các ví dụ bẫy thực tế cũng được bổ sung trực tiếp vào tập Few-shot để mô hình học được ranh giới quyết định.
+
+\subsection{Kết Quả Đánh Giá Sau Khi Tối Ưu Prompt}
+Sau khi nạp prompt đã tối ưu vào hệ thống thử nghiệm (ghi nhận tại báo cáo benchmark \texttt{benchmark\_raw\_report\_20260527\_124204.txt}), hiệu năng của toàn bộ các mô hình cải thiện vượt bậc, đặc biệt là các mô hình mã nguồn mở (Bảng~\ref{tab:benchmark_opt}).
+
+\begin{table}[htbp]
+\centering
+\caption{Kết quả benchmark Intent Router sau khi tối ưu prompt}
+\label{tab:benchmark_opt}
+\begin{tabularx}{\textwidth}{@{} X c c c @{}}
+\toprule
+\textbf{Tên Mô Hình} & \textbf{Số Câu Đúng} & \textbf{Độ Chính Xác (Accuracy)} & \textbf{Thời Gian Chạy (Latency)} \\
+\midrule
+\texttt{openai/gpt-4o-mini} & 49/49 & \textbf{100.00\%} & 58.39\,\text{s} \\
+\texttt{qwen/qwen3-8b} & 49/49 & \textbf{100.00\%} & 67.06\,\text{s} \\
+\texttt{google/gemma-3-27b-it} & 48/49 & 97.96\% & 57.93\,\text{s} \\
+\texttt{meta-llama/llama-3.1-8b-instruct} & 45/49 & 91.84\% & \textbf{45.71\,\text{s}} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Phân tích Đánh Đổi (Trade-off Analysis) và Quyết định:} Sau khi tối ưu prompt, cả \texttt{gpt-4o-mini} và \texttt{qwen3-8b} đều đạt độ chính xác tuyệt đối ($100.00\%$). Tuy nhiên, xét về thời gian phản hồi toàn luồng benchmark, \texttt{gpt-4o-mini} hoàn thành nhanh hơn đáng kể ($58.39\,\text{s}$ so với $67.06\,\text{s}$). Do đó, để giảm thiểu độ trễ tối đa cho khách hàng trong môi trường tương tác thời gian thực, \texttt{gpt-4o-mini} được chọn làm mô hình chạy chính thức cho Intent Router, trong khi \texttt{qwen3-8b} được cấu hình làm phương án dự phòng (fallback).
+
+\newpage
+% --- SECTION 4: DEEPEVAL METRICS ---
+\section{Đánh Giá Chất Lượng Sinh Phản Hồi (End-to-End Evaluation)}
+Không chỉ dừng lại ở việc tối ưu hóa luồng truy xuất và định tuyến, chất lượng câu trả lời cuối cùng cung cấp cho khách hàng cần phải được kiểm định nghiêm ngặt. Chúng tôi sử dụng framework đánh giá LLM chuyên dụng \textbf{DeepEval} trên \textbf{50 mẫu test} kiến thức y tế (\texttt{KNOWLEDGE}) phức tạp để đo lường chất lượng câu trả lời từ mô hình sinh.
+
+\subsection{Các Chỉ Số Đánh Giá Tổng Hợp (Aggregate Scores)}
+Sau quá trình đánh giá tự động (ghi nhận tại tệp dữ liệu \texttt{deepeval\_results.json}), các chỉ số chất lượng đạt được như sau:
+\begin{itemize}
+    \item \textbf{Contextual Recall: $1.0000$} (Điểm tuyệt đối - chứng minh rằng cấu hình truy xuất \texttt{top\_k=8} được lựa chọn ở Mục 2 đã cung cấp đầy đủ thông tin tri thức gốc không bị thiếu hụt).
+    \item \textbf{Contextual Precision: $0.9733$} (Ngữ cảnh được sắp xếp với độ chính xác cao, các thông tin liên quan nhất luôn được ưu tiên đẩy lên đầu).
+    \item \textbf{Answer Relevancy: $0.9669$} (Câu trả lời sinh ra bám sát và tập trung cao độ vào câu hỏi gốc của khách hàng, hạn chế thông tin lan man thừa thãi).
+    \item \textbf{Faithfulness: $0.9039$} (Độ trung thực của câu trả lời so với tài liệu gốc đạt khoảng $90.4\%$, đây là điểm cần tập trung phân tích để cải thiện).
+\end{itemize}
+
+\subsection{Phân Tích Nguyên Nhân Lỗi (Root Cause Analysis - Faithfulness)}
+Mặc dù hệ thống đạt điểm hoàn hảo về độ bao phủ tri thức (Recall), chỉ số Faithfulness (mức độ trung thực, không tự suy diễn ngoài tài liệu gốc) bị sụt giảm nhẹ xuống mức $\sim 90\%$. Quá trình kiểm tra và phân tích trực tiếp các mẫu bị trừ điểm trong file kết quả \texttt{deepeval\_results.json} đã phát hiện ra một lỗi hệ thống mang tính chất "Ảo giác thương hiệu" (Location/Brand Extrapolation):
+
+\begin{itemize}
+    \item \textbf{Ngữ cảnh tri thức gốc (Context):} \textit{"Bạn nên đưa chó đến bác sĩ thú y để được chẩn đoán và điều trị chính xác."}
+    \item \textbf{Câu trả lời sinh ra từ LLM (Actual Output):} \textit{"...tốt nhất là đưa bé đến \textbf{cơ sở Petcare} để được khám và điều trị kịp thời."}
+    \item \textbf{Lý do trừ điểm từ DeepEval:} \textit{"The score is 0.67 because the actual output suggests taking the dog to a Petcare facility for treatment, while the retrieval context does not confirm that this is the best course of action for all cases of intestinal inflammation."}
+\end{itemize}
+
+\textbf{Kết luận phân tích lỗi:} Mô hình sinh phản hồi đã tự ý "đồng hóa" cụm từ chung chung "bác sĩ thú y" trong tri thức gốc thành tên thương hiệu riêng của hệ thống là "cơ sở Petcare" nhằm tăng tính thuyết phục của câu trả lời. Tuy nhiên, hành vi này bị DeepEval đánh giá nghiêm khắc là lỗi thiếu trung thực (Hallucination) do đưa ra thông tin nằm ngoài phạm vi tài liệu gốc cung cấp.
+
+\textbf{Giải pháp khắc phục:} Thiết lập chỉ thị nghiêm ngặt trong System Prompt của mô hình sinh: \textit{"Tuyệt đối không tự ý chèn tên thương hiệu Petcare vào các câu trả lời y tế trừ khi thông tin này được ghi nhận rõ ràng trong ngữ cảnh truy xuất gốc."}
+
+\newpage
+% --- SECTION 5: GUARDRAILS ---
+\section{Hệ Thống An Toàn và Xử Lý Ngoại Lệ (Guardrails \& Edge Cases)}
+Để đảm bảo trải nghiệm người dùng luôn thân thiện và an toàn ngay cả khi gặp các tình huống câu hỏi phá bĩnh hoặc nằm ngoài phạm vi hoạt động chuyên môn, chúng tôi đã kiểm thử nghiêm ngặt hệ thống phản hồi ngoại lệ (được ghi nhận chi tiết tại tệp tin \texttt{greetings\_report.txt}). 
+
+Nhờ vào bộ định tuyến thông minh, hệ thống luôn bypass thành công các câu hỏi nhạy cảm hoặc lạc đề về luồng xử lý \texttt{GREETING} và đưa ra các phản hồi mang tính nhân văn sâu sắc:
+
+\begin{enumerate}
+    \item \textbf{Yêu cầu ngoài tầm kiểm soát:}
+    \begin{itemize}
+        \item \textit{"Dự báo thời tiết hôm nay ở Sài Gòn?"} $\rightarrow$ Hệ thống từ chối khéo léo và điều hướng tinh tế về các dịch vụ chăm sóc thú cưng hiện có tại cửa hàng.
+    \end{itemize}
+    \item \textbf{Hành vi thóa mạ, tiêu cực từ khách hàng:}
+    \begin{itemize}
+        \item \textit{"Shop tệ quá, nghỉ bán đi"} $\rightarrow$ Trợ lý ảo tự động xin lỗi chân thành, lịch sự và gửi kèm liên kết dẫn đến Form đóng góp ý kiến để ghi nhận phản hồi đóng góp phát triển chất lượng dịch vụ.
+    \end{itemize}
+    \item \textbf{Tình huống nhạy cảm xã hội:}
+    \begin{itemize}
+        \item \textit{"Tui bị trầm cảm nặng, cần bạn giúp đỡ"} $\rightarrow$ Hệ thống thể hiện sự đồng cảm sâu sắc dưới góc độ con người, đồng thời khéo léo gợi ý rằng việc chơi đùa hoặc sử dụng dịch vụ lưu trú cho các bé cưng tại cửa hàng có thể hỗ trợ giảm tải căng thẳng tâm lý hiệu quả.
+    \end{itemize}
+\end{enumerate}
+
+% --- SECTION 6: CONCLUSION ---
+\section{Kết Luận và Hướng Phát Triển}
+Hệ thống Trợ lý ảo Petcare dựa trên kiến trúc RAG tối ưu đã hoàn thành xuất sắc các bài kiểm thử khắt khe từ khâu định tuyến đến kiểm định chất lượng nội dung câu trả lời cuối cùng:
+\begin{itemize}
+    \item Cấu hình phân mảnh tri thức \texttt{child\_size=310, top\_k=8} đạt độ bao phủ ngữ cảnh y tế hoàn hảo (Recall = $1.0$).
+    \item Prompt định tuyến được tinh chỉnh giúp triệt tiêu hoàn toàn nhiễu ngữ cảnh kể lể của khách hàng, đạt độ chính xác phân loại tuyệt đối ($100\%$) trên mô hình \texttt{gpt-4o-mini}.
+    \item Framework DeepEval giúp cô lập và làm sáng tỏ lỗi ảo giác thương hiệu (Faithfulness sụt giảm còn $90.4\%$), định hình rõ ràng phương án tinh chỉnh Prompt sinh phản hồi trước khi đưa hệ thống vào vận hành thực tế.
+\end{itemize}
+
+Trong tương lai gần, hệ thống sẽ được mở rộng bằng cách tích hợp mô hình tìm kiếm lai (Hybrid Search) kết hợp giữa Dense Retrieval (Jina Embeddings) và Sparse Retrieval (BM25) nhằm tiếp tục nâng cao độ chính xác truy xuất tri thức và tối ưu hóa trải nghiệm khách hàng.
+
+\end{document}
